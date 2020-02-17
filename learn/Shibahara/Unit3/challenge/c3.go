@@ -40,7 +40,7 @@ type getTemperature func(raw int) (string, string)
 
 func drawTable(unit1, unit2 string, getT getTemperature) {
 	const (
-		line       = "================"
+		line       = "============="
 		dataFormat = "|%5s|%5s|\n"
 	)
 	fmt.Println(line)
@@ -49,10 +49,12 @@ func drawTable(unit1, unit2 string, getT getTemperature) {
 
 	for i := -40; i <= 100; i += 5 {
 		cell1, cell2 := getT(i)
-		fmt.Println()
+		fmt.Printf(dataFormat, cell1, cell2)
 	}
+	fmt.Println(line)
 }
 
 func main() {
-
+	drawTable("°C", "°F", ctof)
+	drawTable("°F", "°C", ftoc)
 }
