@@ -6,24 +6,37 @@ type celsius float64
 type kelvin float64
 type fahrenheit float64
 
-func main() {
-	fmt.Println("=======================")
-	fmt.Println("|   °C       |   °F   |")
-	fmt.Println("=======================")
-	var c celsius = -40
-	for ; c <= 100; c += 5 {
+type tempfunction func(a float64) (string, string)
 
+func main() {
+	drawTable("C°", "F°", c2f)
+	drawTable("F°", "C°", f2c)
+}
+
+// 関数
+func drawTable(s1, s2 string, t tempfunction) {
+	fmt.Println("=======================")
+	fmt.Printf("|%-12s|%-8s|\n", s1, s2)
+	fmt.Println("=======================")
+	var c float64 = -40
+	for ; c <= 100; c += 5 {
+		s1, s2 := t(c)
+		fmt.Printf("|%-12s|%-8s|\n", s1, s2)
 	}
 	fmt.Println("=======================")
 }
 
-// 関数
-func drawTable(a func() celsius) {
-	fmt.Printf("|%-12.1f|%-8.1f|\n", a(), a().fahrenheit())
-}
-
 func m40To100celsius() {
 
+}
+
+func c2f(a float64) (string, string) {
+	c := celsius(a)
+	return fmt.Sprintf("%-.1f", c), fmt.Sprintf("%-.1f", c.fahrenheit())
+}
+func f2c(a float64) (string, string) {
+	f := fahrenheit(a)
+	return fmt.Sprintf("%-.1f", f), fmt.Sprintf("%-.1f", f.celsius())
 }
 
 // メソッド
