@@ -1,14 +1,17 @@
 package main
 
 import (
+	"encoding/json"
 	"fmt"
 	"math"
 	"os"
 )
 
 type coordinate struct {
-	d, m, s float64
-	h       rune
+	D float64 `json:"degrees"`
+	M float64 `json:"minutes"`
+	S float64 `json:"seconds"`
+	H rune    `json:"hemisphere,string"`
 }
 type world struct {
 	radius float64
@@ -20,21 +23,11 @@ type location struct {
 	Long float64 `json:"longitude"`
 }
 
-type gps struct {
-	current     location
-	destination location
-	world       world
-}
-
-type rover struct {
-	gps
-}
-
 func main() {
-	g := gps{location{Lat: -4.5895, Long: 137.4417}, location{Lat: 4.5, Long: 135.9}, world{3389.5}}
-	curiosity := rover{g}
-	fmt.Println(curiosity.massage())
-	//output
+	dt := coordinate{135, 54, 0, 'E'}
+	bytes, err := json.MarshalIndent(dt, "", " ")
+	exitOnErr(err)
+	fmt.Println(string(bytes))
 }
 
 //functions
@@ -56,11 +49,11 @@ func rad(deg float64) float64 {
 //methods
 func (c coordinate) decimal() float64 {
 	sign := 1.0
-	switch c.h {
+	switch c.H {
 	case 'S', 'W', 's', 'w':
 		sign = -1
 	}
-	return sign * (c.d + c.m/60 + c.s/3600)
+	return sign * (c.D + c.M/60 + c.S/3600)
 }
 
 func (w world) distance(p1, p2 location) float64 {
@@ -70,18 +63,26 @@ func (w world) distance(p1, p2 location) float64 {
 	return w.radius * math.Acos(s1*s2+c1*c2*cl)
 }
 
-func (g gps) distance() float64 {
-	return g.world.distance(g.current, g.destination)
-}
-
 func (l location) description() string {
 	return fmt.Sprintf("%s (%.1f° %.1f°)", l.name, l.Lat, l.Long)
 }
 
-func (g gps) massage() string {
-	return fmt.Sprintf("%.1fkm", g.distance())
+func (c coordinate) String() string {
+	return fmt.Sprintf("%.0f°%.0f'%.1f\" %c", c.D, c.M, c.S, c.H)
 }
 
-func (c coordinate) String() string {
-	return fmt.Sprintf("%.0f°%.0f'%.1f\" %v", c.d, c.m, c.s, c.h)
+//json.marshaler
+func (c coordinate) MarshalJSON() ([]byte, error) {
+	type Alias coordinate
+	return json.Marshal(&struct {
+		Dec float64 `json:"decimal"`
+		Str string  `json:"dms"`
+		Alias
+		Hem string `json:"hemisphere"`
+	}{
+		Dec:   c.decimal(),
+		Str:   c.String(),
+		Alias: (Alias)(c),
+		Hem:   fmt.Sprintf("%c", c.H),
+	})
 }
