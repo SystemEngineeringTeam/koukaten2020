@@ -33,8 +33,8 @@ type rover struct {
 func main() {
 	g := gps{location{Lat: -4.5895, Long: 137.4417}, location{Lat: 4.5, Long: 135.9}, world{3389.5}}
 	curiosity := rover{g}
-	fmt.Println(curiosity.massage())
 	//output
+	fmt.Println(curiosity.massage())
 }
 
 //functions

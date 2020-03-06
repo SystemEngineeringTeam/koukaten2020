@@ -29,7 +29,7 @@ func NewUniverse() Universe {
 }
 
 func (u Universe) Show() {
-	// fmt.Printf("========================================================================\n")
+	fmt.Printf("========================================================================\n")
 	for i := range u[0] {
 		for j := range u {
 			if u[j][i] {
@@ -87,7 +87,7 @@ func (u Universe) Next(x, y int) bool {
 	return ans
 }
 func Step(a, b Universe) {
-	for n := 0; ; n++ {
+	for {
 		for i := range a {
 			for j := range a[i] {
 				b[i][j] = a.Next(i, j)
