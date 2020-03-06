@@ -3,6 +3,8 @@ package main
 import (
 	"fmt"
 	"math/rand"
+	"os"
+	"os/exec"
 	"time"
 )
 
@@ -99,14 +101,14 @@ func main() {
 	u1.Seed()
 
 	for i := 0; i < 1000; i++ {
+		cmd := exec.Command("cmd", "/c", "cls")
+		cmd.Stdout = os.Stdout
+		cmd.Run()
 		fmt.Println(line)
-		// cmd := exec.Command("cmd", "/c", "cls")
-		// cmd.Stdout = os.Stdout
-		// cmd.Run()
 		Step(u1, u2)
 		u1, u2 = u2, u1
 		u1.Show()
 		fmt.Println(line)
-		time.Sleep(time.Millisecond * 150)
+		time.Sleep(time.Millisecond * 15)
 	}
 }
