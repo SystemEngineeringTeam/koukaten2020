@@ -7,9 +7,36 @@ import (
 
 const rows, columns = 9, 9
 
+type list struct {
+	x, y       int8
+	next, back *list
+}
+
 // NewSudoku is ...
 func NewSudoku(field [rows][columns]int8) *[rows][columns]int8 {
 	return &field
+}
+
+func newList(l []list, field *[rows][columns]int8) []list {
+	for i := 0; i < rows; i++ {
+		for j := 0; j < columns; j++ {
+			if field[i][j] == 0 {
+				l = append(l, list{int8(j), int8(i), nil, nil})
+			}
+		}
+	}
+
+	for i := range l {
+		if i != len(l)-1 {
+			l[i].next = &l[i+1]
+		}
+
+		if i != 0 {
+			l[i].back = &l[i-1]
+		}
+	}
+
+	return l
 }
 
 func show(field *[rows][columns]int8) {
@@ -18,9 +45,9 @@ func show(field *[rows][columns]int8) {
 	}
 }
 
-func checkRows(field *[rows][columns]int8, x, y int8) bool {
+func checkRows(field *[rows][columns]int8, l list) bool {
 	for i := 0; i < rows; i++ {
-		if field[y][i] == field[y][x] && x != int8(i) {
+		if field[l.y][i] == field[l.y][l.x] && l.x != int8(i) {
 			return false
 		}
 	}
@@ -28,9 +55,9 @@ func checkRows(field *[rows][columns]int8, x, y int8) bool {
 	return true
 }
 
-func checkColumns(field *[rows][columns]int8, x, y int8) bool {
+func checkColumns(field *[rows][columns]int8, l list) bool {
 	for i := 0; i < rows; i++ {
-		if field[i][x] == field[y][x] && x != int8(i) {
+		if field[i][l.x] == field[l.y][l.x] && l.y != int8(i) {
 			return false
 		}
 	}
@@ -82,20 +109,20 @@ func findArea(x, y int8) (int8, int8) {
 	return 0, 0
 }
 
-func checkArea(field *[rows][columns]int8, x, y int8) bool {
-	areaX, areaY := findArea(x, y)
+func checkArea(field *[rows][columns]int8, l list) bool {
+	areaX, areaY := findArea(l.x, l.y)
 	for i := 0; i < 3; i++ {
-		if field[y][x] == field[areaY][areaX+int8(i)] && y != areaY && x != areaX+int8(i) {
+		if field[l.y][l.x] == field[areaY][areaX+int8(i)] && ((l.y == areaY && l.x != areaX+int8(i)) || (l.y != areaY && l.x == areaX+int8(i)) || (l.y != areaY && l.x != areaX+int8(i))) {
 			return false
 		}
 	}
 	for i := 0; i < 3; i++ {
-		if field[y][x] == field[areaY+1][areaX+int8(i)] && y != areaY+1 && x != areaX+int8(i) {
+		if field[l.y][l.x] == field[areaY+1][areaX+int8(i)] && ((l.y == areaY+1 && l.x != areaX+int8(i)) || (l.y != areaY+1 && l.x == areaX+int8(i)) || (l.y != areaY+1 && l.x != areaX+int8(i))) {
 			return false
 		}
 	}
 	for i := 0; i < 3; i++ {
-		if field[y][x] == field[areaY+2][areaX+int8(i)] && y != areaY+2 && x != areaX+int8(i) {
+		if field[l.y][l.x] == field[areaY+2][areaX+int8(i)] && ((l.y == areaY+2 && l.x != areaX+int8(i)) || (l.y != areaY+2 && l.x == areaX+int8(i)) || (l.y != areaY+2 && l.x != areaX+int8(i))) {
 			return false
 		}
 	}
@@ -103,45 +130,32 @@ func checkArea(field *[rows][columns]int8, x, y int8) bool {
 	return true
 }
 
-func checkField(field *[rows][columns]int8, x, y int8) bool {
-	if checkArea(field, x, y) && checkColumns(field, x, y) && checkRows(field, x, y) {
+func checkField(field *[rows][columns]int8, l list) bool {
+	if checkArea(field, l) && checkColumns(field, l) && checkRows(field, l) {
 		return true
 	}
 
 	return false
 }
 
-func putNum(field *[rows][columns]int8, x, y int8) {
-	for i := 1; i <= 9; i++ {
-		field[y][x] = int8(i)
-		if checkField(field, x, y) {
-			continue
-		}
+func incNum(field *[rows][columns]int8, l list) {
+	field[l.y][l.x]++
+
+	if field[l.y][l.x] > 9 {
+		refillZero(field, l)
+		incNum(field, *l.back)
+	} else if checkField(field, l) && l.next != nil {
+		incNum(field, *l.next)
+	} else if !checkField(field, l) {
+		incNum(field, l)
 	}
-
-	if x == 0 && y != 0 {
-		x = 8
-		y--
-
-	} else {
-		x--
-
-	}
-	// fmt.Println(x, y)
-
-	field[y][x] = 0
-	// putNum(field, x, y)
 }
 
-func fillField(field *[rows][columns]int8) {
-	for i := 0; i < rows; i++ {
-		for j := 0; j < columns; j++ {
-			if field[i][j] == 0 {
-				fmt.Println(j, i)
+func refillZero(field *[rows][columns]int8, l list) {
+	field[l.y][l.x] = 0
 
-				putNum(field, int8(j), int8(i))
-			}
-		}
+	if l.next != nil {
+		refillZero(field, *l.next)
 	}
 }
 
@@ -158,9 +172,12 @@ func main() {
 		{0, 0, 0, 0, 8, 0, 0, 7, 9},
 	})
 
-	show(s)
+	var l = make([]list, 0)
+	l = newList(l, s)
 
+	show(s)
 	fmt.Println()
-	fillField(s)
+
+	incNum(s, l[0])
 	show(s)
 }
