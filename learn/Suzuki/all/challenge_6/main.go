@@ -139,7 +139,7 @@ func (s *Sudoku) checkLoops(r, c int) bool {
 		boxr, boxc := (r/root)*root, (c/root)*root
 		for i := boxr; i < boxr+root; i++ {
 			if i != r {
-				for j := boxc; j < boxr+root; j++ {
+				for j := boxc; j < boxc+root; j++ {
 					if j != c {
 						s.can[i][j][d-1] = true
 						if s.checkOne(i, j) {
