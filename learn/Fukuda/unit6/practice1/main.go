@@ -38,7 +38,7 @@ func (t *turtle) show() {
 }
 
 func main() {
-	turtle := &turtle{
+	turtle := turtle{
 		0, 0,
 	}
 
