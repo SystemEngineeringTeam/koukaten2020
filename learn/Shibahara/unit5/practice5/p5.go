@@ -1,6 +1,9 @@
 package main
 
-import "fmt"
+import (
+	"encoding/json"
+	"fmt"
+)
 
 type coordinate struct {
 	d, m, s float64
@@ -20,19 +23,40 @@ func (c coordinate) decimal() float64 {
 	return sign * (c.d + c.m/60 + c.s/3600)
 }
 
+func (c coordinate) MarshalJSON() ([]byte, error) {
+	return json.Marshal(struct {
+		DD  float64 `json:"decimal"`
+		DMS string  `json:"dms"`
+		D   float64 `json:"degrees"`
+		M   float64 `json:"minutes"`
+		S   float64 `json:"seconds"`
+		H   string  `json:"hemisphere"`
+	}{
+		DD:  c.decimal(),
+		DMS: c.String(),
+		D:   c.d,
+		M:   c.m,
+		S:   c.s,
+		H:   string(c.h),
+	})
+}
+
 type location struct {
-	lat, long coordinate
+	Lat  coordinate `json:"latitude"`  //Lat is latitude
+	Long coordinate `json:"longitude"` //Long is longitude
 }
 
 func (l location) String() string {
-	return fmt.Sprintf("%v, %v", l.lat, l.long)
+	return fmt.Sprintf("%v, %v", l.Lat, l.Long)
 }
 
 func main() {
 	elysium := location{
-		lat:  coordinate{4, 30, 0.0, 'N'},
-		long: coordinate{135, 54, 0.0, 'E'},
+		Lat:  coordinate{4, 30, 0.0, 'N'},
+		Long: coordinate{135, 54, 0.0, 'E'},
 	}
 
-	fmt.Println("Elysium Planitia is at", elysium)
+	bytes, _ := json.MarshalIndent(elysium, "", "	")
+	fmt.Println(string(bytes))
+
 }
