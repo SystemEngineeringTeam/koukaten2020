@@ -3,20 +3,20 @@ package main
 import "fmt"
 
 type turtle struct {
-	posx, posy int
+	posX, posY int
 }
 
 func (t *turtle) up() {
-	t.posy++
+	t.posY--
 }
 func (t *turtle) down() {
-	t.posy--
+	t.posY++
 }
 func (t *turtle) left() {
-	t.posx--
+	t.posX--
 }
 func (t *turtle) right() {
-	t.posx++
+	t.posX++
 }
 
 func main() {

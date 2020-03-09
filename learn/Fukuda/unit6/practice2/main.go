@@ -11,6 +11,7 @@ type character struct {
 
 func (c *character) pickup(i *item) {
 	c.leftHand = i
+	fmt.Println(c.name + " picked " + string(*i))
 }
 
 func (c *character) give(to *character) {

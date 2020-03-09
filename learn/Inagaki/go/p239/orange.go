@@ -6,6 +6,7 @@ import (
 	"time"
 )
 
+// 亀はturtle
 type tartle struct {
 	x, y point
 }

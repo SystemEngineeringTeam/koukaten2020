@@ -18,6 +18,7 @@ func main() {
 
 func (c *character) pickup(i *item) {
 	if c == nil {
+		fmt.Printf("%v has nothing \n", c.Name)
 		return
 	}
 	c.leftHand = i
