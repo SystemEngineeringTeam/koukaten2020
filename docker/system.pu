@@ -1,0 +1,69 @@
+' @startuml
+' !define ICONURL https://raw.githubusercontent.com/tupadr3/plantuml-icon-font-sprites/v2.0.0
+' !define AWSPuml https://raw.githubusercontent.com/awslabs/aws-icons-for-plantuml/master/dist
+' !include AWSPuml/AWSCommon.puml
+' !include AWSPuml/General/Users.puml
+' !include AWSPuml/Compute/EC2.puml
+' !includeurl AWSPuml/ApplicationIntegration/SQS.puml
+' !include AWSPuml/GroupIcons/Cloud.puml
+' !include AWSPuml/CustomerEngagement/SimpleEmailServiceSES.puml
+' !includeurl ICONURL/devicons/docker.puml
+
+' Users(sources, "開発メンバ", "some users")
+' Cloud(cloud, "インターネット", "WEB")
+
+' ' rectangle <<Docker>>{
+' '     rectangle  <<nginx_proxy>>{
+' '         ' nginx_proxy:"listen:8080"
+' '     }
+' '     rectangle "listen:" <<go_app>>{
+
+' '     }
+' '     rectangle <<mysql_database>>{
+
+' '     }
+' ' }
+
+' DEV_DOCKER(docker) #White
+
+' @enduml
+
+
+@startuml
+
+skinparam defaultTextAlignment center
+
+!define ICONURL https://raw.githubusercontent.com/tupadr3/plantuml-icon-font-sprites/v2.0.0
+
+!includeurl ICONURL/common.puml
+!includeurl ICONURL/font-awesome-5/server.puml
+!includeurl ICONURL/font-awesome-5/gitlab.puml
+!includeurl ICONURL/font-awesome/gears.puml
+!includeurl ICONURL/font-awesome/fire.puml
+!includeurl ICONURL/font-awesome/clock_o.puml
+!includeurl ICONURL/font-awesome/lock.puml
+!includeurl ICONURL/font-awesome/cloud.puml
+
+!includeurl ICONURL/devicons/nginx.puml
+!includeurl ICONURL/devicons/mysql.puml
+!includeurl ICONURL/devicons/docker.puml
+!includeurl ICONURL/devicons/go.puml
+!includeurl ICONURL/devicons/chrome.puml
+
+
+
+
+DEV_CHROME(user)
+
+DEV_DOCKER(docker,docker,node){
+    DEV_MYSQL(db,listen:33060,database)
+    DEV_NGINX(proxy,listen:8080)
+    DEV_GO(go_app,listen:80)
+}
+
+user --> proxy:"localhost:8080/app"
+proxy --> go_app:"localhost:8080/app"
+go_app --> db:"SQL"
+db --> go_app:"data"
+
+@enduml

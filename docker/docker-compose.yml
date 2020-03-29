@@ -1,0 +1,29 @@
+version: "3"
+services:
+    nginx:
+        build: nginx
+        container_name: nginx_proxy
+        ports:
+            - 8080:80
+        networks:
+            - test
+
+    mysql:
+        build: mysql
+        container_name: mysql_database
+        environment:
+            MYSQL_ROOT_PASSWORD: my-secret-pw
+        networks:
+            - test
+
+    go_app:
+        build: go
+        container_name: go_app
+        networks:
+            - test
+        ports:
+            - "80"
+
+networks:
+    test:
+        external: true
