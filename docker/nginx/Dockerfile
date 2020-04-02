@@ -10,7 +10,7 @@ RUN cp default.conf ./default.conf.bak &&\
     mkdir ../html
 
 ADD ./settings .
-ADD ./html ../html
+
 
 EXPOSE 80
 EXPOSE 443
