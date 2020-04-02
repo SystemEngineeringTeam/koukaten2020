@@ -17,10 +17,6 @@ func main() {
 func handler(w http.ResponseWriter, r *http.Request) {
 	fmt.Fprint(w, "Hello World!!!")
 }
-<<<<<<< Updated upstream
-
-=======
->>>>>>> Stashed changes
 func htmlhundler(w http.ResponseWriter, r *http.Request) {
 	tmpl := template.Must(template.ParseFiles("index.html"))
 	buff := new(bytes.Buffer)
