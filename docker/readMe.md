@@ -6,6 +6,10 @@
 
 ## 手順 2
 
+`docer network create test`する
+
+## 手順 3
+
 `docker-compose up -d`する
 
 ## システム構成図
