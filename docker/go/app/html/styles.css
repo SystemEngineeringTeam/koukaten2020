@@ -1,0 +1,9 @@
+.lw-text {
+    font-size: 32px;
+    color: blue;
+}
+.close {
+    background: #fffacd;
+    width: 200px;
+    border: 1px solid black;
+}
