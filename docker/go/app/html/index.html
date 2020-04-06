@@ -1,11 +1,16 @@
 <!DOCTYPE html>
-<html>
+<html xmlns="http://www.w3.org/1999/xhtml">
 <head>
 	<title>sysken_to_do</title>
 	<link href="styles.css"type="text/css">
 </head>
-<meta http-equiv="content-type" charset="utf-8"
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+
 <body>
+
+    <script type="text/javascript" src="system.js"></script>
+
+
   <span class="lw-text">SyskenToDo  </span> <span id="view_clock"></span>
   <p></p>
 <script type="text/javascript">
@@ -27,15 +32,17 @@ function getNow() {
 }
 </script>
 
+
+
 <!-- Start your code here -->
   
 <div onclick="obj=document.getElementById('open').style; obj.display=(obj.display=='none')?'block':'none';">
   <a style="cursor:pointer;">▼予定を追加</a>
 </div>
   <div id="open" style="display:none;clear:both;" class="close">
-    <input type="date" name="YMD"/>
+    <input type="date" id="YMD"required/>
   
-  <select name="hour">
+  <select id="hour">
     <option value="1">1時</option>
     <option value="2">2時</option>
     <option value="3">3時</option>
@@ -61,20 +68,27 @@ function getNow() {
     <option value="23">23時</option>
     <option value="24">24時</option>
   </select>
-  <select name="minute">
+  <select id="forminute">
     <option value="0">0分</option>
     <option value="15">15分</option>
     <option value="30">30分</option>
     <option value="45">45分</option>
   </select>
-    <input type="text"id="InputT"name="Input"/input>
+    <input type="text"id="formText">内容</input>
+    <select id="formWho">
+      <option value="Shibahara">柴原</option>
+      <option value="Fukuda">福田</option>
+      <option value="Inagaki">稲垣</option>
+      <option value="Suzuki">鈴木</option>
+
+
+    </select>
+
   
-  <p><input type="submit"name="submit" value="追加する"onclick="plansTime.value = Number(hour.value)*10+Number(minute.value);"></p>
+  <p><input type="submit"id="submit" value="追加する"onclick="onButtonClick();"></p>
 </div> 
-  <div>
-    <output name="plansDays" style="background:#FCC;"> </output>
-    <output name="plansTime" style="background:#FCC;"> </output>
-    <output name="plansName" style="background:#FCC;"> </output>
+  <div id="outputDiv">
+    <output id="output" style="background:#FCC;"> </output>
   </div>
 
 <!-- End your code here -->
