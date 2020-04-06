@@ -14,4 +14,4 @@
 
 ## システム構成図
 
-![img](./system/system.png)
+![img](./system/system-1.png)
