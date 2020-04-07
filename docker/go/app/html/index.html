@@ -39,7 +39,7 @@ function getNow() {
   <a style="cursor:pointer;">▼予定を追加</a>
 </div>
   <div id="open" style="display:none;clear:both;" class="close">
-    <input type="date" id="YMD"required/>
+    <input type="date" id="YMD"required name="date"/>
   
   <select id="hour">
     <option value="1">1時</option>
@@ -84,7 +84,7 @@ function getNow() {
     </select>
 
   
-  <p><input type="submit"id="submit" value="追加する"onclick="onButtonClick();"></p>
+  <p><a href="localhost:80/add"><input type="submit"id="submit" value="追加する"onclick="onButtonClick();"></a></p>
 </div> 
   <div id="outputDiv">
     <output id="output" style="background:#FCC;"> </output>
