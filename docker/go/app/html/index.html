@@ -39,9 +39,10 @@ function getNow() {
   <a style="cursor:pointer;">▼予定を追加</a>
 </div>
   <div id="open" style="display:none;clear:both;" class="close">
+    <form action="./" method="post">
     <input type="date" id="YMD"required name="date"/>
   
-  <select id="hour">
+  <select id="hour" name="hours">
     <option value="1">1時</option>
     <option value="2">2時</option>
     <option value="3">3時</option>
@@ -67,14 +68,14 @@ function getNow() {
     <option value="23">23時</option>
     <option value="24">24時</option>
   </select>
-  <select id="forminute">
+  <select id="forminute" name="minutes">
     <option value="0">0分</option>
     <option value="15">15分</option>
     <option value="30">30分</option>
     <option value="45">45分</option>
   </select>
-    <input type="text"id="formText">内容</input>
-    <select id="formWho">
+    <input type="text"id="formText" name="ToDo" placeholder="内容"></input>
+    <select id="formWho" name="Who">
       <option value="Shibahara">柴原</option>
       <option value="Fukuda">福田</option>
       <option value="Inagaki">稲垣</option>
@@ -84,7 +85,8 @@ function getNow() {
     </select>
 
   
-  <p><a href="localhost:80/add"><input type="submit"id="submit" value="追加する"onclick="onButtonClick();"></a></p>
+  <p><a href="./"><input type="submit"id="submit" value="追加する"onclick="onButtonClick();"></a></p>
+  </form>
 </div> 
   <div id="outputDiv">
     <output id="output" style="background:#FCC;"> </output>
