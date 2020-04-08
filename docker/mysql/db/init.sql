@@ -1,8 +1,4 @@
-CREATE DATABASE sample;
 USE sample;
-
-create user 'gopher'@'%' identified by 'setsetset';
-
 
 CREATE TABLE tasks(
     id INT auto_increment not null,
@@ -20,4 +16,3 @@ create table persons(
 
 insert into persons(number,name) values ("e19070","Shibahara"),("k19092","Fukuda"),("x19012","Inagaki"),("x19053","Suzuki")
 
-grant all on sample.* to 'gopher'@'%';
