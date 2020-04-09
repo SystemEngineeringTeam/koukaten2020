@@ -25,7 +25,7 @@ services:
         depends_on:
             - mysql
         environment:
-            WAIT_HOSTS: mysql:3306
+            WAIT_HOSTS: mysql
 
 networks:
     test:
