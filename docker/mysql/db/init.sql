@@ -2,7 +2,8 @@ USE sample;
 
 CREATE TABLE tasks(
     id INT auto_increment not null,
-    date date,
+    datetime datetime,
+    person_id int,
     contents varchar(4096),
     index(id)
 );
@@ -14,5 +15,5 @@ create table persons(
     index(id)
 );
 
-insert into persons(number,name) values ("e19070","Shibahara"),("k19092","Fukuda"),("x19012","Inagaki"),("x19053","Suzuki")
+insert into persons(number,name) values ("e19070","Shibahara"),("k19092","Fukuda"),("x19012","Inagaki"),("x19053","Suzuki");
 
