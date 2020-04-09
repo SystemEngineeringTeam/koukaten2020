@@ -44,10 +44,29 @@ func main() {
 
 func topPage(w http.ResponseWriter, r *http.Request) {
 	fmt.Println("method:", r.Method)
+
+	//フォームをパース
+	r.ParseForm()
+
+	//テンプレートをパース
+	t := template.Must(template.ParseFiles("html/index.html"))
+	// テンプレートに出力する要素の構造体
+	dat := struct {
+		Texts string //型はなんでもOK(template.HTMLにするとHTMLタグも使える)、要素名はhtml側の出力枠に対応させる(1文字目は必ず大文字)
+	}{
+		Texts: "test", //入力フォームの下のテキスト
+	}
+	//要素Textsに構造体をおく(消しておk)
+	hogePer := Person{114514, "hoge", "hogehoge"}
+	dat.Texts = fmt.Sprint(hogePer)
+
+	//テンプレートを描画
+	if err := t.ExecuteTemplate(w, "top", dat); err != nil {
+		fmt.Println(err)
+	}
+
+	//POSTメソッドのフォームをterminal上に表示
 	if r.Method == "POST" {
-		r.ParseForm()
 		fmt.Println(r.Form)
 	}
-	t, _ := template.ParseFiles("html/index.html")
-	t.Execute(w, nil)
 }

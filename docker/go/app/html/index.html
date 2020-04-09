@@ -1,3 +1,4 @@
+{{define "top"}}
 <!DOCTYPE html>
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head>
@@ -39,7 +40,7 @@ function getNow() {
   <a style="cursor:pointer;">▼予定を追加</a>
 </div>
   <div id="open" style="display:none;clear:both;" class="close">
-    <form action="./" method="post">
+    <form action="./" method="post" name="DateForm">
     <input type="date" id="YMD"required name="date"/>
   
   <select id="hour" name="hours">
@@ -91,8 +92,12 @@ function getNow() {
   <div id="outputDiv">
     <output id="output" style="background:#FCC;"> </output>
   </div>
+  <div>
+    <p>{{.Texts}}</p><!-- 構造体の要素Textをここに出力 -->
+  </div>
 <script type="text/javascript" src="system.js"></script>
 
 <!-- End your code here -->
 </body>
 </html>
+{{end}}
