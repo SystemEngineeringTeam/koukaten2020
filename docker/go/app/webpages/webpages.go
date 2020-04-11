@@ -2,11 +2,17 @@ package webpages
 
 import (
 	"fmt"
+	"html/template"
 	"net/http"
-	"text/template"
+
+	// "text/template"
 
 	"../dbctl"
 )
+
+type data struct {
+	Texts []template.HTML
+}
 
 // TopPage はトップページを表示する関数です
 // http.HandleFuncから呼び出して使います
@@ -19,19 +25,19 @@ func TopPage(w http.ResponseWriter, r *http.Request) {
 	//テンプレートをパース
 	t := template.Must(template.ParseFiles("html/index.html"))
 	// テンプレートに出力する要素の構造体
-	dat := struct {
-		Texts string //型はなんでもOK(template.HTMLにするとHTMLタグも使える)、要素名はhtml側の出力枠に対応させる(1文字目は必ず大文字)
-	}{
-		Texts: "test", //入力フォームの下のテキスト
-	}
+
 	//要素Textsに構造体をおく(消しておk)
 	// var tasks []dbctl.Task
 	// dat.Texts = fmt.Sprint(tasks)
 
 	dbctl.AddDB(r)
+	// dat := data{}
+	// dat.Texts = dbctl.CallDB()
+	database := dbctl.CallDB()
+	// fmt.Println(database)
 
 	//テンプレートを描画
-	if err := t.ExecuteTemplate(w, "top", dat); err != nil {
+	if err := t.ExecuteTemplate(w, "top", database); err != nil {
 		fmt.Println(err)
 	}
 

@@ -9,6 +9,13 @@ import (
 	// _ "github.com/go-sql-driver/mysql"
 )
 
+// Person はデータベースのテーブルから取得した値を扱うための構造体
+type Person struct {
+	ID     int
+	Number string
+	Name   string
+}
+
 // Task はテンプレートに出力するための構造体です
 type Task struct {
 	ToDo    string
@@ -18,12 +25,21 @@ type Task struct {
 	Minutes string
 }
 
+// DoPut はデータベースから値を取得するための構造体
+type DoPut struct {
+	Date     string
+	Time     string
+	PersonID string
+	Who      Person
+	Contents string
+}
+
 // AddDB はmain.goから呼び出してデータベースにデータを格納する関数です
 func AddDB(r *http.Request) {
 	r.ParseForm()
 	db, err := sql.Open("mysql", "gopher:setsetset@tcp(mysql:3306)/sample")
 	if err != nil {
-		log.Println(err.Error())
+		// log.Println(err.Error())
 		log.Println(err)
 		os.Exit(1)
 	}
@@ -34,7 +50,7 @@ func AddDB(r *http.Request) {
 
 	// str := fmt.Sprintf("")
 
-	ins, err := db.Prepare("insert into tasks(date,contents) values(?,?)")
+	ins, err := db.Prepare("insert into tasks(datetime,person_id,contents) values(?,?,?)")
 	if err != nil {
 		// log.Println(err, 3)
 		// os.Exit(3)
@@ -43,6 +59,61 @@ func AddDB(r *http.Request) {
 	}
 	defer ins.Close()
 
-	ins.Exec(data.Date, data.ToDo)
+	ins.Exec(data.Date+" "+data.Hours+":"+data.Minutes, data.Who, data.ToDo)
 	fmt.Println(ins)
+}
+
+// CallDB はデータベースから値を取得します
+func CallDB() []DoPut {
+	db, err := sql.Open("mysql", "gopher:setsetset@tcp(mysql:3306)/sample")
+	if err != nil {
+		// log.Println(err.Error())
+		log.Println(err)
+		os.Exit(1)
+	}
+	defer db.Close()
+
+	rows, err := db.Query("select * from tasks;")
+	if err != nil {
+		log.Fatal(err)
+	}
+	defer rows.Close()
+
+	// var database []DoPut
+	database := make([]DoPut, 0)
+
+	for rows.Next() {
+		tpl := DoPut{"", "", "", Person{0, "", ""}, ""}
+		err = rows.Scan(&tpl.Date, &tpl.Time, &tpl.PersonID, &tpl.Contents)
+		if err != nil {
+			log.Println(err)
+		}
+
+		tpl.Who = getPerson(tpl.PersonID, db)
+		fmt.Println("DB", tpl.Date, tpl.Time, getPerson(tpl.PersonID, db).string(), tpl.Contents)
+		database = append(database, tpl)
+	}
+	return database
+}
+
+func getPerson(p string, db *sql.DB) Person {
+	human := Person{}
+	rows, err := db.Query("select * from persons where id = ?;", p)
+	if err != nil {
+		log.Fatal(err)
+	}
+	defer rows.Close()
+
+	for rows.Next() {
+		err = rows.Scan(&human.ID, &human.Number, &human.Name)
+		if err != nil {
+			fmt.Println(err)
+		}
+	}
+
+	return human
+}
+
+func (p Person) string() string {
+	return fmt.Sprintf("%s %s", p.Number, p.Name)
 }

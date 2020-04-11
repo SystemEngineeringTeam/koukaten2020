@@ -9,8 +9,6 @@
 
 <body>
 
-    
-
   <span class="lw-text">SyskenToDo  </span> <span id="view_clock"></span>
   <p></p>
 <script type="text/javascript">
@@ -93,7 +91,9 @@ function getNow() {
     <output id="output" style="background:#FCC;"> </output>
   </div>
   <div>
-    <p>{{.Texts}}</p><!-- 構造体の要素Textをここに出力 -->
+    {{range .}}
+      <p>{{.Date}} {{.Time}},{{.Who.Number}} ,{{.Who.Name}} ,{{.Contents}}</p><!-- 構造体の要素Textをここに出力 -->
+    {{end}}
   </div>
 <script type="text/javascript" src="system.js"></script>
 

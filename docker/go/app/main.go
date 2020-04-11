@@ -9,13 +9,6 @@ import (
 	_ "github.com/go-sql-driver/mysql"
 )
 
-// Person はデータベースのテーブルから取得した値を扱うための構造体
-type Person struct {
-	ID     int
-	Number string
-	Name   string
-}
-
 func main() {
 
 	// fs := http.FileServer(http.Dir("html"))
