@@ -27,8 +27,8 @@ type Task struct {
 
 // DoPut はデータベースから値を取得するための構造体
 type DoPut struct {
-	Date     string
-	Time     string
+	ID       string
+	DateTime string
 	PersonID string
 	Who      Person
 	Contents string
@@ -84,13 +84,14 @@ func CallDB() []DoPut {
 
 	for rows.Next() {
 		tpl := DoPut{"", "", "", Person{0, "", ""}, ""}
-		err = rows.Scan(&tpl.Date, &tpl.Time, &tpl.PersonID, &tpl.Contents)
+		err = rows.Scan(&tpl.ID, &tpl.DateTime, &tpl.PersonID, &tpl.Contents)
 		if err != nil {
 			log.Println(err)
 		}
 
 		tpl.Who = getPerson(tpl.PersonID, db)
-		fmt.Println("DB", tpl.Date, tpl.Time, getPerson(tpl.PersonID, db).string(), tpl.Contents)
+		fmt.Println("DB", tpl.ID, tpl.DateTime, getPerson(tpl.PersonID, db).string(), tpl.Contents)
+		// fmt.Println(tpl.DateTime)
 		database = append(database, tpl)
 	}
 	return database

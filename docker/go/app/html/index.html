@@ -92,7 +92,7 @@ function getNow() {
   </div>
   <div>
     {{range .}}
-      <p>{{.Date}} {{.Time}},{{.Who.Number}} ,{{.Who.Name}} ,{{.Contents}}</p><!-- 構造体の要素Textをここに出力 -->
+      <p value={{.ID}}> {{.DateTime}},{{.Who.Number}} ,{{.Who.Name}} ,{{.Contents}}</p><!-- 構造体の要素Textをここに出力 -->
     {{end}}
   </div>
 <script type="text/javascript" src="system.js"></script>
