@@ -45,4 +45,21 @@ func TopPage(w http.ResponseWriter, r *http.Request) {
 	if r.Method == "POST" {
 		fmt.Println(r.Form)
 	}
+
+}
+
+// DeleteData はデータベースからタスクを削除する関数です
+func DeleteData(w http.ResponseWriter, r *http.Request) {
+	r.ParseForm()
+	dbctl.DeleteDB(r.FormValue("ID"))
+	fmt.Println(r.FormValue("ID"))
+	database := dbctl.CallDB()
+	// fmt.Println(database)
+	t := template.Must(template.ParseFiles("html/index.html"))
+
+	//テンプレートを描画
+	if err := t.ExecuteTemplate(w, "top", database); err != nil {
+		fmt.Println(err)
+	}
+	http.Redirect(w, r, "localhost:8080", http.StatusMovedPermanently)
 }

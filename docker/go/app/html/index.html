@@ -92,12 +92,14 @@
 
   <div>
     {{range .}}
-    <form type="submit" method="delete" name="ID">
-      <p value={{.ID}}> {{.DateTime}},{{.Who.Number}} ,{{.Who.Name}} ,{{.Contents}}
-        <button>delete</button>
-      </p>
+    <form method="post"  action="./delete">
+        <input name="ID" type="hidden" value={{.ID}}>
+        <p> {{.DateTime}},{{.Who.Number}} ,{{.Who.Name}} ,{{.Contents}}
+          <button>delete</button>
+        </p>
     </form><!-- 構造体の要素Textをここに出力 -->
     {{end}}
+
   </div>
   <script type="text/javascript" src="system.js"></script>
 

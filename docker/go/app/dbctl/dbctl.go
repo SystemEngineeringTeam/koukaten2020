@@ -46,7 +46,7 @@ func AddDB(r *http.Request) {
 	defer db.Close()
 
 	data := Task{r.FormValue("ToDo"), r.FormValue("Who"), r.FormValue("date"), r.FormValue("hours"), r.FormValue("minutes")}
-	fmt.Println(data)
+	// fmt.Println(data)
 
 	// str := fmt.Sprintf("")
 
@@ -117,4 +117,23 @@ func getPerson(p string, db *sql.DB) Person {
 
 func (p Person) string() string {
 	return fmt.Sprintf("%s %s", p.Number, p.Name)
+}
+
+// DeleteDB はタスクのIDを指定してタスクを削除する関数です
+func DeleteDB(id string) {
+	db, err := sql.Open("mysql", "gopher:setsetset@tcp(mysql:3306)/sample")
+	if err != nil {
+		// log.Println(err.Error())
+		log.Println(err)
+		os.Exit(1)
+	}
+	defer db.Close()
+
+	rows, err := db.Query("delete from tasks where id = ?;", id)
+	if err != nil {
+		log.Fatal(err)
+	}
+	defer rows.Close()
+
+	fmt.Println(rows)
 }
