@@ -1,0 +1,64 @@
+@startuml dir
+
+!define ICONURL https://raw.githubusercontent.com/tupadr3/plantuml-icon-font-sprites/v2.0.0
+
+!includeurl ICONURL/common.puml
+!includeurl ICONURL/font-awesome-5/server.puml
+!includeurl ICONURL/font-awesome-5/gitlab.puml
+!includeurl ICONURL/font-awesome/gears.puml
+!includeurl ICONURL/font-awesome/fire.puml
+!includeurl ICONURL/font-awesome/clock_o.puml
+!includeurl ICONURL/font-awesome/lock.puml
+!includeurl ICONURL/font-awesome/cloud.puml
+
+!includeurl ICONURL/devicons/nginx.puml
+!includeurl ICONURL/devicons/mysql.puml
+!includeurl ICONURL/devicons/docker.puml
+!includeurl ICONURL/devicons/go.puml
+!includeurl ICONURL/devicons/chrome.puml
+!includeurl ICONURL/devicons/html5.puml
+!includeurl ICONURL/devicons/markdown.puml
+!includeurl ICONURL/govicons/folder.puml
+!includeurl ICONURL/govicons/file.puml
+
+GOV_FOLDER(docker,docker){
+    GOV_FOLDER(go,go){
+        GOV_FOLDER(app,app){
+            GOV_FOLDER(dbctl,dbctl){
+                DEV_GO(dbpkg,dbctl.go)
+            }
+            GOV_FOLDER(html,html){
+                DEV_HTML5(index,index.html)
+            }
+            GOV_FOLDER(webpages,webpages){
+                DEV_GO(webpkg,webpages.go)
+            }
+            DEV_GO(main.go,main.go)
+        }
+        GOV_FOLDER(gontp,ntp){
+            GOV_FILE(gntp,ntp.conf)
+        }
+        DEV_DOCKER(godocker,Dockerfile)
+    }
+    GOV_FOLDER(db,mysql){
+        GOV_FOLDER(myntp,ntp){
+            GOV_FILE(mntp,ntp.conf)
+        }
+        GOV_FOLDER(database,db){
+            DEV_MYSQL(init,init.sql,database)
+        }
+        GOV_FILE(my,my.cnf)
+        GOV_FILE(hosts,hosts)
+        DEV_DOCKER(mydocker,Dockerfile)
+    }
+    GOV_FOLDER(system,system){
+        GOV_FILE(zu,図とか(省略))
+    }
+    DEV_DOCKER(compose,docker-compose.yml)
+    DEV_MARKDOWN(readme,readMe.md)
+
+}
+
+
+
+@enduml
