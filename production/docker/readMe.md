@@ -21,3 +21,10 @@
 ## システム構成図
 
 ![img](./system/system-1.png)
+
+## ファイル構成図
+
+![file](./system/dir.png)
+
+`docker/go/app/`,`mysql/db/`の中は書き換えていいよ
+`docker-compose.yml`,`Dockerfile`は触らないでね
