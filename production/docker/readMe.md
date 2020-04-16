@@ -20,7 +20,7 @@
 
 ## システム構成図
 
-![img](./system/system-1.png)
+![img](./system/system.png)
 
 ## ファイル構成図
 
