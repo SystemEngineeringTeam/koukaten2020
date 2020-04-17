@@ -6,7 +6,7 @@
 
 ## 手順 2
 
-`docer network create production_network`する
+`docker network create production_network`する
 
 ## 手順 3
 
