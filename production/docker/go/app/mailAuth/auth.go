@@ -1,9 +1,14 @@
-package main
+package mailauth
 
 import (
+	"io/ioutil"
 	"log"
+	"net/http"
 	"net/smtp"
 	"os"
+	"time"
+
+	jwt "github.com/dgrijalva/jwt-go"
 )
 
 type mail struct {
@@ -16,13 +21,13 @@ type mail struct {
 }
 
 // MailAuth はメール認証を行う関数です
-func main() {
+func MailAuth(to string) {
 
 	m := mail{
 		from:     "sysekn.auth@gmail.com",
 		username: "sysken.auth@gmail.com",
 		password: "gqricdfchrthlnqd",
-		to:       "tikuwamk2@gmail.com",
+		to:       to,
 		sub:      "メールアドレスの確認",
 		msg:      "",
 	}
@@ -46,4 +51,37 @@ func gmailSend(m mail) error {
 		return err
 	}
 	return nil
+}
+
+// GenerateToken はTokenを発行するための関数です
+func GenerateToken(w http.ResponseWriter, r *http.Request) {
+	signBytes, err := ioutil.ReadFile("mailauth/app_rsa")
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	signKey, err := jwt.ParseRSAPrivateKeyFromPEM(signBytes)
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	// tokenの生成
+	token := jwt.New(jwt.SigningMethodRS256)
+
+	// claimsのセット
+	claims := token.Claims.(jwt.MapClaims)
+	claims["name"] = "test"
+	claims["admin"] = false
+	claims["exp"] = time.Now().Add(time.Hour * 72).Unix()
+
+	tokenString, err := token.SignedString(signKey)
+
+	if err != nil {
+		log.Println(err)
+	}
+
+	w.WriteHeader(http.StatusOK)
+	w.Write([]byte(tokenString))
+
+	log.Println(tokenString)
 }
