@@ -16,6 +16,8 @@ func main() {
 	http.HandleFunc("/", webpages.TopPage)
 	http.HandleFunc("/login", webpages.LoginPage)
 	http.HandleFunc("/delete", webpages.DeleteData)
-	log.Println("Listening...")
+	http.HandleFunc("/signup", webpages.SignUp)
+	http.HandleFunc("/auth", webpages.AuthPage)
+	log.Println("Listening on :8080...")
 	http.ListenAndServe(":80", nil)
 }
