@@ -137,3 +137,8 @@ func DeleteDB(id string) {
 
 	fmt.Println(rows)
 }
+
+// UserRegister はユーザー登録の際のDB処理を行う関数です
+func UserRegister() error {
+	return nil
+}

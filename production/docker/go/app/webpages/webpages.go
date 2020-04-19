@@ -3,6 +3,7 @@ package webpages
 import (
 	"fmt"
 	"html/template"
+	"log"
 	"net/http"
 
 	// "text/template"
@@ -60,9 +61,19 @@ func DeleteData(w http.ResponseWriter, r *http.Request) {
 func Signup(w http.ResponseWriter, r *http.Request) {
 	fmt.Println("Method:", r.Method)
 
+	// 表示するファイルを指定
+	t := template.Must(template.ParseFiles("html/signup.html"))
 	// フォームを解析
 	r.ParseForm()
 
+	// テンプレートを描画
+	if err := t.Execute(w, nil); err != nil {
+		fmt.Println(err)
+	}
+
+	if err := dbctl.UserRegister(); err != nil {
+		log.Println(err)
+	}
 	if r.Method == "POST" {
 		fmt.Println(r.Form)
 	}
