@@ -4,7 +4,6 @@ import (
 	"log"
 	"net/http"
 
-	mailauth "./mailAuth"
 	"./webpages"
 
 	_ "github.com/go-sql-driver/mysql"
@@ -17,11 +16,7 @@ func main() {
 	http.HandleFunc("/", webpages.TopPage)
 	http.HandleFunc("/delete", webpages.DeleteData)
 	http.HandleFunc("/signup", webpages.SignUp)
-	http.HandleFunc("/auth", auth)
+	http.HandleFunc("/auth", webpages.AuthPage)
 	log.Println("Listening on :8080...")
 	http.ListenAndServe(":80", nil)
-}
-
-func auth(w http.ResponseWriter, r *http.Request) {
-	mailauth.GenerateToken(w, r)
 }

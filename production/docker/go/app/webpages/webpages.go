@@ -9,6 +9,7 @@ import (
 	// "text/template"
 
 	"../dbctl"
+	"../mailauth"
 )
 
 // TopPage はトップページを表示する関数です
@@ -58,10 +59,12 @@ func SignUp(w http.ResponseWriter, r *http.Request) {
 	fmt.Println("Method:", r.Method)
 
 	// 表示するファイルを指定
-	t := template.Must(template.ParseFiles("html/SignUp.html"))
+	t := template.Must(template.ParseFiles("html/signup.html"))
 	// フォームを解析
 	r.ParseForm()
 
+	token := mailauth.GenerateToken(r.FormValue("Mail"))
+	mailauth.MailAuth(r.FormValue("Mail"), token)
 	// テンプレートを描画
 	if err := t.Execute(w, nil); err != nil {
 		fmt.Println(err)

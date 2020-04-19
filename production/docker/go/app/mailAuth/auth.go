@@ -1,14 +1,12 @@
 package mailauth
 
 import (
-	"io/ioutil"
+	"crypto/sha256"
+	"encoding/hex"
+	"fmt"
 	"log"
-	"net/http"
 	"net/smtp"
 	"os"
-	"time"
-
-	jwt "github.com/dgrijalva/jwt-go"
 )
 
 type mail struct {
@@ -18,18 +16,21 @@ type mail struct {
 	to       string
 	sub      string
 	msg      string
+	token    string
 }
 
 // MailAuth はメール認証を行う関数です
-func MailAuth(to string) {
+func MailAuth(to, token string) {
+	to = "tikuwamk2@gmail.com"
 
 	m := mail{
-		from:     "sysekn.auth@gmail.com",
+		from:     "sysken.auth@gmail.com",
 		username: "sysken.auth@gmail.com",
 		password: "gqricdfchrthlnqd",
 		to:       to,
 		sub:      "メールアドレスの確認",
-		msg:      "",
+		msg:      "localhost:8080/auth?token=",
+		token:    token,
 	}
 
 	if err := gmailSend(m); err != nil {
@@ -41,7 +42,7 @@ func MailAuth(to string) {
 func (m mail) body() string {
 	return "To: " + m.to + "\r\n" +
 		"Subject: " + m.sub + "\r\b\r\n" +
-		m.msg + "\r\n"
+		m.msg + m.token + "\r\n"
 }
 
 func gmailSend(m mail) error {
@@ -54,34 +55,16 @@ func gmailSend(m mail) error {
 }
 
 // GenerateToken はTokenを発行するための関数です
-func GenerateToken(w http.ResponseWriter, r *http.Request) {
-	signBytes, err := ioutil.ReadFile("mailauth/app_rsa")
-	if err != nil {
-		log.Fatal(err)
-	}
+func GenerateToken(addr string) string {
 
-	signKey, err := jwt.ParseRSAPrivateKeyFromPEM(signBytes)
-	if err != nil {
-		log.Fatal(err)
-	}
+	mail := "testaddr@gam.com"
+	b := []byte(mail)
 
 	// tokenの生成
-	token := jwt.New(jwt.SigningMethodRS256)
+	t := sha256.Sum256(b)
 
-	// claimsのセット
-	claims := token.Claims.(jwt.MapClaims)
-	claims["name"] = "test"
-	claims["admin"] = false
-	claims["exp"] = time.Now().Add(time.Hour * 72).Unix()
+	token := hex.EncodeToString(t[:])
 
-	tokenString, err := token.SignedString(signKey)
-
-	if err != nil {
-		log.Println(err)
-	}
-
-	w.WriteHeader(http.StatusOK)
-	w.Write([]byte(tokenString))
-
-	log.Println(tokenString)
+	fmt.Println("Generated : ", token)
+	return token
 }
