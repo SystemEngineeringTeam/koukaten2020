@@ -34,6 +34,14 @@ type DoPut struct {
 	Contents string
 }
 
+// Account はアカウントを管理する構造体です
+type Account struct {
+	Name     string
+	Mail     string
+	Password string
+	Token    string
+}
+
 // AddDB はmain.goから呼び出してデータベースにデータを格納する関数です
 func AddDB(r *http.Request) {
 	r.ParseForm()

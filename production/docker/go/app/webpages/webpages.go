@@ -11,10 +11,6 @@ import (
 	"../dbctl"
 )
 
-type data struct {
-	Texts []template.HTML
-}
-
 // TopPage はトップページを表示する関数です
 // http.HandleFuncから呼び出して使います
 func TopPage(w http.ResponseWriter, r *http.Request) {
@@ -57,12 +53,12 @@ func DeleteData(w http.ResponseWriter, r *http.Request) {
 	http.Redirect(w, r, "localhost:8080", http.StatusMovedPermanently)
 }
 
-// Signup は登録ページを表示するための関数です
-func Signup(w http.ResponseWriter, r *http.Request) {
+// SignUp は登録ページを表示するための関数です
+func SignUp(w http.ResponseWriter, r *http.Request) {
 	fmt.Println("Method:", r.Method)
 
 	// 表示するファイルを指定
-	t := template.Must(template.ParseFiles("html/signup.html"))
+	t := template.Must(template.ParseFiles("html/SignUp.html"))
 	// フォームを解析
 	r.ParseForm()
 
@@ -71,10 +67,24 @@ func Signup(w http.ResponseWriter, r *http.Request) {
 		fmt.Println(err)
 	}
 
+	// データベースにユーザーを追加する関数を呼び出す
 	if err := dbctl.UserRegister(); err != nil {
 		log.Println(err)
 	}
 	if r.Method == "POST" {
 		fmt.Println(r.Form)
+	}
+}
+
+// AuthPage は認証ページを表示するための関数です
+func AuthPage(w http.ResponseWriter, r *http.Request) {
+	fmt.Println("Method: ", r.Method)
+
+	// 表示するファイルを指定
+	t := template.Must(template.ParseFiles("html/auth.html"))
+
+	// テンプレートを描画
+	if err := t.Execute(w, nil); err != nil {
+		fmt.Println(err)
 	}
 }
