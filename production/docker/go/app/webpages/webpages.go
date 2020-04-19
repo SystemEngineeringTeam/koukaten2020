@@ -63,3 +63,30 @@ func DeleteData(w http.ResponseWriter, r *http.Request) {
 	}
 	http.Redirect(w, r, "localhost:8080", http.StatusMovedPermanently)
 }
+
+//LoginPage はログインする時のページを表示する関数
+func LoginPage(w http.ResponseWriter, r *http.Request) {
+	fmt.Println("method:", r.Method)
+
+	//フォームをパース
+	r.ParseForm()
+
+	//テンプレートをパース
+	t := template.Must(template.ParseFiles("html/index.html"))
+
+	dat := struct {
+		Hoge int
+	}{
+		Hoge: 0,
+	}
+	//テンプレートを描画
+	if err := t.ExecuteTemplate(w, "login", dat); err != nil {
+		fmt.Println(err)
+	}
+
+	//POSTメソッドのフォームをterminal上に表示
+	if r.Method == "POST" {
+		fmt.Println(r.Form)
+	}
+
+}
