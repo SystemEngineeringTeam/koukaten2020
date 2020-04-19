@@ -9,7 +9,7 @@ import (
 	// "text/template"
 
 	"../dbctl"
-	"../mailauth"
+	mailauth "../mailAuth"
 )
 
 // TopPage はトップページを表示する関数です
