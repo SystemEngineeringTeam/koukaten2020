@@ -55,7 +55,7 @@ func gmailSend(m mail) error {
 
 // GenerateToken はTokenを発行するための関数です
 func GenerateToken(w http.ResponseWriter, r *http.Request) {
-	signBytes, err := ioutil.ReadFile("./app_rsa")
+	signBytes, err := ioutil.ReadFile("mailauth/app_rsa")
 	if err != nil {
 		log.Fatal(err)
 	}
@@ -82,4 +82,6 @@ func GenerateToken(w http.ResponseWriter, r *http.Request) {
 
 	w.WriteHeader(http.StatusOK)
 	w.Write([]byte(tokenString))
+
+	log.Println(tokenString)
 }
