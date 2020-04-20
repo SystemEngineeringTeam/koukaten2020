@@ -14,6 +14,7 @@ func main() {
 	// fs := http.FileServer(http.Dir("html"))
 	// http.Handle("/", fs)
 	http.HandleFunc("/", webpages.TopPage)
+	http.HandleFunc("/login", webpages.LoginPage)
 	http.HandleFunc("/delete", webpages.DeleteData)
 	http.HandleFunc("/signup", webpages.SignUp)
 	http.HandleFunc("/auth", webpages.AuthPage)
