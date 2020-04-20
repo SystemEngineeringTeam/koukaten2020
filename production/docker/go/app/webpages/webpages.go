@@ -62,12 +62,20 @@ func LoginPage(w http.ResponseWriter, r *http.Request) {
 	r.ParseForm()
 
 	//テンプレートをパース
-	t := template.Must(template.ParseFiles("html/index.html"))
+	t := template.Must(template.ParseFiles("html/login.html"))
 
+	type link struct {
+		Name string
+		Link string
+	}
+	menuLinks := []link{{"Home", "./"}, {"User", "./user"}, {"Books", "./"}, {"login", "./login"}}
+	userLinks := []link{{"ユーザ情報", "./user"}, {"アカウント設定", "./user/setting"}, {"ログアウト", "./logout"}}
 	dat := struct {
-		Hoge int
+		HeaderMenu []link
+		UserMenu   []link
 	}{
-		Hoge: 0,
+		HeaderMenu: menuLinks,
+		UserMenu:   userLinks,
 	}
 	//テンプレートを描画
 	if err := t.ExecuteTemplate(w, "login", dat); err != nil {
