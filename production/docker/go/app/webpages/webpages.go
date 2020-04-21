@@ -78,10 +78,11 @@ func LoginPage(w http.ResponseWriter, r *http.Request) {
 	t := template.Must(template.ParseFiles("html/login.html", "html/header.html"))
 
 	//テンプレートに入れるデータ
+	/*   必ずExcuteTemplate内のdata (interface{}型)にheader型、名前Headerの構造体を入れてください   */
 	dat := struct {
 		Header header
 	}{
-		Header: newHeader("tesya"),
+		Header: newHeader("ログイン"),
 	}
 
 	//テンプレートを描画
