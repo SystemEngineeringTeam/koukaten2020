@@ -12,6 +12,19 @@ import (
 	mailauth "../mailAuth"
 )
 
+// link はサイト内リンクを格納する構造体
+type link struct {
+	Name string
+	Link string
+}
+
+// header はテンプレートにヘッダーの構造体を渡すための構造体
+type header struct {
+	Title      string
+	HeaderMenu []link
+	UserMenu   []link
+}
+
 // TopPage はトップページを表示する関数です
 // http.HandleFuncから呼び出して使います
 func TopPage(w http.ResponseWriter, r *http.Request) {
@@ -21,7 +34,7 @@ func TopPage(w http.ResponseWriter, r *http.Request) {
 	r.ParseForm()
 
 	//テンプレートをパース
-	t := template.Must(template.ParseFiles("html/index.html"))
+	t := template.Must(template.ParseFiles("html/header.html"))
 
 	dbctl.AddDB(r)
 	database := dbctl.CallDB()
@@ -62,21 +75,15 @@ func LoginPage(w http.ResponseWriter, r *http.Request) {
 	r.ParseForm()
 
 	//テンプレートをパース
-	t := template.Must(template.ParseFiles("html/login.html"))
+	t := template.Must(template.ParseFiles("html/login.html", "html/header.html"))
 
-	type link struct {
-		Name string
-		Link string
-	}
-	menuLinks := []link{{"Home", "./"}, {"User", "./user"}, {"Books", "./"}, {"login", "./login"}}
-	userLinks := []link{{"ユーザ情報", "./user"}, {"アカウント設定", "./user/setting"}, {"ログアウト", "./logout"}}
+	//テンプレートに入れるデータ
 	dat := struct {
-		HeaderMenu []link
-		UserMenu   []link
+		Header header
 	}{
-		HeaderMenu: menuLinks,
-		UserMenu:   userLinks,
+		Header: newHeader("tesya"),
 	}
+
 	//テンプレートを描画
 	if err := t.ExecuteTemplate(w, "login", dat); err != nil {
 		fmt.Println(err)
@@ -124,4 +131,11 @@ func AuthPage(w http.ResponseWriter, r *http.Request) {
 	if err := t.Execute(w, nil); err != nil {
 		fmt.Println(err)
 	}
+}
+
+//newHeader はタイトルを指定したheader型を返す関数
+func newHeader(title string) header {
+	menuLinks := []link{{"Home", "./"}, {"User", "./user"}, {"Books", "./"}, {"login", "./login"}}
+	userLinks := []link{{"ユーザ情報", "./user"}, {"アカウント設定", "./user/setting"}, {"ログアウト", "./logout"}}
+	return header{Title: title, HeaderMenu: menuLinks, UserMenu: userLinks}
 }
