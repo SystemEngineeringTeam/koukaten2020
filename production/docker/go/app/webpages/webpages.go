@@ -9,7 +9,7 @@ import (
 	// "text/template"
 
 	"../dbctl"
-	"../mailauth"
+	mailauth "../mailAuth"
 )
 
 // TopPage はトップページを表示する関数です
@@ -46,7 +46,7 @@ func LoginPage(w http.ResponseWriter, r *http.Request) {
 	r.ParseForm()
 
 	//テンプレートをパース
-	t := template.Must(template.ParseFiles("html/login.html", "html/header.html"))
+	t := template.Must(template.ParseFiles("html/login.html"))
 
 	//テンプレートを描画
 	if err := t.Execute(w, "nil"); err != nil {
