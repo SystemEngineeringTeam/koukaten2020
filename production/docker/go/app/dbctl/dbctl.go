@@ -4,6 +4,7 @@ import (
 	"database/sql"
 	"log"
 	"os"
+	"time"
 	// _ "github.com/go-sql-driver/mysql"
 )
 
@@ -48,10 +49,8 @@ type PrePerson struct {
 	PrePersonDatetime string
 }
 
-// PreRegister は仮登録データベースにメールアドレスとそのトークンを登録する関数
+// PreRegister は仮登録データベースにメールアドレスとそのトークンと時刻を登録する関数
 func PreRegister(mail, token string) {
-	mail = "hello@gmail.com"
-	token = "1d945e4947da1a05bf393b67b2e0a1fe2be36965cd4f44da5069a1df505e0092"
 	db, err := sql.Open("mysql", "gopher:setsetset@tcp(mysql:3306)/sample")
 	if err != nil {
 		// log.Println(err.Error())
@@ -69,5 +68,5 @@ func PreRegister(mail, token string) {
 	}
 	defer ins.Close()
 
-	ins.Exec(mail, token, "20200422194000")
+	ins.Exec(mail, token, time.Now().Format("2006-01-02 15:04:05"))
 }
