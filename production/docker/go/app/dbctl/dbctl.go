@@ -9,29 +9,45 @@ import (
 	// _ "github.com/go-sql-driver/mysql"
 )
 
+// Place はデータベースのテーブルから取得した値を扱うための構造体
+type Place struct {
+	Place_id   int
+	Place_name string
+	Name       string
+}
+
+// Books はデータベースのテーブルから取得した値を扱うための構造体
+type Book struct {
+	Rfid          string
+	Book_name     string
+	Isbn          string
+	Place_id      string
+	Book_datetime string
+}
+
 // Person はデータベースのテーブルから取得した値を扱うための構造体
 type Person struct {
-	ID     int
-	Number string
-	Name   string
+	Person_id       int
+	Card_data       string
+	Person_name     string
+	Person_email    string
+	Password        string
+	Person_datetime string
 }
 
-// Task はテンプレートに出力するための構造体です
-type Task struct {
-	ToDo    string
-	Who     string
-	Date    string
-	Hours   string
-	Minutes string
+// Borrowed_log はデータベースのテーブルから取得した値を扱うための構造体
+type Borrowed_log struct {
+	Borrowed_logs_id int
+	Rfid_tag         string
+	Person_id        int
 }
 
-// DoPut はデータベースから値を取得するための構造体
-type DoPut struct {
-	ID       string
-	DateTime string
-	PersonID string
-	Who      Person
-	Contents string
+// Pre_person はデータベースのテーブルから取得した値を扱うための構造体
+type Pre_person struct {
+	Pre_person_id       int
+	Pre_person_email    string
+	Pre_person_token    string
+	Pre_person_datetime string
 }
 
 // AddDB はmain.goから呼び出してデータベースにデータを格納する関数です
