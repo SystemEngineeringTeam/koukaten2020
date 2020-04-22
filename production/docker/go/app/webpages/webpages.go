@@ -12,19 +12,6 @@ import (
 	mailauth "../mailAuth"
 )
 
-// link はサイト内リンクを格納する構造体
-type link struct {
-	Name string
-	Link string
-}
-
-// header はテンプレートにヘッダーの構造体を渡すための構造体
-type header struct {
-	Title      string
-	HeaderMenu []link
-	UserMenu   []link
-}
-
 // TopPage はトップページを表示する関数です
 // http.HandleFuncから呼び出して使います
 func TopPage(w http.ResponseWriter, r *http.Request) {
@@ -77,16 +64,8 @@ func LoginPage(w http.ResponseWriter, r *http.Request) {
 	//テンプレートをパース
 	t := template.Must(template.ParseFiles("html/login.html", "html/header.html"))
 
-	//テンプレートに入れるデータ
-	/*   必ずExcuteTemplate内のdata (interface{}型)にheader型、名前Headerの構造体を入れてください   */
-	dat := struct {
-		Header header
-	}{
-		Header: newHeader("ログイン"),
-	}
-
 	//テンプレートを描画
-	if err := t.ExecuteTemplate(w, "login", dat); err != nil {
+	if err := t.Execute(w, "nil"); err != nil {
 		fmt.Println(err)
 	}
 
@@ -132,11 +111,4 @@ func AuthPage(w http.ResponseWriter, r *http.Request) {
 	if err := t.Execute(w, nil); err != nil {
 		fmt.Println(err)
 	}
-}
-
-//newHeader はタイトルを指定したheader型を返す関数
-func newHeader(title string) header {
-	menuLinks := []link{{"Home", "./"}, {"User", "./user"}, {"Books", "./"}, {"login", "./login"}}
-	userLinks := []link{{"ユーザ情報", "./user"}, {"アカウント設定", "./user/setting"}, {"ログアウト", "./logout"}}
-	return header{Title: title, HeaderMenu: menuLinks, UserMenu: userLinks}
 }
