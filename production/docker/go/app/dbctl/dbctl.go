@@ -9,14 +9,14 @@ import (
 	// _ "github.com/go-sql-driver/mysql"
 )
 
-// Place はデータベースのテーブルから取得した値を扱うための構造体
+// Place はデータベースのテーブルから値を取得するための構造体
 type Place struct {
 	Place_id   int
 	Place_name string
 	Name       string
 }
 
-// Books はデータベースのテーブルから取得した値を扱うための構造体
+// Books はデータベースのテーブルから値を取得するための構造体
 type Book struct {
 	Rfid          string
 	Book_name     string
@@ -25,7 +25,7 @@ type Book struct {
 	Book_datetime string
 }
 
-// Person はデータベースのテーブルから取得した値を扱うための構造体
+// Person はデータベースのテーブルから値を取得するための構造体
 type Person struct {
 	Person_id       int
 	Card_data       string
@@ -35,14 +35,14 @@ type Person struct {
 	Person_datetime string
 }
 
-// Borrowed_log はデータベースのテーブルから取得した値を扱うための構造体
+// Borrowed_log はデータベースのテーブルから値を取得するための構造体
 type Borrowed_log struct {
 	Borrowed_logs_id int
 	Rfid_tag         string
 	Person_id        int
 }
 
-// Pre_person はデータベースのテーブルから取得した値を扱うための構造体
+// Pre_person はデータベースのテーブルから値を取得するための構造体
 type Pre_person struct {
 	Pre_person_id       int
 	Pre_person_email    string

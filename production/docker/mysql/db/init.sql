@@ -32,7 +32,7 @@ create table borrowed_logs(
 );
 
 create table pre_persons (
-    pre_preson_id int auto_increment not null primary key,
+    pre_person_id int auto_increment not null primary key,
     pre_person_email varchar(128) not null,
     pre_person_token varchar(128) not null,
     pre_person_datetime datetime not null
