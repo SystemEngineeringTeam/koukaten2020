@@ -7,7 +7,7 @@ import (
 	"net/http"
 
 	"../dbctl"
-	"../mailauth"
+	mailauth "../mailAuth"
 )
 
 // TopPage はトップページを表示する関数です
@@ -19,7 +19,7 @@ func TopPage(w http.ResponseWriter, r *http.Request) {
 	r.ParseForm()
 
 	//テンプレートをパース
-	t := template.Must(template.ParseFiles("html/index.html"))
+	t := template.Must(template.ParseFiles("html/header.html"))
 
 	//テンプレートを描画
 	if err := t.ExecuteTemplate(w, "top", nil); err != nil {
@@ -43,21 +43,8 @@ func LoginPage(w http.ResponseWriter, r *http.Request) {
 	//テンプレートをパース
 	t := template.Must(template.ParseFiles("html/login.html"))
 
-	type link struct {
-		Name string
-		Link string
-	}
-	menuLinks := []link{{"Home", "./"}, {"User", "./user"}, {"Books", "./"}, {"login", "./login"}}
-	userLinks := []link{{"ユーザ情報", "./user"}, {"アカウント設定", "./user/setting"}, {"ログアウト", "./logout"}}
-	dat := struct {
-		HeaderMenu []link
-		UserMenu   []link
-	}{
-		HeaderMenu: menuLinks,
-		UserMenu:   userLinks,
-	}
 	//テンプレートを描画
-	if err := t.ExecuteTemplate(w, "login", dat); err != nil {
+	if err := t.Execute(w, "nil"); err != nil {
 		fmt.Println(err)
 	}
 
