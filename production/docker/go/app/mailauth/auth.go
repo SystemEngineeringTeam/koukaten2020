@@ -6,7 +6,8 @@ import (
 	"fmt"
 	"log"
 	"net/smtp"
-	"os"
+
+	"../dbctl"
 )
 
 type mail struct {
@@ -20,8 +21,7 @@ type mail struct {
 }
 
 // MailAuth はメール認証を行う関数です
-func MailAuth(to, token string) {
-	to = "tikuwamk2@gmail.com"
+func MailAuth(to string) {
 
 	m := mail{
 		from:     "sysken.auth@gmail.com",
@@ -30,13 +30,15 @@ func MailAuth(to, token string) {
 		to:       to,
 		sub:      "メールアドレスの確認",
 		msg:      "localhost:8080/auth?token=",
-		token:    token,
+		token:    generateToken(to),
 	}
 
 	if err := gmailSend(m); err != nil {
 		log.Println(err)
-		os.Exit(1)
+
 	}
+
+	dbctl.PreRegister(to, m.token)
 }
 
 func (m mail) body() string {
@@ -54,8 +56,7 @@ func gmailSend(m mail) error {
 	return nil
 }
 
-// GenerateToken はTokenを発行するための関数です
-func GenerateToken(addr string) string {
+func generateToken(addr string) string {
 
 	mail := "testaddr@gam.com"
 	b := []byte(mail)

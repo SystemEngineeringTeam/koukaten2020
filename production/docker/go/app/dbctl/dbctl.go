@@ -49,8 +49,6 @@ type PrePerson struct {
 	PrePersonDatetime string
 }
 
-<<<<<<< HEAD
-<<<<<<< HEAD
 // Account はアカウントを管理する構造体です
 type Account struct {
 	Name     string
@@ -59,22 +57,10 @@ type Account struct {
 	Token    string
 }
 
-// AddDB はmain.goから呼び出してデータベースにデータを格納する関数です
-func AddDB(r *http.Request) {
-	r.ParseForm()
-=======
-// PreRegister は仮登録データベースにメールアドレスとそのトークンを登録する関数
-func PreRegister(mail, token string) {
-	mail = "hello@gmail.com"
-	token = "1d945e4947da1a05bf393b67b2e0a1fe2be36965cd4f44da5069a1df505e0092"
->>>>>>> dev_db
-=======
 // PreRegister は仮登録データベースにメールアドレスとそのトークンと時刻を登録する関数
 func PreRegister(mail, token string) {
->>>>>>> dev_db
 	db, err := sql.Open("mysql", "gopher:setsetset@tcp(mysql:3306)/sample")
 	if err != nil {
-		// log.Println(err.Error())
 		log.Println(err)
 		os.Exit(1)
 	}
@@ -82,8 +68,6 @@ func PreRegister(mail, token string) {
 
 	ins, err := db.Prepare("insert into pre_persons(pre_person_email,pre_person_token,pre_person_datetime) values(?,?,?)")
 	if err != nil {
-		// log.Println(err, 3)
-		// os.Exit(3)
 		log.Fatal(err)
 		return
 	}
