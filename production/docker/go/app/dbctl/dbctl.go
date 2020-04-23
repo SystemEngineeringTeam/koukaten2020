@@ -50,19 +50,7 @@ import (
 // 	PrePersonDatetime string
 // }
 
-<<<<<<< HEAD
-// Account はアカウントを管理する構造体です
-type Account struct {
-	Name     string
-	Mail     string
-	Password string
-	Token    string
-}
-
-// PreRegister は仮登録データベースにメールアドレスとそのトークンと時刻を登録する関数
-=======
 // PreRegister は仮登録データベースにメールアドレスとそのトークンと時刻を挿入する関数
->>>>>>> dev_db
 func PreRegister(mail, token string) {
 	//dbはめったに閉じる必要がないらしいがここでopenするのが適切かわからない
 	db, err := sql.Open("mysql", "gopher:setsetset@tcp(mysql:3306)/sample")
@@ -82,11 +70,6 @@ func PreRegister(mail, token string) {
 	ins.Exec(mail, token, time.Now().Format("2006-01-02 15:04:05"))
 }
 
-<<<<<<< HEAD
-// UserRegister はユーザー登録の際のDB処理を行う関数です
-func UserRegister() error {
-	return nil
-=======
 // CallAddress はメールアドレスを呼び出す関数
 func CallAddress(token string) (address string) {
 	db, err := sql.Open("mysql", "gopher:setsetset@tcp(mysql:3306)/sample")
@@ -125,5 +108,4 @@ func PreUnRegister(email string) {
 		log.Fatal(err)
 	}
 	defer row.Close()
->>>>>>> dev_db
 }
