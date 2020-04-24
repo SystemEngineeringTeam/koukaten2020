@@ -3,7 +3,7 @@
   <head>
     <title>Parcel Sandbox</title>
     <meta charset="UTF-8" />
-    <link rel="stylesheet" type="text/css" href="../resources/signUp.css" />
+    <link rel="stylesheet" type="text/css" href="/resources/signUp.css" />
     <script type="text/javascript" src="signUp.js"></script>
   </head>
   <body>
@@ -24,21 +24,20 @@
                 <a>ログイン</a>
                 </p>
                 <p class="menu">
-                <a>ユーザー登録</a>
+                <a href="signup.html">ユーザー登録</a>
                 </p>
           </div>
         </div>
         <div class="logo-area">SyskenBookshelf</div>
       </div>
     </header>
-    // menu
 
-    <p align="center">ユーザー仮登録</p>
+    <p align="center">ユーザー登録</p>
 
     <form>
       <table border="0" align="center">
         <tr>
-          <td align="right"><b> メアド：</b></td>
+          <td align="right"><b> ユーザー名：</b></td>
           <td>
             <input
               type="text"
@@ -50,9 +49,35 @@
           </td>
         </tr>
         <tr>
+          <td align="right"><b> パスワード：</b></td>
+          <td>
+            <input
+              type="password"
+              name="pass"
+              size="30"
+              maxlength="20"
+              minlength="4"
+              required
+              id="pass"
+            />
+          </td>
+        </tr>
+        <!-- <tr>
+          <td align="right"><b> 再パスワード：</b></td>
+          <td>
+            <input
+              type="password"
+              name="pass"
+              size="30"
+              maxlength="20"
+              id="repass"
+            />
+          </td>
+        </tr> -->
+        <tr>
           <td></td>
           <td>
-            <input type="submit" value="仮登録" type="email" style="font-size: 10px;" />
+            <input type="submit" value="登録" style="font-size: 50px;" />
           </td>
         </tr>
       </table>
