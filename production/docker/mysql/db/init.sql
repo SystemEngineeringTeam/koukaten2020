@@ -1,19 +1,39 @@
-USE sample;
+use sample;
 
-CREATE TABLE  tasks(
-    id INT auto_increment not null,
-    datetime datetime,
-    person_id int,
-    contents varchar(4096),
-    primary key(id)
+create table places (
+    place_id int auto_increment not null primary key,
+    place_name varchar(1024) not null
 );
 
-create table persons(
-    id int auto_increment not null,
-    number varchar(128),
-    name varchar(128),
-    primary key(id)
+create table books(
+    rfid_tag varchar(20) not null primary key,
+    book_name varchar(1024),
+    isbn varchar(20),
+    place_id int not null,
+    book_datetime datetime not null,
+    constraint fk_place_id foreign key (place_id) references places(place_id)
 );
 
-insert into persons(number,name) values ("e19070","Shibahara"),("k19092","Fukuda"),("x19012","Inagaki"),("x19053","Suzuki");
+create table persons (
+    person_id int auto_increment not null primary key,
+    card_data varchar(10),
+    person_name varchar(50) not null,
+    person_email varchar(128) not null,
+    password varchar(128) not null,
+    person_datetime datetime not null
+);
 
+create table borrowed_logs(
+    borrowed_log_id int auto_increment not null primary key,
+    rfid_tag varchar(20) not null,
+    person_id int not null,
+    constraint fk_rfid_tag foreign key (rfid_tag) references books(rfid_tag),
+    constraint fk_person_id foreign key (person_id) references persons(person_id)
+);
+
+create table pre_persons (
+    pre_person_id int auto_increment not null primary key,
+    pre_person_email varchar(128) not null,
+    pre_person_token varchar(128) not null,
+    pre_person_datetime datetime not null
+);

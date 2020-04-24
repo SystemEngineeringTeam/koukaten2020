@@ -6,8 +6,6 @@ import (
 	"log"
 	"net/http"
 
-	// "text/template"
-
 	"../dbctl"
 	mailauth "../mailAuth"
 )
@@ -23,11 +21,8 @@ func TopPage(w http.ResponseWriter, r *http.Request) {
 	//テンプレートをパース
 	t := template.Must(template.ParseFiles("html/header.html"))
 
-	dbctl.AddDB(r)
-	database := dbctl.CallDB()
-
 	//テンプレートを描画
-	if err := t.ExecuteTemplate(w, "top", database); err != nil {
+	if err := t.ExecuteTemplate(w, "top", nil); err != nil {
 		fmt.Println(err)
 	}
 
@@ -68,8 +63,6 @@ func SignUp(w http.ResponseWriter, r *http.Request) {
 	// フォームを解析
 	r.ParseForm()
 
-	token := mailauth.GenerateToken(r.FormValue("Mail"))
-	mailauth.MailAuth(r.FormValue("Mail"), token)
 	// テンプレートを描画
 	if err := t.Execute(w, nil); err != nil {
 		fmt.Println(err)
@@ -84,6 +77,32 @@ func SignUp(w http.ResponseWriter, r *http.Request) {
 	}
 }
 
+// PreSignUp は仮登録ページを表示するための関数です
+func PreSignUp(w http.ResponseWriter, r *http.Request) {
+	// テンプレートを指定
+	t := template.Must(template.ParseFiles("html/presignup.html"))
+
+	// テンプレートを描画
+	if err := t.Execute(w, nil); err != nil {
+		log.Println(err)
+	}
+
+	// フォームを解析
+	r.ParseForm()
+
+	// 入力されたメールアドレスを取得
+	mail := r.FormValue("Mail")
+	fmt.Println("Mail: ", mail)
+
+	if mail != "" {
+
+		// 認証メールを送信する関数にメールアドレスを渡す
+		mailauth.MailAuth(mail)
+		http.Redirect(w, r, "/presignup", http.StatusMovedPermanently)
+	}
+
+}
+
 // AuthPage は認証ページを表示するための関数です
 func AuthPage(w http.ResponseWriter, r *http.Request) {
 	fmt.Println("Method: ", r.Method)
@@ -91,8 +110,14 @@ func AuthPage(w http.ResponseWriter, r *http.Request) {
 	// 表示するファイルを指定
 	t := template.Must(template.ParseFiles("html/auth.html"))
 
+	// fmt.Println(r.URL)
+	u := r.URL.Query()
+	fmt.Println(u["token"])
+
 	// テンプレートを描画
 	if err := t.Execute(w, nil); err != nil {
 		fmt.Println(err)
 	}
+
+	http.Redirect(w, r, "/signup", http.StatusMovedPermanently)
 }
