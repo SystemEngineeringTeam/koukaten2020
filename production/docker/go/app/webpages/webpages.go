@@ -6,7 +6,7 @@ import (
 	"log"
 	"net/http"
 
-	mailauth "../mailAuth"
+	mailauth "../mailauth"
 )
 
 // TopPage はトップページを表示する関数です
