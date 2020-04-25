@@ -1,0 +1,14 @@
+/*余剰を。。。にするやつ*/
+.ellipsis {
+  width: 80%;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.rental {
+  background-color: lightgreen;
+}
+.existence {
+  background: white;
+}
+s
