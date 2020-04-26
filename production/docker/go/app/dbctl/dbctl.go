@@ -8,7 +8,7 @@ import (
 	// _ "github.com/go-sql-driver/mysql"
 )
 
-// tableたちは使う時までコメントアウトしておく
+// tableたちは使う時までコメントアウトしておく これ使わないのでは？？？？
 // // Place はデータベースのテーブルから値を取得するための構造体
 // type Place struct {
 // 	PlaceID   int
@@ -105,9 +105,29 @@ func PreUnRegister(email string) {
 	defer db.Close()
 
 	//email が一致するレコードをdeleteする
-	row, err := db.Query("delete from pre_persons where pre_person_email = '?';", email)
+	row, err := db.Query("delete from pre_persons where pre_person_email = ?;", email)
 	if err != nil {
 		log.Fatal(err)
 	}
 	defer row.Close()
+}
+
+//UserRegister はユーザーを本登録する関数
+func UserRegister(cardData,personName,emailID,personDatetime string) error {
+	db, err := sql.Open("mysql", "gopher:setsetset@tcp(mysql:3306)/sample")
+	if err != nil {
+		// log.Println(err.Error())
+		log.Println(err)
+		return err
+	}
+	defer db.Close()
+
+	// が一致するレコードをdeleteする
+	row, err := db.Query("insert into persons(card_data,person_name,email_id,person_datetime) values(?,?,?,?);", cardData,personName,emailID,personDatetime)
+	if err != nil {
+		log.Fatal(err)
+		return err
+	}
+	defer row.Close()
+	return nil
 }

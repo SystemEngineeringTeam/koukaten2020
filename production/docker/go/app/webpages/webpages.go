@@ -5,7 +5,7 @@ import (
 	"html/template"
 	"log"
 	"net/http"
-
+	"../dbctl"
 	mailauth "../mailauth"
 )
 
@@ -68,9 +68,10 @@ func SignUp(w http.ResponseWriter, r *http.Request) {
 	}
 
 	// データベースにユーザーを追加する関数を呼び出す
-	// if err := dbctl.UserRegister(); err != nil {
-	// 	log.Println(err)
-	// }
+	// UserRegister関数に適当な引数を入力してください
+	if err := dbctl.UserRegister("E","e","1","2"); err != nil {
+		log.Println(err)
+	}
 	if r.Method == "POST" {
 		fmt.Println(r.Form)
 	}
