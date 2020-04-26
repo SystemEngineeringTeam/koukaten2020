@@ -81,13 +81,15 @@ func CallAddress(token string) (address string) {
 	defer db.Close()
 
 	//pre_person_tokenとtokenが一致するpre_person_emailをrowsに格納する
-	row, err := db.Query("select pre_person_email from pre_persons where pre_person_token = '?';", token)
+	row, err := db.Query("select pre_person_email from pre_persons where pre_person_token = ?;", token)
 	if err != nil {
 		log.Fatal(err)
 	}
 	defer row.Close()
 
-	row.Scan(&address)
+	for row.Next() {
+		row.Scan(&address)
+	}
 
 	return address
 }

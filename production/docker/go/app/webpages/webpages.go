@@ -80,26 +80,29 @@ func SignUp(w http.ResponseWriter, r *http.Request) {
 func PreSignUp(w http.ResponseWriter, r *http.Request) {
 	// テンプレートを指定
 	t := template.Must(template.ParseFiles("html/presignup.html"))
-
-	// テンプレートを描画
-	if err := t.Execute(w, nil); err != nil {
-		log.Println(err)
-	}
+	// t, err := template.New("PreSignUp").ParseFiles("html/presignup.html")
+	// if err != nil {
+	// 	log.Println(err)
+	// }
 
 	// フォームを解析
-	r.ParseForm()
+	if err := r.ParseForm(); err != nil {
+		log.Println("form: ", err)
+	}
 
 	// 入力されたメールアドレスを取得
 	mail := r.FormValue("Mail")
 	fmt.Println("Mail: ", mail)
 
 	if mail != "" {
-
 		// 認証メールを送信する関数にメールアドレスを渡す
 		mailauth.MailAuth(mail)
-		http.Redirect(w, r, "/presignup", http.StatusMovedPermanently)
 	}
 
+	// テンプレートを描画
+	if err := t.Execute(w, nil); err != nil {
+		log.Println(err)
+	}
 }
 
 // AuthPage は認証ページを表示するための関数です
