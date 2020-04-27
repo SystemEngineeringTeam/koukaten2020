@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Parcel Sandbox</title>
+    <link rel="stylesheet" type="text/css" href="menu.css" />
+    <link rel="stylesheet" type="text/css" href="home.css" />
+    <script type="text/javascript" src="index.js"></script>
+    <meta charset="UTF-8" />
+  </head>
+
+  <body>
+    <header>
+      <div class="header-logo-menu">
+        <div id="nav-drawer">
+          <input id="nav-input" type="checkbox" class="nav-unshown" />
+          <label id="nav-open" for="nav-input"><span></span></label>
+          <label class="nav-unshown" id="nav-close" for="nav-input"></label>
+          <div id="nav-content">
+            <p class="menu">
+              <a>ホーム</a>
+            </p>
+            <p class="menu">
+              <a>アカウント状態</a>
+            </p>
+            <p class="menu">
+              <a>ログイン</a>
+            </p>
+            <p class="menu">
+              <a href="signup.html">ユーザー登録</a>
+            </p>
+          </div>
+        </div>
+        <div class="logo-area">SyskenBookshelf</div>
+      </div>
+    </header>
+    <h1></h1>
+    <form>
+      <table border="1" width="80%">
+        <!-- status=rentalで貸し出し
+              stutus=existenceで存 -->
+        {{range .}}
+        <tr class="{{.Status}}">
+          <td width="90%">
+            <a href="{{.BookUrl}}"
+              ><div class="{{.Status}}">
+                {{.BookName}}
+              </div></a
+            >
+          </td>
+          <th width="10%" id="{{.Status}}"></th>
+        </tr>
+        {{end}}
+      </table>
+    </form>
+  </body>
+</html>
