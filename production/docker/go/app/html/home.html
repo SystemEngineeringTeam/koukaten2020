@@ -38,16 +38,16 @@
       <table border="1" width="80%">
         <!-- status=rentalで貸し出し
               stutus=existenceで存 -->
-        {{renge .}}
-        <tr class="{{.status}}">
+        {{range .}}
+        <tr class="{{.Status}}">
           <td width="90%">
-            <a href="{{.bookUrl}}"
-              ><div class="{{.status}}">
-                {{.bookName}}
+            <a href="{{.BookUrl}}"
+              ><div class="{{.Status}}">
+                {{.BookName}}
               </div></a
             >
           </td>
-          <th width="10%" id="{{.status}}"></th>
+          <th width="10%" id="{{.Status}}"></th>
         </tr>
         {{end}}
       </table>
