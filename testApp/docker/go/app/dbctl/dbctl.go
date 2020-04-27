@@ -98,7 +98,7 @@ func CallDB() []DoPut {
 }
 
 func getPerson(p string, db *sql.DB) Person {
-	human := Person{}
+	human := Preson{}
 	rows, err := db.Query("select * from persons where id = ?;", p)
 	if err != nil {
 		log.Fatal(err)

@@ -36,26 +36,20 @@
     <h1></h1>
     <form>
       <table border="1" width="80%">
-        <tr class="rental">
+        <!-- status=rentalで貸し出し
+              stutus=existenceで存 -->
+        {{renge .}}
+        <tr class="{{.status}}">
           <td width="90%">
-            <a href=""
-              ><div class="ellipsis">
-                kakkakaakkkkkkkkkkkkkkkkkkkkakakakakkakakakkakkakak
+            <a href="{{.bookUrl}}"
+              ><div class="{{.status}}">
+                {{.bookName}}
               </div></a
             >
           </td>
-          <th width="10%" id="rental"></th>
+          <th width="10%" id="{{.status}}"></th>
         </tr>
-        <tr class="existence">
-          <td width="90%">
-            <a href=""
-              ><div class="ellipsis">
-                あの日見た花の名前を僕はまだ知らない気がするけど
-              </div></a
-            >
-          </td>
-          <th width="10%" id="existence"></th>
-        </tr>
+        {{end}}
       </table>
     </form>
   </body>
