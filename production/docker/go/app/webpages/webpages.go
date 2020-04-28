@@ -1,6 +1,8 @@
 package webpages
 
 import (
+	"crypto/sha256"
+	"encoding/hex"
 	"fmt"
 	"html/template"
 	"log"
@@ -62,19 +64,38 @@ func SignUp(w http.ResponseWriter, r *http.Request) {
 	t := template.Must(template.ParseFiles("html/signup.html"))
 	// フォームを解析
 	r.ParseForm()
+	u := r.URL.Query()
 
-	// テンプレートを描画
-	if err := t.Execute(w, nil); err != nil {
-		fmt.Println(err)
+	// templateに渡す構造体を定義
+	dat := struct {
+		Mail string
+	}{
+		Mail: dbctl.CallAddress(u["token"][0]),
+	}
+
+	b := []byte(r.FormValue("Pass"))
+
+	hashedPassWord := sha256.Sum256(b)
+
+	User := dbctl.Persons{
+		CardData: "hoge",
+		Name:     r.FormValue("User"),
+		Email:    dat.Mail,
+		Password: hex.EncodeToString(hashedPassWord[:]),
 	}
 
 	// データベースにユーザーを追加する関数を呼び出す
 	// 下の使用例を参照してUserRegister関数に適当な引数を入力してください
-	// if err := dbctl.UserRegister(ここにひきすうをいれる); err != nil {
-	// 	log.Println(err)
-	// }
+	if err := dbctl.UserRegister(User); err != nil {
+		log.Println(err)
+	}
 	if r.Method == "POST" {
 		fmt.Println(r.Form)
+	}
+
+	// テンプレートを描画
+	if err := t.Execute(w, dat); err != nil {
+		fmt.Println(err)
 	}
 }
 
@@ -109,7 +130,7 @@ func PreSignUp(w http.ResponseWriter, r *http.Request) {
 
 // AuthPage は認証ページを表示するための関数です
 func AuthPage(w http.ResponseWriter, r *http.Request) {
-	fmt.Println("Method: ", r.Method)
+	fmt.Println("Method:", r.Method)
 
 	// 表示するファイルを指定
 	t := template.Must(template.ParseFiles("html/auth.html"))
@@ -127,8 +148,8 @@ func AuthPage(w http.ResponseWriter, r *http.Request) {
 }
 
 //Test は新しく作った関数をテストするところ 関数の使い方も兼ねている
-func Test(w http.ResponseWriter, r *http.Request){
-	p :=dbctl.Persons{CardData:"E19070",Name:"柴原",Email:"kappappa.sk1117210@gmail.com",Password:"hoge"}
+func Test(w http.ResponseWriter, r *http.Request) {
+	p := dbctl.Persons{CardData: "E19070", Name: "柴原", Email: "kappappa.sk1117210@gmail.com", Password: "hoge"}
 	// dbctl packageのUserRegister関数の引数は(p persons)となっている
 	dbctl.UserRegister(p)
 }

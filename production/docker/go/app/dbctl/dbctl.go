@@ -112,30 +112,30 @@ func PreUnRegister(email string) {
 func UserRegister(p Persons) error {
 	db, err := sql.Open("mysql", "gopher:setsetset@tcp(mysql:3306)/sample")
 	if err != nil {
-		log.Println("db",err)
+		log.Println("db", err)
 		return err
 	}
 	defer db.Close()
 
-	emailsRows,err:=db.Query("insert into emails (email,password) values (?,?);",p.Email,p.Password)
+	emailsRows, err := db.Query("insert into emails (email,password) values (?,?);", p.Email, p.Password)
 	if err != nil {
-		log.Println("insert emailsRows",err)
+		log.Println("insert emailsRows", err)
 		return err
 	}
 	
 	// emailsテーブルからp.Emailとemailが一致するemail_idを取得する
 	emailsRows,err=db.Query("select email_id from emails where email = ?",p.Email)
 	if err != nil {
-		log.Println("select emailsRows",err)
+		log.Println("select emailsRows", err)
 		return err
 	}
 	defer emailsRows.Close()
 
 	emailsRows.Next()
 	var emailID int
-	err=emailsRows.Scan(&emailID)
-	if err != nil{
-		log.Println("Scan",err)
+	err = emailsRows.Scan(&emailID)
+	if err != nil {
+		log.Println("Scan", err)
 		return err
 	}
 
