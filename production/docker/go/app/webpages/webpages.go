@@ -69,8 +69,8 @@ func SignUp(w http.ResponseWriter, r *http.Request) {
 	}
 
 	// データベースにユーザーを追加する関数を呼び出す
-	// UserRegister関数に適当な引数を入力してください
-	// if err := dbctl.UserRegister("E","e","1","2"); err != nil {
+	// 下の使用例を参照してUserRegister関数に適当な引数を入力してください
+	// if err := dbctl.UserRegister(ここにひきすうをいれる); err != nil {
 	// 	log.Println(err)
 	// }
 	if r.Method == "POST" {
@@ -128,11 +128,7 @@ func AuthPage(w http.ResponseWriter, r *http.Request) {
 
 //Test は新しく作った関数をテストするところ 関数の使い方も兼ねている
 func Test(w http.ResponseWriter, r *http.Request){
-	var p dbctl.Persons
-	p.CardData="E19070"
-	p.PersonName="柴原"
-	p.Email="kappappa.sk1117210@gmail.com"
-	p.Password="hello"
-	p.PersonDatetime="2020/04/27 12:50:50"
+	p :=dbctl.Persons{CardData:"E19070",Name:"柴原",Email:"kappappa.sk1117210@gmail.com",Password:"hoge"}
+	// dbctl packageのUserRegister関数の引数は(p persons)となっている
 	dbctl.UserRegister(p)
 }

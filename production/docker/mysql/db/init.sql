@@ -20,7 +20,7 @@ create table books(
 
 create table emails (
     email_id int auto_increment not null primary key,
-    email varchar(128) not null,
+    email varchar(128) not null unique,
     password varchar(128) not null
 );
 
@@ -28,7 +28,7 @@ create table persons (
     person_id int auto_increment not null primary key,
     card_data varchar(10),
     person_name varchar(50) not null,
-    email_id int not null,
+    email_id int not null unique,
     person_datetime datetime not null,
     constraint fk_email_id foreign key (email_id) references emails(email_id)
 );
@@ -85,7 +85,7 @@ insert into
     emails(email, password)
 values
     (
-        "kappappa.sk1117210@gmail.com",
+        "e19070ee@aitech.ac.jp",
         "4c716d4cf211c7b7d2f3233c941771ad0507ea5bacf93b492766aa41ae9f720d"
     );
 
@@ -117,7 +117,7 @@ insert into
     )
 values
     (
-        "kappappa.sk1117210@gmail.com",
+        "e19070ee@aitech.ac.jp",
         "792dcf7b8e952b3a10bd8d71303931c148df413caaa162d1777a79493b163ead",
         "20200426180100"
     );
