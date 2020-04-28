@@ -123,8 +123,8 @@ func UserRegister(p Persons) error {
 		return err
 	}
 	
-	// emailsテーブルからemail_idを取得する
-	emailsRows,err=db.Query("select email_id from emails")
+	// emailsテーブルからp.Emailとemailが一致するemail_idを取得する
+	emailsRows,err=db.Query("select email_id from emails where email = ?",p.Email)
 	if err != nil {
 		log.Println("select emailsRows",err)
 		return err
