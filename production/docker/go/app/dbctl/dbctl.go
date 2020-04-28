@@ -2,7 +2,6 @@ package dbctl
 
 import (
 	"database/sql"
-	"fmt"
 	"log"
 	"os"
 	"time"
@@ -29,10 +28,9 @@ import (
 // Persons はUserRegisterの引数として用いる構造体
 type Persons struct {
 	CardData      string
-	PersonName    string
+	Name    string
 	Email    string
 	Password      string
-	PersonDatetime string
 }
 
 // // BorrowedLog はデータベースのテーブルから値を取得するための構造体
@@ -142,7 +140,7 @@ func UserRegister(p Persons) error {
 	}
 
 	// 取得したemailIDを用いてpersonsにinsertする
-	personsRows, err := db.Query("insert into persons (card_data,person_name,email_id,person_datetime) values (?,?,?,?);", p.CardData, p.PersonName, emailID, p.PersonDatetime)
+	personsRows, err := db.Query("insert into persons (card_data,person_name,email_id,person_datetime) values (?,?,?,?);", p.CardData, p.Name, emailID, time.Now().Format("2006-01-02 15:04:05"))
 	if err != nil {
 		log.Println(err)
 		return err
