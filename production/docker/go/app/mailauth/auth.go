@@ -29,7 +29,7 @@ func MailAuth(to string) {
 		password: "gqricdfchrthlnqd",
 		to:       to,
 		sub:      "メールアドレスの確認",
-		msg:      "localhost:8080/auth?token=",
+		msg:      "localhost:8080/signup?token=",
 		token:    generateToken(to),
 	}
 
