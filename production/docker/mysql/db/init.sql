@@ -48,7 +48,7 @@ create table pre_persons (
     pre_person_datetime datetime not null
 );
 
-ここからテスト用データ挿入
+-- ここからテスト用データ挿入
 insert into
     places (place_id, place_name)
 values
@@ -122,4 +122,4 @@ values
         "20200426180100"
     );
 
-datetimeのフォーマットは上記のいずれのフォーマットでも入力でき 、 出力は同じフォーマットになる
+-- datetimeのフォーマットは上記のいずれのフォーマットでも入力でき 、 出力は同じフォーマットになる
