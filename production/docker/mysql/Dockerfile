@@ -1,6 +1,5 @@
 FROM mysql
 
-ADD ./ntp /etc
 ADD ./my.cnf /etc/mysql/conf.d/my.cnf
 ADD ./hosts /etc/hosts
 
