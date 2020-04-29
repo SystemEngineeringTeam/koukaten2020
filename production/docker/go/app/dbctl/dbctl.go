@@ -3,7 +3,6 @@ package dbctl
 import (
 	"database/sql"
 	"log"
-	"os"
 	"time"
 	// _ "github.com/go-sql-driver/mysql"
 )
@@ -16,21 +15,24 @@ import (
 // 	Name      string
 // }
 
-// // Book はデータベースのテーブルから値を取得するための構造体
-// type Book struct {
-// 	RFID         string
-// 	BookName     string
-// 	Isbn         string
-// 	PlaceID      string
-// 	BookDatetime string
-// }
+// Book は本の登録、情報の表示に使用する構造体
+type Book struct {
+	RFID          string
+	Status        string
+	PlaceID       string
+	BookName      string
+	Authors       string
+	Publisher     string
+	PublishedDate string
+	ISBN          string
+}
 
 // Persons はUserRegisterの引数として用いる構造体
 type Persons struct {
-	CardData      string
-	Name    string
+	CardData string
+	Name     string
 	Email    string
-	Password      string
+	Password string
 }
 
 // // BorrowedLog はデータベースのテーブルから値を取得するための構造体
@@ -49,39 +51,41 @@ type Persons struct {
 // }
 
 // PreRegister は仮登録データベースにメールアドレスとそのトークンと時刻を挿入する関数
-func PreRegister(mail, token string) {
+func PreRegister(mail, token string) error {
 	//dbはめったに閉じる必要がないらしいがここでopenするのが適切かわからない
-	db, err := sql.Open("mysql", "gopher:setsetset@tcp(mysql:3306)/sample")
+	db, err := sql.Open("mysql", "gopher:setsetset@tcp(mysql:3306)/book_management_db")
 	if err != nil {
-		log.Println(err)
-		os.Exit(1)
+		log.Println("PreRegister:Open", err)
+		return err
 	}
 	defer db.Close()
 
-	ins, err := db.Prepare("insert into pre_persons(pre_person_email,pre_person_token,pre_person_datetime) values(?,?,?)")
+	rows, err := db.Query("insert into pre_persons(pre_person_email,pre_person_token,pre_person_datetime) values(?,?,?)", mail, token, time.Now().Format("2006-01-02 15:04:05"))
 	if err != nil {
-		log.Fatal(err)
-		return
+		log.Println("PreRegister:insert", err)
+		return err
 	}
-	defer ins.Close()
+	defer rows.Close()
 
-	ins.Exec(mail, token, time.Now().Format("2006-01-02 15:04:05"))
+	return nil
 }
 
 // CallAddress はメールアドレスを呼び出す関数
-func CallAddress(token string) (address string) {
-	db, err := sql.Open("mysql", "gopher:setsetset@tcp(mysql:3306)/sample")
+func CallAddress(token string) (address string, err error) {
+	errStr := "This is error!"
+
+	db, err := sql.Open("mysql", "gopher:setsetset@tcp(mysql:3306)/book_management_db")
 	if err != nil {
-		// log.Println(err.Error())
-		log.Println(err)
-		os.Exit(1)
+		log.Println("CallAddress:Open", err)
+		return errStr, err
 	}
 	defer db.Close()
 
 	//pre_person_tokenとtokenが一致するpre_person_emailをrowsに格納する
 	rows, err := db.Query("select pre_person_email from pre_persons where pre_person_token = ?;", token)
 	if err != nil {
-		log.Fatal(err)
+		log.Println("CallAddress:select:", err)
+		return errStr, err
 	}
 	defer rows.Close()
 
@@ -89,60 +93,64 @@ func CallAddress(token string) (address string) {
 		rows.Scan(&address)
 	}
 
-	return address
+	return address, nil
 }
 
 //PreUnRegister は本登録が完了した仮登録のレコードを削除する関数
-func PreUnRegister(email string) {
-	db, err := sql.Open("mysql", "gopher:setsetset@tcp(mysql:3306)/sample")
+func PreUnRegister(email string) error {
+	db, err := sql.Open("mysql", "gopher:setsetset@tcp(mysql:3306)/book_management_db")
 	if err != nil {
-		log.Println(err)
+		log.Println("PreUnRegister:Open", err)
+		return err
 	}
 	defer db.Close()
 
 	//email が一致するレコードをdeleteする
 	row, err := db.Query("delete from pre_persons where pre_person_email = ?;", email)
 	if err != nil {
-		log.Println(err)
+		log.Println("PreUnRegister:delete", err)
+		return err
 	}
 	defer row.Close()
+
+	return err
 }
 
 //UserRegister はユーザを本登録する関数
 func UserRegister(p Persons) error {
-	db, err := sql.Open("mysql", "gopher:setsetset@tcp(mysql:3306)/sample")
+	db, err := sql.Open("mysql", "gopher:setsetset@tcp(mysql:3306)/book_management_db")
 	if err != nil {
-		log.Println("db",err)
+		log.Println("UserRegister:Open", err)
 		return err
 	}
 	defer db.Close()
 
-	emailsRows,err:=db.Query("insert into emails (email,password) values (?,?);",p.Email,p.Password)
+	emailsRows, err := db.Query("insert into emails (email,password) values (?,?);", p.Email, p.Password)
 	if err != nil {
-		log.Println("insert emailsRows",err)
+		log.Println("UserRegister:insert emails", err)
 		return err
 	}
-	
+
 	// emailsテーブルからp.Emailとemailが一致するemail_idを取得する
-	emailsRows,err=db.Query("select email_id from emails where email = ?",p.Email)
+	emailsRows, err = db.Query("select email_id from emails where email = ?", p.Email)
 	if err != nil {
-		log.Println("select emailsRows",err)
+		log.Println("UserRegister:select", err)
 		return err
 	}
 	defer emailsRows.Close()
 
 	emailsRows.Next()
 	var emailID int
-	err=emailsRows.Scan(&emailID)
-	if err != nil{
-		log.Println("Scan",err)
+	err = emailsRows.Scan(&emailID)
+	if err != nil {
+		log.Println("UserRegister:Scan", err)
 		return err
 	}
 
 	// 取得したemailIDを用いてpersonsにinsertする
 	personsRows, err := db.Query("insert into persons (card_data,person_name,email_id,person_datetime) values (?,?,?,?);", p.CardData, p.Name, emailID, time.Now().Format("2006-01-02 15:04:05"))
 	if err != nil {
-		log.Println(err)
+		log.Println("UserRegister:insert persons", err)
 		return err
 	}
 	defer personsRows.Close()
@@ -150,34 +158,41 @@ func UserRegister(p Persons) error {
 	return nil
 }
 
-// まだ修正してないよ
-// // BookAdd はbooksに本を登録する関数
-// func BookAdd(rfidTag, bookName, isbn, bookDatetime string, placeID int) error {
-// 	db, err := sql.Open("mysql", "gopher:setsetset@tcp(mysql:3306)/sample")
-// 	if err != nil {
-// 		log.Println(err)
-// 		return err
-// 	}
-// 	defer db.Close()
+// BookAdd はbook_info,book_statusに本を登録する関数
+func BookAdd(b Book) error {
+	db, err := sql.Open("mysql", "gopher:setsetset@tcp(mysql:3306)/book_management_db")
+	if err != nil {
+		log.Println("BookAdd:Open", err)
+		return err
+	}
+	defer db.Close()
 
-// 	place := ""
-// 	rows, err := db.Query("select * from places;")
-// 	if err != nil {
-// 		log.Fatal(err)
-// 		return err
-// 	}
-// 	fmt.Println(rows)
+	bookInfoRows, err := db.Query("insert into book_info (book_name,authors,publisher,published_date,description,isbn) values (?,?,?,?,?,?);", b.BookName, b.Authors, b.Publisher, b.PublishedDate, b.ISBN)
+	if err != nil {
+		log.Println("BookAdd:insert book_info")
+		return err
+	}
 
-// 	for rows.Next() {
-// 		rows.Scan(&place)
-// 		log.Println("place:", place)
-// 	}
+	bookInfoRows, err = db.Query("select book_info_id from book_info where book_name = ?;", b.BookName)
+	if err != nil {
+		log.Println("BookAdd:book_info")
+		return err
+	}
+	defer bookInfoRows.Close()
 
-// 	row, err := db.Query("insert into books (rfid_tag,book_name,isbn,place_id,book_datetime) values (?,?,?,?,?);", rfidTag, bookName, isbn, placeID, bookDatetime)
-// 	if err != nil {
-// 		log.Println(err)
-// 		return err
-// 	}
-// 	defer row.Close()
-// 	return err
-// }
+	bookInfoRows.Next()
+	var bookInfoID int
+	err = bookInfoRows.Scan(&bookInfoID)
+	if err != nil {
+		log.Println("BookAdd:Scan", err)
+		return err
+	}
+
+	bookStatusesRows, err := db.Query("insert into book_statuses (rfid_tag,book_info_id,status,place_id,book_datetime) values (?,?,?,?,?);", b.RFID, bookInfoID, b.Status, b.PlaceID, time.Now().Format("2006-01-02 15:04:05"))
+	if err != nil {
+		log.Println("BookAdd:insert", err)
+		return err
+	}
+	defer bookStatusesRows.Close()
+	return err
+}
