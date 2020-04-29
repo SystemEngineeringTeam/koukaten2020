@@ -19,11 +19,12 @@ import (
 type Book struct {
 	RFID          string
 	Status        string
-	PlaceID       string
+	PlaceID       int
 	BookName      string
-	Authors       string
+	Author        string
 	Publisher     string
 	PublishedDate string
+	Description   string
 	ISBN          string
 }
 
@@ -167,15 +168,15 @@ func BookAdd(b Book) error {
 	}
 	defer db.Close()
 
-	bookInfoRows, err := db.Query("insert into book_info (book_name,authors,publisher,published_date,description,isbn) values (?,?,?,?,?,?);", b.BookName, b.Authors, b.Publisher, b.PublishedDate, b.ISBN)
+	bookInfoRows, err := db.Query("insert into book_info (book_name,author,publisher,published_date,description,isbn) values (?,?,?,?,?,?);", b.BookName, b.Author, b.Publisher, b.PublishedDate, b.Description, b.ISBN)
 	if err != nil {
-		log.Println("BookAdd:insert book_info")
+		log.Println("BookAdd:insert book_info", err)
 		return err
 	}
 
 	bookInfoRows, err = db.Query("select book_info_id from book_info where book_name = ?;", b.BookName)
 	if err != nil {
-		log.Println("BookAdd:book_info")
+		log.Println("BookAdd:book_info", err)
 		return err
 	}
 	defer bookInfoRows.Close()
@@ -188,7 +189,7 @@ func BookAdd(b Book) error {
 		return err
 	}
 
-	bookStatusesRows, err := db.Query("insert into book_statuses (rfid_tag,book_info_id,status,place_id,book_datetime) values (?,?,?,?,?);", b.RFID, bookInfoID, b.Status, b.PlaceID, time.Now().Format("2006-01-02 15:04:05"))
+	bookStatusesRows, err := db.Query("insert into book_statuses (rfid_tag,book_info_id,place_id,book_datetime) values (?,?,?,?);", b.RFID, bookInfoID, b.PlaceID, time.Now().Format("2006-01-02 15:04:05"))
 	if err != nil {
 		log.Println("BookAdd:insert", err)
 		return err

@@ -8,7 +8,7 @@ create table places (
 create table book_info(
     book_info_id int auto_increment not null primary key,
     book_name varchar(128),
-    authors varchar(128),
+    author varchar(128),
     publisher varchar(128),
     published_date varchar(20),
     description varchar(1024),
@@ -43,7 +43,7 @@ create table borrowed_logs(
     borrowed_log_id int auto_increment not null primary key,
     rfid_tag varchar(20) not null,
     person_id int not null,
-    constraint fk_rfid_tag foreign key (rfid_tag) references books(rfid_tag),
+    constraint fk_rfid_tag foreign key (rfid_tag) references book_statuses(rfid_tag),
     constraint fk_person_id foreign key (person_id) references persons(person_id)
 );
 
@@ -68,15 +68,15 @@ values
 insert into
     places (place_name)
 values
-    ("シス研の本棚");
+    ("シス研本棚");
 
 insert into
     book_info(
         book_name,
-        authors,
+        author,
         publisher,
         published_date,
-        description isbn
+        isbn
     )
 values
     (
