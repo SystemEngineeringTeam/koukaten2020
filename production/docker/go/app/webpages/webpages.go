@@ -228,20 +228,20 @@ func SignUpComplete(w http.ResponseWriter, r *http.Request) {
 	}
 }
 
-//SerchPage は本の一覧ページ
-func SerchPage(w http.ResponseWriter, r *http.Request) {
+//SearchPage は本の一覧ページ
+func SearchPage(w http.ResponseWriter, r *http.Request) {
 	log.Println("Method:", r.Method)
 	log.Println("URL:", r.URL)
 
 	// 表示するファイルを指定
 	t := template.Must(template.ParseFiles("html/bookSerch.html"))
 
-	// log.Println(r.URL)
-	// u := r.URL.Query()
-	// log.Println(u["token"])
+	r.ParseForm()
+
+	searchedBooks := apictl.SearchBooks(r.FormValue("searchForm"))
 
 	// テンプレートを描画
-	if err := t.Execute(w, nil); err != nil {
+	if err := t.Execute(w, searchedBooks); err != nil {
 		log.Println(err)
 	}
 

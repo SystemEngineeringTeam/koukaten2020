@@ -21,9 +21,9 @@
                 <!-- ここから内容 -->
 				<div class="col-md-8 offset-md-2 py-3">
 					<div class="px-3 py-3">
-						<form align="center">
+						<form align="center" action="/search">
                             <div class="input-group">
-                                <input type="search" class="form-control" placeholder="キーワードを入力" aria-describedby="button_serch">
+                                <input type="search" class="form-control" placeholder="キーワードを入力" aria-describedby="button_serch" name="searchForm">
                                 <div class="input-group-append">
                                     <button type="button" class="btn btn-outline-secondary" id="button_serch">検索</button>
                                 </div>
@@ -37,7 +37,10 @@
 						<br>
 							<p>{{.BookName}}</p>
 							<p>{{.BookAuthor}}</p>
-						</br>
+                        </br>
+                        <form action="/bookadd">
+                            <input type="hidden" name="isbn" value="{{.ISBN}}">
+                        </form>
 					</div>
 					{{end}}
 				</div>

@@ -125,28 +125,53 @@ type BookPage struct {
 	BookDescription string
 }
 
+// SearchedBook は検索した本を表示するための
+type SearchedBook struct {
+	BookImgURL string
+	BookName   string
+	BookAuthor string
+	ISBN       string
+}
+
 // SearchBooks はAPIから本を検索するための関数です
 // 本を登録するときに使います
 // なんらかの構造体を返す
-func SearchBooks(keyword string) {
+func SearchBooks(keyword string) []SearchedBook {
+	// スペースを+に直す
 	keyword = strings.ReplaceAll(keyword, " ", "+")
+	keyword = strings.ReplaceAll(keyword, "　", "+")
+	// apiから値の取得
 	data, err := http.Get(baseURL + "?q=" + keyword)
 	fmt.Println(baseURL + "?q=" + keyword)
+
+	result := make([]SearchedBook, 0)
 	if err != nil {
-		return
+		return nil
 	}
 	defer data.Body.Close()
 
 	d, err := ioutil.ReadAll(data.Body)
 	if err != nil {
-		return
+		return nil
 	}
 
 	b := book{}
 	json.Unmarshal(d, &b)
+
+	fmt.Println("len(b.items)", len(b.Items))
+
 	for _, dat := range b.Items {
-		fmt.Println(dat.VolumeInfo.Title)
+		tmp := SearchedBook{
+			BookImgURL: dat.VolumeInfo.ImageLinks.Thumbnail,
+			BookName:   dat.VolumeInfo.Title,
+		}
+		if len(dat.VolumeInfo.Authors) > 0 {
+			tmp.BookAuthor = dat.VolumeInfo.Authors[0]
+		}
+		result = append(result, tmp)
 	}
+
+	return result
 }
 
 // BookDetail は本の詳細ページに情報を渡す関数です
