@@ -216,6 +216,24 @@ func SignUpComplete(w http.ResponseWriter, r *http.Request) {
 	t := template.Must(template.ParseFiles("html/signupComplete.html"))
 
 	// log.Println(r.URL)
+	u := r.URL.Query()
+	log.Println(u["token"])
+
+	// テンプレートを描画
+	if err := t.Execute(w, nil); err != nil {
+		log.Println(err)
+	}
+}
+
+//SerchPage は本の一覧ページ
+func SerchPage(w http.ResponseWriter, r *http.Request) {
+	log.Println("Method:", r.Method)
+	log.Println("URL:", r.URL)
+
+	// 表示するファイルを指定
+	t := template.Must(template.ParseFiles("html/bookSerch.html"))
+
+	// log.Println(r.URL)
 	// u := r.URL.Query()
 	// log.Println(u["token"])
 
@@ -223,6 +241,7 @@ func SignUpComplete(w http.ResponseWriter, r *http.Request) {
 	if err := t.Execute(w, nil); err != nil {
 		log.Println(err)
 	}
+
 }
 
 //Test は新しく作った関数をテストするところ 関数の使い方も兼ねている
