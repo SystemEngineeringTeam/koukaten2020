@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+	<title>Parcel Sandbox</title>
+	<meta charset="UTF-8" />
+	<link rel="stylesheet" type="text/css" href="bookSerch.css">
+</head>
+
+<body>
+	<form align="center">
+		<input type="search" placeholder="キーワードを入力" >
+		<input type="submit" value="検索">
+	</form>
+
+	{{range .}}
+	<div class="bookImg">
+		<img src={{.BookImgURL} title={{.BookName}} align="left"width=50%>
+		<br>
+			<p>{{.BookName}}</p>
+			<p>{{.BookAuthor}}</p>
+		</br>
+	</div>
+	{{end}}
+</body>
+
+</html>
