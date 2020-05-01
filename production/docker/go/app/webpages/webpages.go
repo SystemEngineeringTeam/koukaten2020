@@ -3,7 +3,6 @@ package webpages
 import (
 	"crypto/sha256"
 	"encoding/hex"
-	"fmt"
 	"html/template"
 	"log"
 	"net/http"
@@ -15,50 +14,69 @@ import (
 // TopPage はトップページを表示する関数です
 // http.HandleFuncから呼び出して使います
 func TopPage(w http.ResponseWriter, r *http.Request) {
-	fmt.Println("method:", r.Method)
+	log.Println("Method:", r.Method)
+	log.Println("URL:", r.URL)
 
 	//フォームをパース
 	r.ParseForm()
 
 	//テンプレートをパース
-	t := template.Must(template.ParseFiles("html/header.html"))
+	t := template.Must(template.ParseFiles("html/home.html"))
 
 	//テンプレートを描画
-	if err := t.ExecuteTemplate(w, "top", nil); err != nil {
-		fmt.Println(err)
+	if err := t.Execute(w, nil); err != nil {
+		log.Println(err)
 	}
 
 	//POSTメソッドのフォームをterminal上に表示
 	if r.Method == "POST" {
-		fmt.Println(r.Form)
+		log.Println(r.Form)
 	}
 
 }
 
 //LoginPage はログインする時のページを表示する関数
 func LoginPage(w http.ResponseWriter, r *http.Request) {
-	fmt.Println("method:", r.Method)
-
+	log.Println("Method:", r.Method)
+	log.Println("URL:", r.URL)
 	//フォームをパース
 	r.ParseForm()
 
 	//テンプレートをパース
 	t := template.Must(template.ParseFiles("html/login.html"))
 
-	//テンプレートを描画
-	if err := t.Execute(w, "nil"); err != nil {
-		fmt.Println(err)
+	dat := struct {
+		Err template.HTML
+	}{
+		Err: "",
 	}
 
-	//POSTメソッドのフォームをterminal上に表示
-	if r.Method == "POST" {
-		fmt.Println(r.Form)
+	pwd := []byte(r.FormValue("Password"))
+	hashedPassWord := sha256.Sum256(pwd)
+	if ok, err := dbctl.Login(r.FormValue("User"), hex.EncodeToString(hashedPassWord[:])); ok {
+		http.Redirect(w, r, "/", http.StatusMovedPermanently)
+	} else {
+		if r.FormValue("Password") != "" {
+			dat.Err = `
+			<br>
+			<div class="alert alert-danger" role="alert">
+				<p>` + template.HTML(err.Error()) + `</p>
+			</div>
+			`
+			log.Println("err:", err)
+		}
+	}
+
+	//テンプレートを描画
+	if err := t.Execute(w, dat); err != nil {
+		log.Println(err)
 	}
 }
 
 // SignUp は登録ページを表示するための関数です
 func SignUp(w http.ResponseWriter, r *http.Request) {
-	fmt.Println("Method:", r.Method)
+	log.Println("Method:", r.Method)
+	log.Println("URL:", r.URL)
 
 	// 表示するファイルを指定
 	t := template.Must(template.ParseFiles("html/signup.html"))
@@ -66,11 +84,16 @@ func SignUp(w http.ResponseWriter, r *http.Request) {
 	r.ParseForm()
 	u := r.URL.Query()
 
+	mail, err := dbctl.CallAddress(u["token"][0])
+	if err != nil {
+		log.Println(err)
+	}
+
 	// templateに渡す構造体を定義
 	dat := struct {
 		Mail string
 	}{
-		Mail: dbctl.CallAddress(u["token"][0]),
+		Mail: mail,
 	}
 
 	b := []byte(r.FormValue("Pass"))
@@ -89,18 +112,22 @@ func SignUp(w http.ResponseWriter, r *http.Request) {
 	if err := dbctl.UserRegister(User); err != nil {
 		log.Println(err)
 	}
+
 	if r.Method == "POST" {
-		fmt.Println(r.Form)
+		log.Println(r.Form)
 	}
 
 	// テンプレートを描画
 	if err := t.Execute(w, dat); err != nil {
-		fmt.Println(err)
+		log.Println(err)
 	}
 }
 
 // PreSignUp は仮登録ページを表示するための関数です
 func PreSignUp(w http.ResponseWriter, r *http.Request) {
+	log.Println("Method:", r.Method)
+	log.Println("URL:", r.URL)
+
 	// テンプレートを指定
 	t := template.Must(template.ParseFiles("html/presignup.html"))
 	// t, err := template.New("PreSignUp").ParseFiles("html/presignup.html")
@@ -115,36 +142,69 @@ func PreSignUp(w http.ResponseWriter, r *http.Request) {
 
 	// 入力されたメールアドレスを取得
 	mail := r.FormValue("Mail")
-	fmt.Println("Mail: ", mail)
+	log.Println("Mail: ", mail)
 
+	dat := struct {
+		Msg template.HTML
+	}{
+		Msg: "",
+	}
+
+	// メアドが入力されていればメールを送信する
 	if mail != "" {
 		// 認証メールを送信する関数にメールアドレスを渡す
 		mailauth.MailAuth(mail)
+		dat.Msg = `
+			<br>
+			<div class="alert alert-success" role="alert">
+				<p>仮登録メールを送信しました</p>
+			</div>
+		`
 	}
 
 	// テンプレートを描画
-	if err := t.Execute(w, nil); err != nil {
+	if err := t.Execute(w, dat); err != nil {
 		log.Println(err)
 	}
 }
 
 // AuthPage は認証ページを表示するための関数です
 func AuthPage(w http.ResponseWriter, r *http.Request) {
-	fmt.Println("Method:", r.Method)
+	log.Println("Method:", r.Method)
+	log.Println("URL:", r.URL)
 
 	// 表示するファイルを指定
 	t := template.Must(template.ParseFiles("html/auth.html"))
 
-	// fmt.Println(r.URL)
+	// log.Println(r.URL)
 	u := r.URL.Query()
-	fmt.Println(u["token"])
+	log.Println(u["token"])
 
 	// テンプレートを描画
 	if err := t.Execute(w, nil); err != nil {
-		fmt.Println(err)
+		log.Println(err)
 	}
 
 	http.Redirect(w, r, "/signup", http.StatusMovedPermanently)
+}
+
+// BookDetails は本の詳細ページを表示するための関数です
+func BookDetails(w http.ResponseWriter, r *http.Request) {
+	log.Println("Method:", r.Method)
+	log.Println("URL:", r.URL)
+
+	// 表示するファイルを指定
+	t := template.Must(template.ParseFiles("html/index.html"))
+
+	// log.Println(r.URL)
+	u := r.URL.Query()
+	log.Println(u["token"])
+
+	// テンプレートを描画
+	if err := t.Execute(w, nil); err != nil {
+		log.Println(err)
+	}
+
 }
 
 //Test は新しく作った関数をテストするところ 関数の使い方も兼ねている
