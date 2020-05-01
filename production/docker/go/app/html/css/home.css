@@ -5,10 +5,12 @@
   overflow: hidden;
   text-overflow: ellipsis;
 }
-.rental {
+.Borrow {
   background-color: lightgreen;
 }
-.existence {
+.Exist {
   background: white;
 }
-s
+.TakeOut {
+  background: pink;
+}

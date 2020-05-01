@@ -1,16 +1,15 @@
 <!DOCTYPE html>
 <html>
     <head>
-        <title>ホーム</title>
+        <title>bookpage</title>
         <meta charset="UTF-8" />
         <link
             rel="stylesheet"
             href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css"
             integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh"
             crossorigin="anonymous"
-        />
-        <link rel="stylesheet" type="text/css" href="../htmlsrc/css/menu.css" />
-    <link rel="stylesheet" type="text/css" href="../htmlsrc/css/home.css" />
+		/>
+		<link rel="stylesheet" type="text/css" href="../htmlsrc/css/bookPage.css">
     </head>
     <body>
         <!-- ヘッダ部分 -->
@@ -20,26 +19,19 @@
         <div class="container-fluid">
             <div row class="row flex-xl-nowrap">
                 <!-- ここから内容 -->
-                <div>
-                    <form>
-                        <table border="1" width="80%">
-                            <!-- status=borrowで貸し出し
-                                status=existで存 -->
-                            {{range .}}
-                            <tr class="{{.Status}}">
-                                <td width="90%">
-                                    <a href="{{.ISBN}}">
-                                        <div class="{{.Status}}">
-                                            {{.BookName}}
-                                        </div>
-                                    </a>
-                                </td>
-                                <th width="10%" id="{{.Status}}"></th>
-                            </tr>
-                            {{end}}
-                        </table>
-                    </form>
-                </div>
+
+				<div class="bookImg">
+					<img src={{.BookImgUrl}} title={{.BookName}} align="left"width=50%>
+					<br>
+						<p>{{.BookName}}</p>
+						<p>{{.BookAuthor}}</p>
+						<p>{{.BookPublication}}</p>
+						<p>{{.Status}}</p>
+						<p>{{.BookData}}</p>
+						<p>{{.BookDescription}}</p>
+					</br>
+				</div>
+
                 <!-- 内容ここまで -->
             </div>
         </div>
@@ -62,3 +54,5 @@
         </script>
     </body>
 </html>
+
+
