@@ -11,7 +11,7 @@ services:
             MYSQL_USER: gopher
             MYSQL_PASSWORD: setsetset
         networks:
-            - test
+            - production_network
         ports:
             - "33060:3306"
 
@@ -19,7 +19,7 @@ services:
         build: ./go
         container_name: go_app
         networks:
-            - test
+            - production_network
         ports:
             - "8080:80"
         depends_on:
