@@ -1,0 +1,10 @@
+.bookImg p {
+    overflow: hidden;
+  }
+  .bookImg img {
+    height: 80vw;
+    width: 50vw;
+    object-fit: contain;
+    background-color: gray;
+  }
+  
