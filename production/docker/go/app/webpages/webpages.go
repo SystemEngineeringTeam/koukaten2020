@@ -7,6 +7,7 @@ import (
 	"log"
 	"net/http"
 
+	"../apictl"
 	"../dbctl"
 	mailauth "../mailauth"
 )
@@ -198,10 +199,12 @@ func BookDetails(w http.ResponseWriter, r *http.Request) {
 
 	// log.Println(r.URL)
 	u := r.URL.Query()
-	log.Println(u["token"])
+	log.Println(u["isbn"][0])
+
+	detail := apictl.BookDetail(u["isbn"][0])
 
 	// テンプレートを描画
-	if err := t.Execute(w, nil); err != nil {
+	if err := t.Execute(w, detail); err != nil {
 		log.Println(err)
 	}
 

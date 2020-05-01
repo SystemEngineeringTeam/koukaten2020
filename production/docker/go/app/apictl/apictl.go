@@ -4,6 +4,7 @@ import (
 	"encoding/json"
 	"fmt"
 	"io/ioutil"
+	"log"
 	"net/http"
 	"strings"
 )
@@ -113,6 +114,17 @@ type book struct {
 	} `json:"items"`
 }
 
+// BookPage は本の詳細ページに渡す構造体です
+type BookPage struct {
+	BookImgURL      string
+	BookName        string
+	BookAuthor      string
+	BookPublication string
+	Status          string
+	BookData        string
+	BookDescription string
+}
+
 // SearchBooks はAPIから本を検索するための関数です
 // 本を登録するときに使います
 // なんらかの構造体を返す
@@ -139,6 +151,29 @@ func SearchBooks(keyword string) {
 
 // BookDetail は本の詳細ページに情報を渡す関数です
 // なんらかの構造体を返す
-func BookDetail(ISBN string) {
+func BookDetail(ISBN string) BookPage {
+	data, err := http.Get(baseURL + "?q=isbn:" + ISBN)
+	if err != nil {
+		log.Println(err)
+	}
+	defer data.Body.Close()
+	d, err := ioutil.ReadAll(data.Body)
+	if err != nil {
+		log.Println(err)
+	}
+	b := book{}
 
+	json.Unmarshal(d, &b)
+
+	detail := BookPage{
+		BookImgURL:      b.Items[0].VolumeInfo.ImageLinks.Thumbnail,
+		BookName:        b.Items[0].VolumeInfo.Title,
+		BookAuthor:      b.Items[0].VolumeInfo.Authors[0],
+		BookPublication: b.Items[0].VolumeInfo.PublishedDate,
+		Status:          "hoge",
+		BookData:        "hogehoge",
+		BookDescription: b.Items[0].VolumeInfo.Description,
+	}
+
+	return detail
 }
