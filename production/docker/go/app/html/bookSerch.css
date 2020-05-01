@@ -1,0 +1,14 @@
+body {
+    font-family: sans-serif;
+  }
+  
+  .bookImg p {
+    overflow: hidden;
+  }
+  .bookImg img {
+    height: 30vw;
+    width: 25vw;
+    object-fit: contain;
+    background-color: gray;
+  }
+  
