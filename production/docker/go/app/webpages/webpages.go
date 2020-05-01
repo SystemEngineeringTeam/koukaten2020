@@ -21,7 +21,7 @@ func TopPage(w http.ResponseWriter, r *http.Request) {
 	r.ParseForm()
 
 	//テンプレートをパース
-	t := template.Must(template.ParseFiles("html/home.html"))
+	t := template.Must(template.ParseFiles("html/index.html"))
 
 	//テンプレートを描画
 	if err := t.Execute(w, nil); err != nil {
@@ -194,7 +194,7 @@ func BookDetails(w http.ResponseWriter, r *http.Request) {
 	log.Println("URL:", r.URL)
 
 	// 表示するファイルを指定
-	t := template.Must(template.ParseFiles("html/index.html"))
+	t := template.Must(template.ParseFiles("html/bookPage.html"))
 
 	// log.Println(r.URL)
 	u := r.URL.Query()
@@ -205,6 +205,24 @@ func BookDetails(w http.ResponseWriter, r *http.Request) {
 		log.Println(err)
 	}
 
+}
+
+//SignUpComplete はユーザー登録完了ページの関数です
+func SignUpComplete(w http.ResponseWriter, r *http.Request) {
+	log.Println("Method:", r.Method)
+	log.Println("URL:", r.URL)
+
+	// 表示するファイルを指定
+	t := template.Must(template.ParseFiles("html/signupComplete.html"))
+
+	// log.Println(r.URL)
+	// u := r.URL.Query()
+	// log.Println(u["token"])
+
+	// テンプレートを描画
+	if err := t.Execute(w, nil); err != nil {
+		log.Println(err)
+	}
 }
 
 //Test は新しく作った関数をテストするところ 関数の使い方も兼ねている

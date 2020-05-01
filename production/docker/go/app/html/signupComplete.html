@@ -8,8 +8,7 @@
             href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css"
             integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh"
             crossorigin="anonymous"
-		/>
-		<link rel="stylesheet" type="text/css" href="../htmlsrc/css/bookPage.css">
+        />
     </head>
     <body>
         <!-- ヘッダ部分 -->
@@ -19,19 +18,14 @@
         <div class="container-fluid">
             <div row class="row flex-xl-nowrap">
                 <!-- ここから内容 -->
-
-				<div class="bookImg">
-					<img src={{.BookImgUrl}} title={{.BookName}} align="left"width=50%>
-					<br>
-						<p>{{.BookName}}</p>
-						<p>{{.BookAuthor}}</p>
-						<p>{{.BookPublication}}</p>
-						<p>{{.Status}}</p>
-						<p>{{.BookData}}</p>
-						<p>{{.BookDescription}}</p>
-					</br>
-				</div>
-
+                <div class="col py-3 d-flex justify-content-center pt-3">
+                    <div>
+                        <p class="h2 mb-5">ユーザー登録が完了しました。</p>
+                        <div class="d-flex justify-content-center">
+                            <a class="btn btn-primary" href="./login">ログイン画面へ</a>
+                        </div>
+                    </div>
+                </div>
                 <!-- 内容ここまで -->
             </div>
         </div>
@@ -54,5 +48,3 @@
         </script>
     </body>
 </html>
-
-
