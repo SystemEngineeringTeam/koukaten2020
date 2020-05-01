@@ -76,6 +76,7 @@ insert into
         author,
         publisher,
         published_date,
+        description,
         isbn
     )
 values
@@ -84,6 +85,45 @@ values
         "MMGames",
         "秀和システム",
         "2011-06-00",
+        "いつの時代も基本はC言語。ネットで人気のC講座を書籍化。",
+        "9784798030142"
+    );
+
+insert into
+    book_info(
+        book_name,
+        author,
+        publisher,
+        published_date,
+        description,
+        isbn
+    )
+values
+    (
+        "苦しんで覚えるC言語2",
+        "MMGames",
+        "秀和システム",
+        "2011-06-00",
+        "いつの時代も基本はC言語。ネットで人気のC講座を書籍化。",
+        "9784798030142"
+    );
+
+insert into
+    book_info(
+        book_name,
+        author,
+        publisher,
+        published_date,
+        description,
+        isbn
+    )
+values
+    (
+        "苦しんで覚えるC言語3",
+        "MMGames",
+        "秀和システム",
+        "2011-06-00",
+        "いつの時代も基本はC言語。ネットで人気のC講座を書籍化。",
         "9784798030142"
     );
 
@@ -98,6 +138,36 @@ values
     (
         "hoge",
         1,
+        1,
+        "2020/04/30 04:45:50"
+    );
+
+insert into
+    book_statuses (
+        rfid_tag,
+        book_info_id,
+        place_id,
+        book_datetime
+    )
+values
+    (
+        "hogehoge",
+        2,
+        1,
+        "2020/04/30 04:45:50"
+    );
+
+insert into
+    book_statuses (
+        rfid_tag,
+        book_info_id,
+        place_id,
+        book_datetime
+    )
+values
+    (
+        "fuga",
+        3,
         1,
         "2020/04/30 04:45:50"
     );

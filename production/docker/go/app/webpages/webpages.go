@@ -128,16 +128,10 @@ func AuthPage(w http.ResponseWriter, r *http.Request) {
 
 //Test は新しく作った関数をテストするところ 関数の使い方も兼ねている
 func Test(w http.ResponseWriter, r *http.Request) {
-	b := dbctl.Book{
-		RFID:          "hogen",
-		Status:        "Exist",
-		PlaceID:       1,
-		BookName:      "にゅうもんごーぷろぐらみんぐ",
-		Author:        "hogehoge",
-		Publisher:     "fuga",
-		PublishedDate: "fugafuga",
-		ISBN:          "1231231231231",
+
+	books, _ := dbctl.BookStatus(1)
+
+	for _, book := range books {
+		log.Println("Name", book.BookName, "RFID", book.RFID)
 	}
-	// dbctl packageのBookAdd関数の引数は(b Book)となっている
-	dbctl.BookAdd(b)
 }
