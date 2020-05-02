@@ -234,7 +234,7 @@ func SearchPage(w http.ResponseWriter, r *http.Request) {
 	log.Println("URL:", r.URL)
 
 	// 表示するファイルを指定
-	t := template.Must(template.ParseFiles("html/bookSerch.html"))
+	t := template.Must(template.ParseFiles("html/bookSearch.html"))
 
 	r.ParseForm()
 
