@@ -263,22 +263,20 @@ func BookStatus(placeID int) ([]Book, error) {
 
 // Login はメアドとパスワードでログインする関数です
 func Login(mail, pass string) (bool, error) {
+	pc, file, line, _ := runtime.Caller(0)
+	f := runtime.FuncForPC(pc)
 
-	db, err := sql.Open("mysql", "gopher:setsetset@tcp(mysql:3306)/sample")
-	if err != nil {
-		log.Println("db", err)
-		return false, errors.New("データベース接続エラー")
-	}
-	defer db.Close()
+	errStr := "メールアドレスまたはパスワードが間違っています"
 
 	rows, err := db.Query("select email_id from emails where email = ? and password = ?;", mail, pass)
 	if err != nil {
-		log.Println(err)
-		return false, errors.New("メールアドレスまたはパスワードが間違っています")
+		log.Println(errFormat, err, f.Name(), file, line)
+		return false, errors.New(errStr)
 	}
+	defer rows.Close()
 
 	if rows.Next() {
 		return true, nil
 	}
-	return false, errors.New("メールアドレスまたはパスワードが間違っています")
+	return false, errors.New(errStr)
 }

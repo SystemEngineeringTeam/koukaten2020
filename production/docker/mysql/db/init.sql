@@ -7,12 +7,12 @@ create table places (
 
 create table book_info(
     book_info_id int auto_increment not null primary key,
+    api_id varchar(20) not null,
     book_name varchar(128),
     author varchar(128),
     publisher varchar(128),
     published_date varchar(20),
-    description varchar(1024),
-    isbn varchar(20)
+    description varchar(1024)
 );
 
 create table book_statuses(
@@ -73,58 +73,58 @@ values
 insert into
     book_info(
         book_name,
+        api_id,
         author,
         publisher,
         published_date,
-        description,
-        isbn
+        description
     )
 values
     (
         "苦しんで覚えるC言語",
+        "VL6_u1Nyic0C",
         "MMGames",
         "秀和システム",
         "2011-06-00",
-        "いつの時代も基本はC言語。ネットで人気のC講座を書籍化。",
-        "9784798030142"
+        "いつの時代も基本はC言語。ネットで人気のC講座を書籍化。"
     );
 
 insert into
     book_info(
         book_name,
+        api_id,
         author,
         publisher,
         published_date,
-        description,
-        isbn
+        description
     )
 values
     (
         "苦しんで覚えるC言語2",
+        "VL6_u1Nyic0B",
         "MMGames",
         "秀和システム",
         "2011-06-00",
-        "いつの時代も基本はC言語。ネットで人気のC講座を書籍化。",
-        "9784798030142"
+        "いつの時代も基本はC言語。ネットで人気のC講座を書籍化。"
     );
 
 insert into
     book_info(
         book_name,
+        api_id,
         author,
         publisher,
         published_date,
-        description,
-        isbn
+        description
     )
 values
     (
         "苦しんで覚えるC言語3",
+        "VL6_u1Nyic0A",
         "MMGames",
         "秀和システム",
         "2011-06-00",
-        "いつの時代も基本はC言語。ネットで人気のC講座を書籍化。",
-        "9784798030142"
+        "いつの時代も基本はC言語。ネットで人気のC講座を書籍化。"
     );
 
 insert into

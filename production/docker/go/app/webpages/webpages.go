@@ -250,9 +250,5 @@ func SearchPage(w http.ResponseWriter, r *http.Request) {
 //Test は新しく作った関数をテストするところ 関数の使い方も兼ねている
 func Test(w http.ResponseWriter, r *http.Request) {
 
-	books, _ := dbctl.BookStatus(1)
-
-	for _, book := range books {
-		log.Println("Name", book.BookName, "RFID", book.RFID)
-	}
+	// log.Println(dbctl.Login("e19070ee@aitech.ac.jp", "4c716d4cf211c7b7d2f3233c941771ad0507ea5bacf93b492766aa41ae9f720d"))
 }
