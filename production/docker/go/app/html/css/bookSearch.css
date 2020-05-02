@@ -9,3 +9,9 @@ body {
     object-fit: contain;
     background-color: gray;
   }
+  .bookLink {
+    color: #212529;
+  }
+  .bookLink :hover{
+    color: darkorange;
+  }
