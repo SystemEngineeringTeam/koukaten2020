@@ -127,15 +127,15 @@ type BookPage struct {
 
 // SearchedBook は検索した本を表示するための
 type SearchedBook struct {
-	BookImgURL    string
-	BookName      string
-	BookAuthor    string
-	ISBN          string
-	PublishedDate string
+	BookImgURL string
+	BookName   string
+	BookAuthor string
+	ISBN       string
 }
 
 // SearchBooks はAPIから本を検索するための関数です
 // 本を登録するときに使います
+// なんらかの構造体を返す
 func SearchBooks(keyword string) []SearchedBook {
 	// スペースを+に直す
 	keyword = strings.ReplaceAll(keyword, " ", "+")
@@ -164,14 +164,10 @@ func SearchBooks(keyword string) []SearchedBook {
 		tmp := SearchedBook{
 			BookImgURL: dat.VolumeInfo.ImageLinks.Thumbnail,
 			BookName:   dat.VolumeInfo.Title,
-			// PublishedDate: dat.VolumeInfo.PublishedDate,
 		}
 		if len(dat.VolumeInfo.Authors) > 0 {
 			tmp.BookAuthor = dat.VolumeInfo.Authors[0]
 		}
-		// if len(dat.VolumeInfo.IndustryIdentifiers) > 0 {
-		// 	tmp.ISBN = dat.VolumeInfo.IndustryIdentifiers[0].Identifier
-		// }
 		result = append(result, tmp)
 	}
 
@@ -179,6 +175,7 @@ func SearchBooks(keyword string) []SearchedBook {
 }
 
 // BookDetail は本の詳細ページに情報を渡す関数です
+// なんらかの構造体を返す
 func BookDetail(ISBN string) BookPage {
 	data, err := http.Get(baseURL + "?q=isbn:" + ISBN)
 	if err != nil {

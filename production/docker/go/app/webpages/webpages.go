@@ -244,17 +244,7 @@ func SearchPage(w http.ResponseWriter, r *http.Request) {
 	if err := t.Execute(w, searchedBooks); err != nil {
 		log.Println(err)
 	}
-}
 
-// BookRegister は本を追加するページを表示する関数です
-func BookRegister(w http.ResponseWriter, r *http.Request) {
-	t := template.Must(template.ParseFiles("html/bookRegister.html"))
-	r.ParseForm()
-
-	if err := t.Execute(w, nil); err != nil {
-		log.Println(err)
-		return
-	}
 }
 
 //Test は新しく作った関数をテストするところ 関数の使い方も兼ねている
