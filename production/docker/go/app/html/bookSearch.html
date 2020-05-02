@@ -9,7 +9,7 @@
             integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh"
             crossorigin="anonymous"
 		/>
-		<link rel="stylesheet" type="text/css" href="../htmlsrc/css/bookSerch.css">
+		<link rel="stylesheet" type="text/css" href="../htmlsrc/css/bookSearch.css">
     </head>
     <body>
         <!-- ヘッダ部分 -->
@@ -23,9 +23,9 @@
 					<div class="px-3 py-3">
 						<form align="center" action="/search">
                             <div class="input-group">
-                                <input type="search" class="form-control" placeholder="キーワードを入力" aria-describedby="button_serch" name="searchForm">
+                                <input type="search" class="form-control" placeholder="キーワードを入力" aria-describedby="button_search" name="searchForm">
                                 <div class="input-group-append">
-                                    <button type="submit" class="btn btn-outline-secondary" id="button_serch">検索</button>
+                                    <button type="submit" class="btn btn-outline-secondary" id="button_search">検索</button>
                                 </div>
                             </div>
 						</form>
@@ -33,13 +33,17 @@
 				
 					<div>
                         {{range .}}
-					    <div class="media py-3 mt-3 border-bottom" style="height: 10rem;">
-						    <div class="col-3 h-100 mr-3 d-flex justify-content-center">
-                                <img src={{.BookImgURL}} title={{.BookName}} align="left" class="bookImg shadow h-100">
-                            </div>
+					    <div class="media py-3 mt-3 border-bottom mb-1" style="height: 10rem;">
+						    <a class="col-3 h-100 mr-3 d-flex justify-content-center" href="">
+                                <img src={{.BookImgURL}} title={{.BookName}}  class="bookImg shadow h-100">
+                            </a>
 						    <div class="media-body">
-							    <p class="mb-0">{{.BookName}}</p>
-							    <p class="small">{{.BookAuthor}}</p>
+                                <p class="mb-0">
+                                    <a href="" class="text-body text-decoration-none">{{.BookName}}</a>
+                                </p>
+                                <p>
+                                    <a href="" class="text-secondary small align-text-top">{{.BookAuthor}}</a>
+                                </p>
                             </div>
                             <form action="/bookadd">
                                 <input type="hidden" name="isbn" value="{{.ISBN}}">
