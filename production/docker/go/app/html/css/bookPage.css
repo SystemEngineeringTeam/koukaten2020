@@ -2,8 +2,9 @@
     overflow: hidden;
   }
   .bookImg img {
-    height: 80vw;
-    width: 50vw;
+  /*ほんの画角張性*/
+    height: 40vw;
+    width: 30vw;
     object-fit: contain;
     background-color: gray;
   }
