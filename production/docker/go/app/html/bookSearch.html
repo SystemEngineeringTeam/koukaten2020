@@ -34,20 +34,17 @@
 					<div>
                         {{range .}}
 					    <div class="media py-3 mt-3 border-bottom mb-1" style="height: 10rem;">
-						    <a class="col-3 h-100 mr-3 d-flex justify-content-center" href="">
+						    <a class="col-3 h-100 mr-3 d-flex justify-content-center" href="/book/add?id={{.Identify}}">
                                 <img src={{.BookImgURL}} title={{.BookName}}  class="bookImg shadow h-100">
                             </a>
 						    <div class="media-body">
                                 <p class="mb-0 bookLink">
-                                    <a href="" class="bookLink text-decoration-none">{{.BookName}}</a>
+                                    <a href="/book/add?id={{.Identify}}" class="bookLink text-decoration-none">{{.BookName}}</a>
                                 </p>
                                 <p>
-                                    <a href="" class="text-secondary small align-text-top">{{.BookAuthor}}</a>
+                                    <a href="/book/add?id={{.Identify}}" class="text-secondary small align-text-top">{{.BookAuthor}}</a>
                                 </p>
                             </div>
-                            <form action="/bookadd">
-                                <input type="hidden" name="isbn" value="{{.ISBN}}">
-                            </form>
 					    </div>
 					    {{end}}
                     </div>

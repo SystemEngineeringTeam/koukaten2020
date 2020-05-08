@@ -22,6 +22,8 @@ func main() {
 	http.HandleFunc("/presignup", webpages.PreSignUp)
 	http.HandleFunc("/book", webpages.BookDetails)
 	http.HandleFunc("/search", webpages.SearchPage)
+	http.HandleFunc("/book/add", webpages.BookAdd)
+
 	// http.HandleFunc("/test", webpages.Test)
 	log.Println("Listening on :8080...")
 	http.ListenAndServe(":80", nil)

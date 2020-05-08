@@ -30,7 +30,7 @@ type Book struct {
 	Publisher     string
 	PublishedDate string
 	Description   string
-	ISBN          string
+	APIID         string
 }
 
 // Persons はUserRegisterの引数として用いる構造体
@@ -172,7 +172,7 @@ func BookAdd(b Book) error {
 	pc, file, line, _ := runtime.Caller(0)
 	f := runtime.FuncForPC(pc)
 
-	bookInfoRows, err := db.Query("insert into book_info (book_name,author,publisher,published_date,description,isbn) values (?,?,?,?,?,?);", b.BookName, b.Author, b.Publisher, b.PublishedDate, b.Description, b.ISBN)
+	bookInfoRows, err := db.Query("insert into book_info (book_name,author,publisher,published_date,description,api_id) values (?,?,?,?,?,?);", b.BookName, b.Author, b.Publisher, b.PublishedDate, b.Description, b.APIID)
 	if err != nil {
 		log.Printf(errFormat, err, f.Name(), file, line)
 		return err
@@ -243,7 +243,7 @@ func BookStatus(placeID int) ([]Book, error) {
 
 	// booksとbookinfoIDは一対一に対応しているため、forのindexが示すbooksの要素とIDを引数としてselectしたレコードは同じ本の情報となる
 	for i, ID := range bookInfoIDs {
-		booksInfoRows, err := db.Query("select book_name,author,publisher,published_date,description,isbn from book_info where book_info_id = ?;", ID)
+		booksInfoRows, err := db.Query("select book_name,author,publisher,published_date,description,api_id from book_info where book_info_id = ?;", ID)
 		if err != nil {
 			log.Printf(errFormat, err, f.Name(), file, line)
 			return nil, err
@@ -251,7 +251,7 @@ func BookStatus(placeID int) ([]Book, error) {
 		defer booksInfoRows.Close()
 
 		booksInfoRows.Next()
-		err = booksInfoRows.Scan(&books[i].BookName, &books[i].Author, &books[i].Publisher, &books[i].PublishedDate, &books[i].Description, &books[i].ISBN)
+		err = booksInfoRows.Scan(&books[i].BookName, &books[i].Author, &books[i].Publisher, &books[i].PublishedDate, &books[i].Description, &books[i].APIID)
 		if err != nil {
 			log.Printf(errFormat, err, f.Name(), file, line)
 			return nil, err

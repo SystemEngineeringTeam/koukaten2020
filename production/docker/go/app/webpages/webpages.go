@@ -21,11 +21,17 @@ func TopPage(w http.ResponseWriter, r *http.Request) {
 	//フォームをパース
 	r.ParseForm()
 
+	books, err := dbctl.BookStatus(1)
+	if err != nil {
+		log.Println(err)
+		return
+	}
+
 	//テンプレートをパース
 	t := template.Must(template.ParseFiles("html/index.html"))
 
 	//テンプレートを描画
-	if err := t.Execute(w, nil); err != nil {
+	if err := t.Execute(w, books); err != nil {
 		log.Println(err)
 	}
 
@@ -199,9 +205,9 @@ func BookDetails(w http.ResponseWriter, r *http.Request) {
 
 	// log.Println(r.URL)
 	u := r.URL.Query()
-	log.Println(u["isbn"][0])
+	log.Println(u["id"][0])
 
-	detail := apictl.BookDetail(u["isbn"][0])
+	detail := apictl.BookDetail(u["id"][0])
 
 	// テンプレートを描画
 	if err := t.Execute(w, detail); err != nil {
@@ -245,6 +251,21 @@ func SearchPage(w http.ResponseWriter, r *http.Request) {
 		log.Println(err)
 	}
 
+}
+
+// BookAdd は本を追加するためのページ
+// 検索ページから飛んでくる
+func BookAdd(w http.ResponseWriter, r *http.Request) {
+
+	log.Println("URL:", r.URL)
+	u := r.URL.Query()
+	if len(u["id"]) > 0 {
+		dbctl.BookAdd(apictl.BookRegister(u["id"][0]))
+	} else {
+		log.Println("id is undefined.")
+	}
+
+	http.Redirect(w, r, "/search", http.StatusMovedPermanently)
 }
 
 //Test は新しく作った関数をテストするところ 関数の使い方も兼ねている
