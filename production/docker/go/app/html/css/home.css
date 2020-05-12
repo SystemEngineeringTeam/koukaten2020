@@ -1,0 +1,16 @@
+/*余剰を。。。にするやつ*/
+.ellipsis {
+  width: 80%;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.Borrow {
+  background-color: lightgreen;
+}
+.Exist {
+  background: white;
+}
+.TakeOut {
+  background: pink;
+}

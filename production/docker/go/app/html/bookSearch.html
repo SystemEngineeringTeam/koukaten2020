@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title></title>
+        <meta charset="UTF-8" />
+        <link
+            rel="stylesheet"
+            href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css"
+            integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh"
+            crossorigin="anonymous"
+		/>
+		<link rel="stylesheet" type="text/css" href="../htmlsrc/css/bookSearch.css">
+    </head>
+    <body>
+        <!-- ヘッダ部分 -->
+        <div id="header" class="sticky-top"></div>
+
+        <!-- コンテナ -->
+        <div class="container-fluid">
+            <div row class="row flex-xl-nowrap">
+                <!-- ここから内容 -->
+				<div class="col-md-8 offset-md-2 py-3" style="min-width: 500px;">
+					<div class="px-3 py-3">
+						<form align="center" action="/search">
+                            <div class="input-group">
+                                <input type="search" class="form-control" placeholder="キーワードを入力" aria-describedby="button_search" name="searchForm" id="search">
+                                <div class="input-group-append">
+                                    <button type="submit" class="btn btn-outline-secondary" id="button_search">検索</button>
+                                </div>
+                            </div>
+						</form>
+					</div>
+				
+					<div>
+                        {{range .}}
+					    <div class="media py-3 mt-3 border-bottom mb-1" style="height: 10rem;">
+						    <a class="col-3 h-100 mr-3 d-flex justify-content-center" href="/book/add?id={{.Identify}}">
+                                <img src={{.BookImgURL}} title={{.BookName}}  class="bookImg shadow h-100">
+                            </a>
+						    <div class="media-body">
+                                <p class="mb-0 bookLink">
+                                    <a href="/book/add?id={{.Identify}}" class="bookLink text-decoration-none">{{.BookName}}</a>
+                                </p>
+                                <p>
+                                    <a href="/book/add?id={{.Identify}}" class="text-secondary small align-text-top">{{.BookAuthor}}</a>
+                                </p>
+                            </div>
+					    </div>
+					    {{end}}
+                    </div>
+				</div>
+                <!-- 内容ここまで -->
+            </div>
+        </div>
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+        <script
+            src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js"
+            integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo"
+            crossorigin="anonymous"
+        ></script>
+        <script
+            src="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js"
+            integrity="sha384-wfSDF2E50Y2D1uUdj0O3uMBJnjuUD4Ih7YwaYd1iqfktj0Uod8GCExl3Og8ifwB6"
+            crossorigin="anonymous"
+        ></script>
+        <!-- ヘッダー読み込みのスクリプト -->
+        <script>
+            $(function () {
+                $("#header").load("../htmlsrc/header.html");
+            });
+            // パラメーターから検索バーにテキストを入れる
+            document.getElementById("search").value=decodeURI(location.search.match(/searchForm=(.*?)(&|$)/)[1]);
+        </script>
+    </body>
+</html>
