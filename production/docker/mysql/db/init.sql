@@ -1,21 +1,27 @@
--- -- テスト用クエリ
--- drop database if exists sample;
--- -- テスト用クエリ
--- create database sample;
-use sample;
+use book_management_db;
 
 create table places (
     place_id int auto_increment not null primary key,
-    place_name varchar(1024) not null
+    place_name varchar(128) not null
 );
 
-create table books(
-    rfid_tag varchar(20) not null primary key,
-    book_name varchar(1024),
-    isbn varchar(20),
+create table book_info(
+    book_info_id int auto_increment not null primary key,
+    api_id varchar(20) not null,
+    book_name varchar(128),
+    author varchar(128),
+    publisher varchar(128),
+    published_date varchar(20),
+    description varchar(1024)
+);
+
+create table book_statuses(
+    rfid_tag varchar(128) not null primary key,
+    book_info_id int not null unique,
     place_id int not null,
     book_datetime datetime not null,
-    constraint fk_place_id foreign key (place_id) references places(place_id)
+    constraint fk_place_id foreign key (place_id) references places(place_id),
+    constraint fk_book_info_id foreign key (book_info_id) references book_info (book_info_id)
 );
 
 create table emails (
@@ -37,7 +43,7 @@ create table borrowed_logs(
     borrowed_log_id int auto_increment not null primary key,
     rfid_tag varchar(20) not null,
     person_id int not null,
-    constraint fk_rfid_tag foreign key (rfid_tag) references books(rfid_tag),
+    constraint fk_rfid_tag foreign key (rfid_tag) references book_statuses(rfid_tag),
     constraint fk_person_id foreign key (person_id) references persons(person_id)
 );
 
@@ -62,23 +68,108 @@ values
 insert into
     places (place_name)
 values
-    ("シス研の本棚");
+    ("シス研本棚");
 
 insert into
-    books (
-        rfid_tag,
+    book_info(
         book_name,
-        isbn,
+        api_id,
+        author,
+        publisher,
+        published_date,
+        description
+    )
+values
+    (
+        "苦しんで覚えるC言語",
+        "VL6_u1Nyic0C",
+        "MMGames",
+        "秀和システム",
+        "2011-06-00",
+        "いつの時代も基本はC言語。ネットで人気のC講座を書籍化。"
+    );
+
+insert into
+    book_info(
+        book_name,
+        api_id,
+        author,
+        publisher,
+        published_date,
+        description
+    )
+values
+    (
+        "苦しんで覚えるC言語2",
+        "VL6_u1Nyic0B",
+        "MMGames",
+        "秀和システム",
+        "2011-06-00",
+        "いつの時代も基本はC言語。ネットで人気のC講座を書籍化。"
+    );
+
+insert into
+    book_info(
+        book_name,
+        api_id,
+        author,
+        publisher,
+        published_date,
+        description
+    )
+values
+    (
+        "苦しんで覚えるC言語3",
+        "VL6_u1Nyic0A",
+        "MMGames",
+        "秀和システム",
+        "2011-06-00",
+        "いつの時代も基本はC言語。ネットで人気のC講座を書籍化。"
+    );
+
+insert into
+    book_statuses (
+        rfid_tag,
+        book_info_id,
         place_id,
         book_datetime
     )
 values
     (
         "hoge",
-        "苦しんで覚えるC言語",
-        "9784798030142",
-        "1",
-        "2020/04/26 17:46:00"
+        1,
+        1,
+        "2020/04/30 04:45:50"
+    );
+
+insert into
+    book_statuses (
+        rfid_tag,
+        book_info_id,
+        place_id,
+        book_datetime
+    )
+values
+    (
+        "hogehoge",
+        2,
+        1,
+        "2020/04/30 04:45:50"
+    );
+
+insert into
+    book_statuses (
+        rfid_tag,
+        book_info_id,
+        place_id,
+        book_datetime
+    )
+values
+    (
+        "fuga",
+        3,
+        1,
+        "2020/04/30 04:45:50"
     );
 
 insert into
