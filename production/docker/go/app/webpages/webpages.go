@@ -268,6 +268,23 @@ func BookAdd(w http.ResponseWriter, r *http.Request) {
 	http.Redirect(w, r, "/search", http.StatusMovedPermanently)
 }
 
+// UserPage はユーザー情報を閲覧するページの関数
+func UserPage(w http.ResponseWriter, r *http.Request) {
+	log.Println("Method:", r.Method)
+	log.Println("URL:", r.URL)
+
+	// 表示するファイルを指定
+	t := template.Must(template.ParseFiles("html/userPage.html"))
+
+	r.ParseForm()
+
+	// テンプレートを描画
+	if err := t.Execute(w, nil); err != nil {
+		log.Println(err)
+	}
+
+}
+
 //Test は新しく作った関数をテストするところ 関数の使い方も兼ねている
 func Test(w http.ResponseWriter, r *http.Request) {
 
