@@ -7,6 +7,8 @@ import (
 	"log"
 	"net/http"
 	"strings"
+
+	"../dbctl"
 )
 
 const (
@@ -130,7 +132,7 @@ type SearchedBook struct {
 	BookImgURL    string
 	BookName      string
 	BookAuthor    string
-	ISBN          string
+	Identify      string
 	PublishedDate string
 }
 
@@ -170,7 +172,7 @@ func SearchBooks(keyword string) []SearchedBook {
 			tmp.BookAuthor = dat.VolumeInfo.Authors[0]
 		}
 		// if len(dat.VolumeInfo.IndustryIdentifiers) > 0 {
-		// 	tmp.ISBN = dat.VolumeInfo.IndustryIdentifiers[0].Identifier
+		// 	tmp.Identify = dat.VolumeInfo.IndustryIdentifiers[0].Identifier
 		// }
 		result = append(result, tmp)
 	}
@@ -179,8 +181,8 @@ func SearchBooks(keyword string) []SearchedBook {
 }
 
 // BookDetail は本の詳細ページに情報を渡す関数です
-func BookDetail(ISBN string) BookPage {
-	data, err := http.Get(baseURL + "?q=isbn:" + ISBN)
+func BookDetail(id string) BookPage {
+	data, err := http.Get(baseURL + "?q=id:" + id)
 	if err != nil {
 		log.Println(err)
 	}
@@ -204,4 +206,49 @@ func BookDetail(ISBN string) BookPage {
 	}
 
 	return detail
+}
+
+// BookRegister は
+func BookRegister(id string) dbctl.Book {
+
+	// apiから値の取得
+	data, err := http.Get(baseURL + "?q=id:" + id)
+	if err != nil {
+		log.Println(err)
+	}
+	defer data.Body.Close()
+	d, err := ioutil.ReadAll(data.Body)
+	if err != nil {
+		log.Println(err)
+	}
+	b := book{}
+
+	json.Unmarshal(d, &b)
+
+	// // Book は本の登録、詳細な情報の表示に使用する構造体
+	// type Book struct {
+	// 	RFID          string
+	// 	Status        string
+	// 	PlaceID       int
+	// 	BookName      string
+	// 	Author        string
+	// 	Publisher     string
+	// 	PublishedDate string
+	// 	Description   string
+	// 	ISBN          string
+	// }
+
+	book := dbctl.Book{
+		RFID:          "hoge",
+		Status:        "hogehoge",
+		PlaceID:       0,
+		BookName:      b.Items[0].VolumeInfo.Title,
+		Author:        b.Items[0].VolumeInfo.Authors[0],
+		Publisher:     b.Items[0].VolumeInfo.Publisher,
+		PublishedDate: b.Items[0].VolumeInfo.PublishedDate,
+		Description:   b.Items[0].VolumeInfo.Description,
+		APIID:         b.Items[0].ID,
+	}
+
+	return book
 }

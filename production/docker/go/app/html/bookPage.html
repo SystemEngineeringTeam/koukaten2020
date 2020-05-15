@@ -17,20 +17,64 @@
 
         <!-- コンテナ -->
         <div class="container-fluid">
-            <div row class="row flex-xl-nowrap">
-                <!-- ここから内容 -->
-
-				<div class="bookImg">
-					<img src={{.BookImgUrl}} title={{.BookName}} align="left"width=50%>
-					<br>
-						<p>{{.BookName}}</p>
-						<p>{{.BookAuthor}}</p>
-						<p>{{.BookPublication}}</p>
-						<p>{{.Status}}</p>
-						<p>{{.BookData}}</p>
-						<p>{{.BookDescription}}</p>
-					</br>
-				</div>
+            <div row class="flex-xl-nowrap">
+				<!-- ここから内容 -->
+				
+								<div class="media">
+								
+								<div class="media-left bookImg">
+												<img src={{.BookImgURL}} class="media-object">
+								</div>
+										
+								<div class="media-body">
+									
+									<table class="table">
+											<tbody>
+													<tr class="table-success">
+														<th>タイトル</th>
+														<td>
+															{{.BookName}}
+														</td>
+													</tr>
+													<tr>
+														<th>作者</th>
+														<td>
+															{{.BookAuthor}}
+														</td>
+													</tr>
+													<tr class="table-success">
+														<th>制作年</th>
+														<td>
+															{{.BookPublication}}
+														</td>
+													</tr>
+													<tr>
+														<th>状態</th>
+														<td>
+															{{.Status}}
+														</td>
+													</tr>
+													<tr class="table-success">
+														<th>貸し出しデータ</th>
+														<td>
+															{{.BookData}}
+														</td>
+													</tr>
+													<tr>
+														<th>情報</th>
+														<td>
+															{{.BookDescription}}
+														</td>
+													</tr>
+											</tbody>
+											
+									</table>
+									
+				
+									<div>
+											<button type="submit" class="btn btn-danger">削除</button>
+									</div>
+				        </div>
 
                 <!-- 内容ここまで -->
             </div>

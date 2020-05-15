@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
     <head>
-        <title>ホーム</title>
+        <title></title>
         <meta charset="UTF-8" />
         <link
             rel="stylesheet"
@@ -9,8 +9,6 @@
             integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh"
             crossorigin="anonymous"
         />
-        <link rel="stylesheet" type="text/css" href="/htmlsrc/css/menu.css"/>
-    <link rel="stylesheet" type="text/css" href="/htmlsrc/css/home.css"/>
     </head>
     <body>
         <!-- ヘッダ部分 -->
@@ -21,23 +19,28 @@
             <div row class="row flex-xl-nowrap">
                 <!-- ここから内容 -->
                 <div class="col-md-8 offset-md-2 py-3">
-                    <form>
-                        <table class="table table-bordered" width="80%">
-                            <!-- status=borrowで貸し出し
-                                status=existで存 -->
-                            {{range .}}
-                            <tr class="{{.Status}}">
-                                <td class="bookLink">
-                                    <a class="text-decoration-none bookLink {{.Status}}" href="/book?id={{.APIID}}">
-                                            {{.BookName}}
-                                    </a>
-                                </td>
-                                <th id="{{.Status}}"></th>
-                            </tr>
-                            {{end}}
-                        </table>
-                    </form>
+                    <h1>ユーザー情報</h1>
+                <div>
+                    <div class="d-flex">
+                        <div class="ml-auto"><a href="user/setting" class="small text-secondary align-text-bottom">ユーザー情報の編集</a></div>
+                    </div>
+                    <table class="table table-bordered">
+                        <tr>
+                            <td>ユーザー名</td>
+                            <td>{{.}}</td>
+                        </tr>
+                        <tr>
+                            <td>メールアドレス</td>
+                            <td>{{.}}</td>
+                        </tr>
+                        <tr>
+                            <td>登録時日付</td>
+                            <td>{{.}}</td>
+                        </tr>
+                    </table>
                 </div>
+                </div>
+
                 <!-- 内容ここまで -->
             </div>
         </div>
