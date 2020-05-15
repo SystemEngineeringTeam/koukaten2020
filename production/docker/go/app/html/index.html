@@ -20,21 +20,19 @@
         <div class="container-fluid">
             <div row class="row flex-xl-nowrap">
                 <!-- ここから内容 -->
-                <div>
+                <div class="col-md-8 offset-md-2 py-3">
                     <form>
-                        <table border="1" width="80%">
+                        <table class="table table-bordered" width="80%">
                             <!-- status=borrowで貸し出し
                                 status=existで存 -->
                             {{range .}}
                             <tr class="{{.Status}}">
-                                <td width="90%">
-                                    <a href="/book?id={{.APIID}}">
-                                        <div class="{{.Status}}">
+                                <td class="bookLink">
+                                    <a class="text-decoration-none bookLink {{.Status}}" href="/book?id={{.APIID}}">
                                             {{.BookName}}
-                                        </div>
                                     </a>
                                 </td>
-                                <th width="10%" id="{{.Status}}"></th>
+                                <th id="{{.Status}}"></th>
                             </tr>
                             {{end}}
                         </table>
