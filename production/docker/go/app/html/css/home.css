@@ -14,3 +14,9 @@
 .TakeOut {
   background: pink;
 }
+.bookLink {
+  color: #212529;
+}
+.bookLink :hover{
+  color: darkorange;
+}

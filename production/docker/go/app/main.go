@@ -14,7 +14,7 @@ func main() {
 	// fs := http.FileServer(http.Dir("html"))
 	// http.Handle("/", fs)
 	http.HandleFunc("/", webpages.TopPage)
-	http.Handle("/htmlsrc/", http.StripPrefix("/htmlsrc/", http.FileServer(http.Dir("html/"))))
+	http.Handle("/htmlsrc/", http.StripPrefix("/htmlsrc", http.FileServer(http.Dir("html"))))
 	http.HandleFunc("/login", webpages.LoginPage)
 	http.HandleFunc("/signup", webpages.SignUp)
 	http.HandleFunc("/signupComplete", webpages.SignUpComplete)
