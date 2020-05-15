@@ -23,14 +23,14 @@ const errFormat = "\n%v\nfunction:%v file:%v line:%v\n"
 // Book は本の登録、詳細な情報の表示に使用する構造体
 type Book struct {
 	RFID          string
-	Status        string
 	PlaceID       int
+	Status        string
 	BookName      string
+	APIID         string
 	Author        string
 	Publisher     string
 	PublishedDate string
 	Description   string
-	ISBN          string
 }
 
 // Persons はUserRegisterの引数として用いる構造体
@@ -167,12 +167,12 @@ func UserRegister(p Persons) error {
 	return err
 }
 
-// BookAdd はbook_info,book_statusに本を登録する関数
+// BookAdd はbook_info,book_statuesに本を登録する関数
 func BookAdd(b Book) error {
 	pc, file, line, _ := runtime.Caller(0)
 	f := runtime.FuncForPC(pc)
 
-	bookInfoRows, err := db.Query("insert into book_info (book_name,author,publisher,published_date,description,isbn) values (?,?,?,?,?,?);", b.BookName, b.Author, b.Publisher, b.PublishedDate, b.Description, b.ISBN)
+	bookInfoRows, err := db.Query("insert into book_info (book_name,api_id,author,publisher,published_date,description) values (?,?,?,?,?,?);", b.BookName, b.APIID, b.Author, b.Publisher, b.PublishedDate, b.Description)
 	if err != nil {
 		log.Printf(errFormat, err, f.Name(), file, line)
 		return err
@@ -243,7 +243,7 @@ func BookStatus(placeID int) ([]Book, error) {
 
 	// booksとbookinfoIDは一対一に対応しているため、forのindexが示すbooksの要素とIDを引数としてselectしたレコードは同じ本の情報となる
 	for i, ID := range bookInfoIDs {
-		booksInfoRows, err := db.Query("select book_name,author,publisher,published_date,description,isbn from book_info where book_info_id = ?;", ID)
+		booksInfoRows, err := db.Query("select book_name,api_id,author,publisher,published_date,description from book_info where book_info_id = ?;", ID)
 		if err != nil {
 			log.Printf(errFormat, err, f.Name(), file, line)
 			return nil, err
@@ -251,7 +251,7 @@ func BookStatus(placeID int) ([]Book, error) {
 		defer booksInfoRows.Close()
 
 		booksInfoRows.Next()
-		err = booksInfoRows.Scan(&books[i].BookName, &books[i].Author, &books[i].Publisher, &books[i].PublishedDate, &books[i].Description, &books[i].ISBN)
+		err = booksInfoRows.Scan(&books[i].BookName, &books[i].APIID, &books[i].Author, &books[i].Publisher, &books[i].PublishedDate, &books[i].Description)
 		if err != nil {
 			log.Printf(errFormat, err, f.Name(), file, line)
 			return nil, err
