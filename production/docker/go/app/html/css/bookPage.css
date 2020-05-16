@@ -1,12 +1,25 @@
 .bookImg p {
     overflow: hidden;
   }
-  .bookImg img {
+.bookImg img {
   /*ほんの画角張性*/
   
     height: 50vw;
     width: 40vw;
     object-fit: contain;
-    background-color: gray;
-  }
+    background-color:white;
+}
+.Borrow .kariru{
+  visibility: hidden;
+}
+.Borrow .kaesu{
+  visibility: visible;
+}
+
+.Exist .kariru{
+  visibility: visible;
+}
+.Exist .kaesu{
+  visibility: hidden;
+}
   

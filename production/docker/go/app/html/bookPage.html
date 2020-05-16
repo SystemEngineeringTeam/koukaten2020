@@ -9,7 +9,7 @@
             integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh"
             crossorigin="anonymous"
 		/>
-		<link rel="stylesheet" type="text/css" href="bookpage.css">
+		<link rel="stylesheet" type="text/css" href="../htmlsrc/css/bookPage.css">
     </head>
     <body>
         <!-- ヘッダ部分 -->
@@ -23,7 +23,7 @@
 								<div class="media">
 								
 								<div class="media-left bookImg">
-									<img src={{.BookImgURL}} class="media-object"style="width:30vw; height:40vw; object-fit: contain">
+												<img src={{.BookImgURL}} class="media-object">
 								</div>
 										
 								<div class="media-body">
@@ -72,8 +72,19 @@
 									
 				
 									<div>
-											<button type="submit" class="btn btn-danger">削除</button>
-									</div>
+                                        <!-- ここに状態送って -->
+                                        <div class={{.Status}}>
+                                            <span  class="kariru">
+                                                <button type="button" class="btn btn-primary">借りる</button>
+                                            </span>
+                                            <span class="kaesu">
+                                                <button type="button" class="btn btn-success">返す</button>
+                                            </span>
+                                            <span>
+                                                <button type="submit" class="btn btn-danger">削除</button>
+                                            </span>
+                                        </div>
+                                    </div>
 				        </div>
 
                 <!-- 内容ここまで -->
