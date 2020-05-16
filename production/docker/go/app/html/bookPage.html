@@ -9,7 +9,7 @@
             integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh"
             crossorigin="anonymous"
 		/>
-		<link rel="stylesheet" type="text/css" href="bookpage.css">
+		<link rel="stylesheet" type="text/css" href="css/bookpage.css">
     </head>
     <body>
         <!-- ヘッダ部分 -->
@@ -23,57 +23,69 @@
 								<div class="media">
 								
 								<div class="media-left bookImg">
+<<<<<<< Updated upstream
 									<img src={{.BookImgURL}} class="media-object"style="width:30vw; height:40vw; object-fit: contain">
+=======
+									<img src={{.BookImgURL}} class="media-object">
+>>>>>>> Stashed changes
 								</div>
 										
 								<div class="media-body">
 									
 									<table class="table">
-											<tbody>
-													<tr class="table-success">
-														<th>タイトル</th>
-														<td>
-															{{.BookName}}
-														</td>
-													</tr>
-													<tr>
-														<th>作者</th>
-														<td>
-															{{.BookAuthor}}
-														</td>
-													</tr>
-													<tr class="table-success">
-														<th>制作年</th>
-														<td>
-															{{.BookPublication}}
-														</td>
-													</tr>
-													<tr>
-														<th>状態</th>
-														<td>
-															{{.Status}}
-														</td>
-													</tr>
-													<tr class="table-success">
-														<th>貸し出しデータ</th>
-														<td>
-															{{.BookData}}
-														</td>
-													</tr>
-													<tr>
-														<th>情報</th>
-														<td>
-															{{.BookDescription}}
-														</td>
-													</tr>
-											</tbody>
+										<tbody>
+											<tr class="table-success">
+												<th>タイトル</th>
+												<td>
+													{{.BookName}}
+												</td>
+											</tr>
+											<tr>
+												<th>作者</th>
+												<td>
+													{{.BookAuthor}}													</td>
+												</tr>
+											<tr class="table-success">
+												<th>制作年</th>
+												<td>
+													{{.BookPublication}}
+												</td>
+											</tr>
+											<tr>
+												<th>状態</th>
+												<td>
+													{{.Status}}
+												</td>
+											</tr>
+											<tr class="table-success">														<th>貸し出しデータ</th>
+												<td>
+													{{.BookData}}
+												</td>
+											</tr>
+											<tr>
+												<th>情報</th>
+												<td>
+													{{.BookDescription}}
+												</td>
+											</tr>
+										</tbody>
 											
 									</table>
 									
 				
 									<div>
-											<button type="submit" class="btn btn-danger">削除</button>
+										<!-- ここに状態送って -->
+										<div class="Borrow">
+											<span  class="kariru">
+												<button type="button" class="btn btn-primary">借りる</button>
+											</span>
+											<span class="kaesu">
+												<button type="button" class="btn btn-success">返す</button>
+											</span>
+												<button type="submit" class="btn btn-danger">削除</button>
+										</div>
 									</div>
+								
 				        </div>
 
                 <!-- 内容ここまで -->
