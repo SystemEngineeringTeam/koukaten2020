@@ -23,11 +23,8 @@
 								<div class="media">
 								
 								<div class="media-left bookImg">
-<<<<<<< Updated upstream
-									<img src={{.BookImgURL}} class="media-object"style="width:30vw; height:40vw; object-fit: contain">
-=======
 									<img src={{.BookImgURL}} class="media-object">
->>>>>>> Stashed changes
+
 								</div>
 										
 								<div class="media-body">
@@ -75,14 +72,16 @@
 				
 									<div>
 										<!-- ここに状態送って -->
-										<div class="Borrow">
+										<div class={{.Status}}>
 											<span  class="kariru">
 												<button type="button" class="btn btn-primary">借りる</button>
 											</span>
 											<span class="kaesu">
 												<button type="button" class="btn btn-success">返す</button>
 											</span>
+											<span>
 												<button type="submit" class="btn btn-danger">削除</button>
+											</span>
 										</div>
 									</div>
 								
