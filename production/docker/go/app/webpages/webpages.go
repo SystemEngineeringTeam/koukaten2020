@@ -3,6 +3,7 @@ package webpages
 import (
 	"crypto/sha256"
 	"encoding/hex"
+	"fmt"
 	"html/template"
 	"log"
 	"net/http"
@@ -268,14 +269,25 @@ func SearchPage(w http.ResponseWriter, r *http.Request) {
 func BookAdd(w http.ResponseWriter, r *http.Request) {
 
 	log.Println("URL:", r.URL)
+
 	u := r.URL.Query()
+	log.Println("u:", u)
+	log.Println("len(u[\"id\"]):", len(u["id"]))
+
 	if len(u["id"]) > 0 {
-		dbctl.BookAdd(apictl.BookRegister(u["id"][0]))
+		fmt.Println("hogehoge")
+		err := dbctl.BookAdd(apictl.BookRegister(u["id"][0]))
+		if err != nil {
+			log.Println(err)
+		}
+
 	} else {
 		log.Println("id is undefined.")
+
 	}
 
-	http.Redirect(w, r, "/search", http.StatusMovedPermanently)
+	http.Redirect(w, r, "/", http.StatusMovedPermanently)
+
 }
 
 // UserPage はユーザー情報を閲覧するページの関数
