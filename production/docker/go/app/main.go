@@ -21,8 +21,8 @@ func main() {
 	http.HandleFunc("/auth", webpages.AuthPage)
 	http.HandleFunc("/presignup", webpages.PreSignUp)
 	http.HandleFunc("/book", webpages.BookDetails)
+	http.HandleFunc("/add", webpages.BookAdd)
 	http.HandleFunc("/search", webpages.SearchPage)
-	http.HandleFunc("/book/add", webpages.BookAdd)
 	http.HandleFunc("/user", webpages.UserPage)
 
 	// http.HandleFunc("/test", webpages.Test)
