@@ -72,8 +72,19 @@
 									
 				
 									<div>
-											<button type="submit" class="btn btn-danger">削除</button>
-									</div>
+                                        <!-- ここに状態送って -->
+                                        <div class={{.Status}}>
+                                            <span  class="kariru">
+                                                <button type="button" class="btn btn-primary">借りる</button>
+                                            </span>
+                                            <span class="kaesu">
+                                                <button type="button" class="btn btn-success">返す</button>
+                                            </span>
+                                            <span>
+                                                <button type="submit" class="btn btn-danger">削除</button>
+                                            </span>
+                                        </div>
+                                    </div>
 				        </div>
 
                 <!-- 内容ここまで -->
