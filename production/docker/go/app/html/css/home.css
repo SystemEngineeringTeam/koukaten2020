@@ -6,20 +6,17 @@
   text-overflow: ellipsis;
 }
 .Borrow {
-  background-color: #c8d627;
+  background-color: lightgreen;
 }
 .Exist {
   background: white;
 }
 .TakeOut {
-  background: #d5848b;
+  background: pink;
 }
 .bookLink {
   color: #212529;
 }
 .bookLink :hover{
   color: darkorange;
-}
-.bookLink :visited{
-  color: aquamarine;
 }
