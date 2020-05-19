@@ -101,7 +101,7 @@ insert into
 values
     (
         "苦しんで覚えるC言語2",
-        "VL6_u1Nyic0B",
+        "VL6_u1Nyic0C",
         "MMGames",
         "秀和システム",
         "2011-06-00",
@@ -120,7 +120,7 @@ insert into
 values
     (
         "苦しんで覚えるC言語3",
-        "VL6_u1Nyic0A",
+        "VL6_u1Nyic0C",
         "MMGames",
         "秀和システム",
         "2011-06-00",
@@ -177,7 +177,7 @@ insert into
 values
     (
         "e19070ee@aitech.ac.jp",
-        "4c716d4cf211c7b7d2f3233c941771ad0507ea5bacf93b492766aa41ae9f720d"
+        "0e657facb0c74555bcf6edc98b4ef350ca965b9fd829b8ac91e2411ee8d8116d"
     );
 
 insert into

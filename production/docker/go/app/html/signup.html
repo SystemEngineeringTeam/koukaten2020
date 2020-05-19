@@ -16,7 +16,7 @@
     <div id="wrapTop" class="px-5 col-md-8 offset-md-2">
         <div class="d-flex justify-content-center pt-3">
             <div class="card px-3 py-2" style="width: 20rem;">
-                <form method="POST" name="formSignup">
+                <form method="POST" name="formSignup" action="/signupComplete">
                     <div class="form-group">
                         <label for="formAddr" class="control-label">メールアドレス</label>
                         <input type="text" name="Mail" class="form-control" id="formMail" value="{{.Mail}}" readonly />
@@ -41,8 +41,9 @@
                         登録
                     </button>
                 </form>
-            </div>
             {{.Err}}
+
+            </div>
         </div>
     </div>
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>

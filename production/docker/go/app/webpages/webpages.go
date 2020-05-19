@@ -3,13 +3,14 @@ package webpages
 import (
 	"crypto/sha256"
 	"encoding/hex"
+	"fmt"
 	"html/template"
 	"log"
 	"net/http"
 
 	"../apictl"
+	"../auth"
 	"../dbctl"
-	mailauth "../mailauth"
 )
 
 // TopPage はトップページを表示する関数です
@@ -18,8 +19,9 @@ func TopPage(w http.ResponseWriter, r *http.Request) {
 	log.Println("Method:", r.Method)
 	log.Println("URL:", r.URL)
 
-	//フォームをパース
-	r.ParseForm()
+	if auth.IsLogin(w, r) == false {
+		http.Redirect(w, r, "/login", http.StatusMovedPermanently)
+	}
 
 	books, err := dbctl.BookStatus(1)
 	if err != nil {
@@ -61,6 +63,7 @@ func LoginPage(w http.ResponseWriter, r *http.Request) {
 	pwd := []byte(r.FormValue("Password"))
 	hashedPassWord := sha256.Sum256(pwd)
 	if ok, err := dbctl.Login(r.FormValue("User"), hex.EncodeToString(hashedPassWord[:])); ok {
+		auth.CreateNewSession(w, r)
 		http.Redirect(w, r, "/", http.StatusMovedPermanently)
 	} else {
 		if r.FormValue("Password") != "" {
@@ -99,8 +102,10 @@ func SignUp(w http.ResponseWriter, r *http.Request) {
 	// templateに渡す構造体を定義
 	dat := struct {
 		Mail string
+		Err  template.HTML
 	}{
 		Mail: mail,
+		Err:  ``,
 	}
 
 	b := []byte(r.FormValue("Pass"))
@@ -118,6 +123,12 @@ func SignUp(w http.ResponseWriter, r *http.Request) {
 	// 下の使用例を参照してUserRegister関数に適当な引数を入力してください
 	if err := dbctl.UserRegister(User); err != nil {
 		log.Println(err)
+		dat.Err = `
+		<br>
+		<div class="alert alert-danger" role="alert">
+			<p>エラーが発生しました</p>
+		</div>
+	`
 	}
 
 	if r.Method == "POST" {
@@ -160,7 +171,7 @@ func PreSignUp(w http.ResponseWriter, r *http.Request) {
 	// メアドが入力されていればメールを送信する
 	if mail != "" {
 		// 認証メールを送信する関数にメールアドレスを渡す
-		mailauth.MailAuth(mail)
+		auth.MailAuth(mail)
 		dat.Msg = `
 			<br>
 			<div class="alert alert-success" role="alert">
@@ -258,14 +269,25 @@ func SearchPage(w http.ResponseWriter, r *http.Request) {
 func BookAdd(w http.ResponseWriter, r *http.Request) {
 
 	log.Println("URL:", r.URL)
+
 	u := r.URL.Query()
+	log.Println("u:", u)
+	log.Println("len(u[\"id\"]):", len(u["id"]))
+
 	if len(u["id"]) > 0 {
-		dbctl.BookAdd(apictl.BookRegister(u["id"][0]))
+		fmt.Println("hogehoge")
+		err := dbctl.BookAdd(apictl.BookRegister(u["id"][0]))
+		if err != nil {
+			log.Println(err)
+		}
+
 	} else {
 		log.Println("id is undefined.")
+
 	}
 
-	http.Redirect(w, r, "/search", http.StatusMovedPermanently)
+	http.Redirect(w, r, "/", http.StatusMovedPermanently)
+
 }
 
 // UserPage はユーザー情報を閲覧するページの関数
