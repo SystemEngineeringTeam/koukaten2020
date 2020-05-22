@@ -118,17 +118,19 @@ func SignUp(w http.ResponseWriter, r *http.Request) {
 		Email:    dat.Mail,
 		Password: hex.EncodeToString(hashedPassWord[:]),
 	}
-
 	// データベースにユーザーを追加する関数を呼び出す
 	// 下の使用例を参照してUserRegister関数に適当な引数を入力してください
-	if err := dbctl.UserRegister(User); err != nil {
-		log.Println(err)
-		dat.Err = `
-		<br>
-		<div class="alert alert-danger" role="alert">
-			<p>エラーが発生しました</p>
-		</div>
-	`
+	if User.Name != "" && User.CardData != "" && User.Email != "" && User.Password != "" {
+		if err := dbctl.UserRegister(User); err != nil {
+			log.Println(err)
+			dat.Err = `
+			<br>
+			<div class="alert alert-danger" role="alert">
+				<p>エラーが発生しました</p>
+			</div>
+		`
+		}
+		http.Redirect(w, r, "/signupComplete", http.StatusMovedPermanently)
 	}
 
 	if r.Method == "POST" {
