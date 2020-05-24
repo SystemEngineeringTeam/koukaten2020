@@ -10,7 +10,7 @@
             integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh"
             crossorigin="anonymous"
 		/>
-		<link rel="stylesheet" type="text/css" href="../htmlsrc/css/bookSearch.css">
+		<link rel="stylesheet" type="text/css" href="=/htmlsrc/css/bookSearch.css">
     </head>
     <body>
         <!-- ヘッダ部分 -->
@@ -67,7 +67,7 @@
         <!-- ヘッダー読み込みのスクリプト -->
         <script>
             $(function () {
-                $("#header").load("../htmlsrc/header.html");
+                $("#header").load("/htmlsrc/header.html");
             });
             // パラメーターから検索バーにテキストを入れる
             document.getElementById("search").value=decodeURI(location.search.match(/searchForm=(.*?)(&|$)/)[1]);
