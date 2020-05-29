@@ -10,7 +10,7 @@
             integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh"
             crossorigin="anonymous"
 		/>
-		<link rel="stylesheet" type="text/css" href="../htmlsrc/css/bookSearch.css">
+		<link rel="stylesheet" type="text/css" href="=/htmlsrc/css/bookSearch.css">
     </head>
     <body>
         <!-- ヘッダ部分 -->
@@ -20,7 +20,7 @@
         <div class="container-fluid">
             <div row class="row flex-xl-nowrap">
                 <!-- ここから内容 -->
-				<div class="col-md-8 offset-md-2 py-3" style="min-width: 500px;">
+				<div class="col-md-8 offset-md-2 py-3">
 					<div class="px-3 py-3">
 						<form align="center" action="/search">
                             <div class="input-group">
@@ -67,7 +67,7 @@
         <!-- ヘッダー読み込みのスクリプト -->
         <script>
             $(function () {
-                $("#header").load("../htmlsrc/header.html");
+                $("#header").load("/htmlsrc/header.html");
             });
             // パラメーターから検索バーにテキストを入れる
             document.getElementById("search").value=decodeURI(location.search.match(/searchForm=(.*?)(&|$)/)[1]);
