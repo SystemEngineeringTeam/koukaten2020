@@ -176,8 +176,8 @@ insert into
     emails(email, password)
 values
     (
-        "e19070ee@aitech.ac.jp",
-        "0e657facb0c74555bcf6edc98b4ef350ca965b9fd829b8ac91e2411ee8d8116d"
+        "ho190404ge@aitech.ac.jp",
+        "8c290ba84fa4c4036b7d6955dd3cd38eac78e36f38fd329ecec17bbbacfc3c8c"
     );
 
 insert into
@@ -189,8 +189,8 @@ insert into
     )
 values
     (
-        "E19070",
-        "柴原恒佑",
+        "hoge",
+        "guest",
         1,
         "2020-04-26 17:53:00"
     );
