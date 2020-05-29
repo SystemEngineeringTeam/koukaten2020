@@ -21,6 +21,7 @@ create table book_statuses(
     place_id int not null,
     book_datetime datetime not null,
     constraint fk_place_id foreign key (place_id) references places(place_id),
+    -- 依存しているbook_info_idが削除されたとき付随して削除される
     constraint fk_book_info_id foreign key (book_info_id) references book_info (book_info_id) on
     delete
         cascade
@@ -38,6 +39,7 @@ create table persons (
     person_name varchar(50) not null,
     email_id int not null unique,
     person_datetime datetime not null,
+    -- 依存しているemail_idが削除されたとき付随して削除される
     constraint fk_email_id foreign key (email_id) references emails(email_id) on
     delete
         cascade
@@ -47,9 +49,11 @@ create table borrowed_logs(
     borrowed_log_id int auto_increment not null primary key,
     rfid_id varchar(20) not null,
     person_id int,
+    -- 依存しているrfid_idが削除されたとき付随して削除される
     constraint fk_rfid_id foreign key (rfid_id) references book_statuses(rfid_id) on
     delete
         cascade,
+        -- 依存しているperson_idが削除されたときこのテーブルのレコードにnullを入れる
         constraint fk_person_id foreign key (person_id) references persons(person_id) on
     delete
     set
