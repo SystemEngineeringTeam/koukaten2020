@@ -24,6 +24,7 @@ func main() {
 	http.HandleFunc("/add", webpages.BookAdd)
 	http.HandleFunc("/search", webpages.SearchPage)
 	http.HandleFunc("/user", webpages.UserPage)
+	http.HandleFunc("/deletebook", webpages.BookDelete)
 
 	// http.HandleFunc("/test", webpages.Test)
 	log.Println("Listening on :8080...")

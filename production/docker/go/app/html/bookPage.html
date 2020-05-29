@@ -80,9 +80,13 @@
                                             <span class="kaesu">
                                                 <button type="button" class="btn btn-success">返す</button>
                                             </span>
-                                            <span>
-                                                <button type="submit" class="btn btn-danger">削除</button>
-                                            </span>
+											<span>
+												<form action="/deletebook" method="post">
+													<input type="hidden" name="DeleteID" value="{{.Identify}}">
+													<button type="submit" class="btn btn-danger" >削除</button>
+												</form>
+												<!-- <a href="/deletebook?id=%22{{.Identify}}%22"><button type="submit" class="btn btn-danger" >削除</button></a>	 -->
+											</span>
                                         </div>
                                     </div>
 				        </div>

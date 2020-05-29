@@ -34,15 +34,15 @@
 					<div>
                         {{range .}}
 					    <div class="media py-3 mt-3 border-bottom mb-1" style="height: 10rem;">
-                            <a href="/add?id={{.Identify}}" class="col-3 h-100 mr-3 d-flex justify-content-center" >
+                            <a href="/add?id=%22{{.Identify}}%22" class="col-3 h-100 mr-3 d-flex justify-content-center" >
                                 <img src={{.BookImgURL}} title={{.BookName}}  class="bookImg shadow h-100">
                             </a>
 						    <div class="media-body">
                                 <p class="mb-0 bookLink">
-                                    <a href="/add?id={{.Identify}}" class="bookLink text-decoration-none">{{.BookName}}</a>
+                                    <a href="/add/?id=%22{{.Identify}}%22" class="bookLink text-decoration-none">{{.BookName}}</a>
                                 </p>
                                 <p>
-                                    <a href="/add?id={{.Identify}}" class="text-secondary small align-text-top">{{.BookAuthor}}</a>
+                                    <a href="/add/?id=%22{{.Identify}}%22" class="text-secondary small align-text-top">{{.BookAuthor}}</a>
                                 </p>
                             </div>
 					    </div>
