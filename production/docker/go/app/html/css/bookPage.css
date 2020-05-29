@@ -22,4 +22,26 @@
 .Exist .kaesu{
   visibility: hidden;
 }
+th p{
+  white-space: nowrap;
+}
+.hyou{
+  float:left;
+}
+/* 携帯版設定 */
+@media screen and (max-width: 480px) {
+  p{
+  margin : 1em 0 0.8em 0 ; }
+  .bookImg img {
+    /*ほんの画角張性*/
+      height: 100vw;
+      width: 100vw;
+      object-fit: contain;
+      background-color:white;
+  }
+  .hyou{
+    float: bottom;
+  }
+}
+
   
