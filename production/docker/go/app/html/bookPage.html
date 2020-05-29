@@ -1,15 +1,16 @@
 <!DOCTYPE html>
-<html>
+<html　lang="ja">
     <head>
         <title>bookpage</title>
-        <meta charset="UTF-8" />
+		<meta charset="UTF-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1">
         <link
             rel="stylesheet"
             href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css"
             integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh"
             crossorigin="anonymous"
 		/>
-		<link rel="stylesheet" type="text/css" href="../htmlsrc/css/bookPage.css">
+		<link rel="stylesheet" type="text/css" href="/htmlsrc/css/bookPage.css">
     </head>
     <body>
         <!-- ヘッダ部分 -->
@@ -17,65 +18,74 @@
 
         <!-- コンテナ -->
         <div class="container-fluid">
-            <div row class="flex-xl-nowrap">
+            <div class="flex-xl-nowrap">
 				<!-- ここから内容 -->
-				
-								<div class="media">
+				<div class="media row">
 								
-								<div class="media-left bookImg">
-												<img src={{.BookImgURL}} class="media-object">
-								</div>
+					<div class="media-left bookImg col-md">
+						<img src={{.BookImgURL}} class="media-object">
+					</div>
 										
-								<div class="media-body">
+					<div class="media-body col-md">
 									
 									<table class="table">
 											<tbody>
 													<tr class="table-success">
-														<th>タイトル</th>
-														<td>
-															{{.BookName}}
-														</td>
-													</tr>
-													<tr>
-														<th>作者</th>
-														<td>
-															{{.BookAuthor}}
-														</td>
-													</tr>
-													<tr class="table-success">
-														<th>制作年</th>
-														<td>
-															{{.BookPublication}}
-														</td>
-													</tr>
-													<tr>
-														<th>状態</th>
-														<td>
-															{{.Status}}
-														</td>
-													</tr>
-													<tr class="table-success">
-														<th>貸し出しデータ</th>
-														<td>
-															{{.BookData}}
-														</td>
-													</tr>
-													<tr>
-														<th>情報</th>
-														<td>
-															{{.BookDescription}}
-														</td>
-													</tr>
-											</tbody>
+													<th><p>タイトル</p></th>
+													<td><p>
+														{{.BookName}}
+													</p></td>
+												</tr>
+												<tr>
+													<th><p>作者</p></th>
+													<td><p>
+														{{.BookAuthor}}
+													</p></td>
+												</tr>
+												<tr class="table-success">
+													<th><p>制作年</p></th>
+													<td><p>
+														{{.BookPublication}}
+													</p></td>
+												</tr>
+												<tr>
+													<th><p>状態</p></th>
+													<td><p>
+														{{.Status}}
+													</p></td>
+												</tr>
+												<tr class="table-success">
+														<th><p>データ</p></th>
+													<td><p>
+														{{.BookData}}
+													</p></td>
+												</tr>
+												<tr>
+													<th><p>情報</p></th>
+													<td><p>
+														{{.BookDescription}}
+													</p></td>
+												</tr>
+										</tbody>
 											
 									</table>
 									
 				
-									<div>
-											<button type="submit" class="btn btn-danger">削除</button>
-									</div>
-				        </div>
-
+								<div>
+                                        <!-- ここに状態送って -->
+                                <div class={{.Status}}>
+                                    <span  class="kariru">
+                                        <button type="button" class="btn btn-primary">借りる</button>
+                                    </span>
+                                    <span class="kaesu">
+                                        <button type="button" class="btn btn-success">返す</button>
+                                    </span>
+                                    <span>
+                                        <button type="submit" class="btn btn-danger">削除</button>
+                                    </span>
+                                </div>
+                            </div>
+					</div>
                 <!-- 内容ここまで -->
             </div>
         </div>
@@ -93,7 +103,7 @@
         <!-- ヘッダー読み込みのスクリプト -->
         <script>
             $(function () {
-                $("#header").load("../htmlsrc/header.html");
+                $("#header").load("/htmlsrc/header.html");
             });
         </script>
     </body>

@@ -6,7 +6,9 @@ import (
 	"io/ioutil"
 	"log"
 	"net/http"
+	"strconv"
 	"strings"
+	"time"
 
 	"../dbctl"
 )
@@ -171,9 +173,9 @@ func SearchBooks(keyword string) []SearchedBook {
 		if len(dat.VolumeInfo.Authors) > 0 {
 			tmp.BookAuthor = dat.VolumeInfo.Authors[0]
 		}
-		// if len(dat.VolumeInfo.IndustryIdentifiers) > 0 {
-		// 	tmp.Identify = dat.VolumeInfo.IndustryIdentifiers[0].Identifier
-		// }
+		if len(dat.VolumeInfo.IndustryIdentifiers) > 0 {
+			tmp.Identify = dat.ID
+		}
 		result = append(result, tmp)
 	}
 
@@ -237,11 +239,11 @@ func BookRegister(id string) dbctl.Book {
 	// 	Description   string
 	// 	ISBN          string
 	// }
-
+	t := time.Now().Unix()
 	book := dbctl.Book{
-		RFID:          "hoge",
-		Status:        "hogehoge",
-		PlaceID:       0,
+		RFID:          strconv.Itoa(int(t)),
+		Status:        "exist",
+		PlaceID:       1,
 		BookName:      b.Items[0].VolumeInfo.Title,
 		Author:        b.Items[0].VolumeInfo.Authors[0],
 		Publisher:     b.Items[0].VolumeInfo.Publisher,
@@ -250,5 +252,24 @@ func BookRegister(id string) dbctl.Book {
 		APIID:         b.Items[0].ID,
 	}
 
+	book.Description = toDescription(book.Description)
+
+	fmt.Println(book)
+
 	return book
+}
+
+func toDescription(s string) string {
+	str := ""
+	count := 0
+	for _, c := range s {
+		if count > 2000 {
+			break
+		}
+
+		str += string(c)
+		count++
+	}
+
+	return str
 }

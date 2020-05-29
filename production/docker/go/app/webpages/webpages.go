@@ -3,6 +3,7 @@ package webpages
 import (
 	"crypto/sha256"
 	"encoding/hex"
+	"fmt"
 	"html/template"
 	"log"
 	"net/http"
@@ -117,17 +118,19 @@ func SignUp(w http.ResponseWriter, r *http.Request) {
 		Email:    dat.Mail,
 		Password: hex.EncodeToString(hashedPassWord[:]),
 	}
-
 	// データベースにユーザーを追加する関数を呼び出す
 	// 下の使用例を参照してUserRegister関数に適当な引数を入力してください
-	if err := dbctl.UserRegister(User); err != nil {
-		log.Println(err)
-		dat.Err = `
-		<br>
-		<div class="alert alert-danger" role="alert">
-			<p>エラーが発生しました</p>
-		</div>
-	`
+	if User.Name != "" && User.CardData != "" && User.Email != "" && User.Password != "" {
+		if err := dbctl.UserRegister(User); err != nil {
+			log.Println(err)
+			dat.Err = `
+			<br>
+			<div class="alert alert-danger" role="alert">
+				<p>エラーが発生しました</p>
+			</div>
+		`
+		}
+		http.Redirect(w, r, "/signupComplete", http.StatusMovedPermanently)
 	}
 
 	if r.Method == "POST" {
@@ -268,14 +271,25 @@ func SearchPage(w http.ResponseWriter, r *http.Request) {
 func BookAdd(w http.ResponseWriter, r *http.Request) {
 
 	log.Println("URL:", r.URL)
+
 	u := r.URL.Query()
+	log.Println("u:", u)
+	log.Println("len(u[\"id\"]):", len(u["id"]))
+
 	if len(u["id"]) > 0 {
-		dbctl.BookAdd(apictl.BookRegister(u["id"][0]))
+		fmt.Println("hogehoge")
+		err := dbctl.BookAdd(apictl.BookRegister(u["id"][0]))
+		if err != nil {
+			log.Println(err)
+		}
+
 	} else {
 		log.Println("id is undefined.")
+
 	}
 
-	http.Redirect(w, r, "/search", http.StatusMovedPermanently)
+	http.Redirect(w, r, "/", http.StatusMovedPermanently)
+
 }
 
 // UserPage はユーザー情報を閲覧するページの関数
