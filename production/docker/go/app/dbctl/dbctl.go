@@ -11,7 +11,7 @@ import (
 )
 
 //エラーの内容:err 関数の名前:f.Name() ファイルのパス:file runtimeが呼ばれた行数:line
-const errFormat = "\n%v\nfunction:%v file:%v line:%v\n"
+const errFormat = "%v\nfunction:%v file:%v line:%v\n"
 
 // // Place はデータベースのテーブルから値を取得するための構造体
 // type Place struct {
@@ -23,14 +23,14 @@ const errFormat = "\n%v\nfunction:%v file:%v line:%v\n"
 // Book は本の登録、詳細な情報の表示に使用する構造体
 type Book struct {
 	RFID          string
-	Status        string
 	PlaceID       int
+	Status        string
 	BookName      string
+	APIID         string
 	Author        string
 	Publisher     string
 	PublishedDate string
 	Description   string
-	APIID         string
 }
 
 // Persons はUserRegisterの引数として用いる構造体
@@ -167,12 +167,12 @@ func UserRegister(p Persons) error {
 	return err
 }
 
-// BookAdd はbook_info,book_statusに本を登録する関数
+// BookAdd はbook_info,book_statuesに本を登録する関数
 func BookAdd(b Book) error {
 	pc, file, line, _ := runtime.Caller(0)
 	f := runtime.FuncForPC(pc)
 
-	bookInfoRows, err := db.Query("insert into book_info (book_name,author,publisher,published_date,description,api_id) values (?,?,?,?,?,?);", b.BookName, b.Author, b.Publisher, b.PublishedDate, b.Description, b.APIID)
+	bookInfoRows, err := db.Query("insert into book_info (book_name,api_id,author,publisher,published_date,description) values (?,?,?,?,?,?);", b.BookName, b.APIID, b.Author, b.Publisher, b.PublishedDate, b.Description)
 	if err != nil {
 		log.Printf(errFormat, err, f.Name(), file, line)
 		return err
@@ -203,26 +203,19 @@ func BookAdd(b Book) error {
 	return err
 }
 
-// BookStatus はplaceIDが示す場所に存在する本の情報を返す関数
-func BookStatus(placeID int) ([]Book, error) {
+// BookStatus は本棚に存在する本の情報を返す関数
+func BookStatus() ([]Book, error) {
 	pc, file, line, _ := runtime.Caller(0)
 	f := runtime.FuncForPC(pc)
 
-	errStr := "This place is error."
-	// placeIDが0,-1は貸出中持出中であるのでエラー
-	if placeID == 0 || placeID == -1 {
-		log.Printf(errFormat, errStr, f.Name(), file, line)
-		return nil, errors.New(errStr)
-	}
-
 	books := make([]Book, 0, 10)
 	var bookBuf Book
-	// その場所(placeIDに該当する)にある本がいくつかを数えるためにbooksとは別のスライスにしている
+	// 本棚に本がいくつかを数えるためにbooksとは別のスライスにしている
 	bookInfoIDs := make([]int, 0, 10)
 	var infoIDBuf int
 
-	// placeIDが一致する本のレコードをbook_statusesからselectする
-	booksStatusRows, err := db.Query("select rfid_tag,book_info_id,place_id from book_statuses where place_id = ?;", placeID)
+	// 本棚に存在する本のレコードをbook_statusesからselectする
+	booksStatusRows, err := db.Query("select rfid_tag,book_info_id,place_id from book_statuses where place_id = 1;")
 	if err != nil {
 		log.Printf(errFormat, err, f.Name(), file, line)
 		return nil, err
@@ -243,7 +236,7 @@ func BookStatus(placeID int) ([]Book, error) {
 
 	// booksとbookinfoIDは一対一に対応しているため、forのindexが示すbooksの要素とIDを引数としてselectしたレコードは同じ本の情報となる
 	for i, ID := range bookInfoIDs {
-		booksInfoRows, err := db.Query("select book_name,author,publisher,published_date,description,api_id from book_info where book_info_id = ?;", ID)
+		booksInfoRows, err := db.Query("select book_name,api_id,author,publisher,published_date,description from book_info where book_info_id = ?;", ID)
 		if err != nil {
 			log.Printf(errFormat, err, f.Name(), file, line)
 			return nil, err
@@ -251,7 +244,7 @@ func BookStatus(placeID int) ([]Book, error) {
 		defer booksInfoRows.Close()
 
 		booksInfoRows.Next()
-		err = booksInfoRows.Scan(&books[i].BookName, &books[i].Author, &books[i].Publisher, &books[i].PublishedDate, &books[i].Description, &books[i].APIID)
+		err = booksInfoRows.Scan(&books[i].BookName, &books[i].APIID, &books[i].Author, &books[i].Publisher, &books[i].PublishedDate, &books[i].Description)
 		if err != nil {
 			log.Printf(errFormat, err, f.Name(), file, line)
 			return nil, err
@@ -259,6 +252,42 @@ func BookStatus(placeID int) ([]Book, error) {
 	}
 
 	return books, err
+}
+
+// BookDetail は本の詳細を返す関数
+func BookDetail(apiID string) (Book, error) {
+	pc, file, line, _ := runtime.Caller(0)
+	f := runtime.FuncForPC(pc)
+
+	var book Book
+	var bookInfoID int
+
+	bookInfoRow, err := db.Query("select * from book_info where api_id=?;", apiID)
+	if err != nil {
+		log.Printf(errFormat, err, f.Name(), file, line)
+		return book, err
+	}
+	defer bookInfoRow.Close()
+
+	bookInfoRow.Next()
+	err = bookInfoRow.Scan(&bookInfoID, &book.APIID, &book.BookName, &book.Author, &book.Publisher, &book.PublishedDate, &book.Description)
+
+	bookStatusRow, err := db.Query("select rfid_tag,place_id from book_statuses where book_info_id=?", bookInfoID)
+	if err != nil {
+		log.Printf(errFormat, err, f.Name(), file, line)
+		return book, err
+	}
+	defer bookStatusRow.Close()
+
+	bookStatusRow.Next()
+	err = bookStatusRow.Scan(&book.RFID, &book.PlaceID)
+	if err != nil {
+		log.Println("hello")
+		log.Printf(errFormat, err, f.Name(), file, line)
+		return book, err
+	}
+
+	return book, err
 }
 
 // Login はメアドとパスワードでログインする関数です
@@ -280,3 +309,10 @@ func Login(mail, pass string) (bool, error) {
 	}
 	return false, errors.New(errStr)
 }
+
+// func BorrowBook() error {
+// 	pc, file, line, _ := runtime.Caller(0)
+// 	f := runtime.FuncForPC(pc)
+
+// 	return nil
+// }
