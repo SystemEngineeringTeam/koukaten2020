@@ -127,6 +127,7 @@ type BookPage struct {
 	Status          string
 	BookData        string
 	BookDescription string
+	Identify        string
 }
 
 // SearchedBook は検索した本を表示するための
@@ -205,6 +206,7 @@ func BookDetail(id string) BookPage {
 		Status:          "hoge",
 		BookData:        "hogehoge",
 		BookDescription: b.Items[0].VolumeInfo.Description,
+		Identify:        id,
 	}
 
 	return detail
@@ -263,7 +265,7 @@ func toDescription(s string) string {
 	str := ""
 	count := 0
 	for _, c := range s {
-		if count > 2000 {
+		if count > 500 {
 			break
 		}
 
