@@ -89,7 +89,15 @@ func CreateNewSession(w http.ResponseWriter, r *http.Request) {
 	mail := r.FormValue("Mail")
 	hashedMail := mailToHashedMail(mail)
 	session, _ := store.Get(r, hashedMail)
+
+	cookie := &http.Cookie{
+		Name:  "Mail",
+		Value: hashedMail,
+	}
+	http.SetCookie(w, cookie)
+
 	session.Values["login"] = true
+	session.Options.MaxAge = 1
 	session.Save(r, w)
 
 }
@@ -105,4 +113,20 @@ func IsLogin(w http.ResponseWriter, r *http.Request) bool {
 		return true
 	}
 	return false
+}
+
+// Logout はログアウトする関数です
+func Logout(w http.ResponseWriter, r *http.Request) {
+	cookie, err := r.Cookie("Mail")
+
+	if err != nil {
+		log.Println(err)
+	}
+
+	session, _ := store.Get(r, cookie.Value)
+
+	session.Values["login"] = false
+	session.Save(r, w)
+
+	http.Redirect(w, r, "/", http.StatusPermanentRedirect)
 }

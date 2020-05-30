@@ -193,7 +193,7 @@ func BookAdd(b Book) error {
 		return err
 	}
 
-	bookStatusesRows, err := db.Query("insert into book_statuses (rfid_id,book_info_id,place_id,book_datetime) values (?,?,?,?);", b.RFID, bookInfoID, b.PlaceID, time.Now().Format("2006-01-02 15:04:05"))
+	bookStatusesRows, err := db.Query("insert into book_statuses (rfid_tag,book_info_id,place_id,book_datetime) values (?,?,?,?);", b.RFID, bookInfoID, b.PlaceID, time.Now().Format("2006-01-02 15:04:05"))
 	if err != nil {
 		log.Printf(errFormat, err, f.Name(), file, line)
 		return err
@@ -215,7 +215,7 @@ func BookStatus() ([]Book, error) {
 	var infoIDBuf int
 
 	// 本棚に存在する本のレコードをbook_statusesからselectする
-	booksStatusRows, err := db.Query("select rfid_id,book_info_id,place_id from book_statuses where place_id = 1;")
+	booksStatusRows, err := db.Query("select rfid_tag,book_info_id,place_id from book_statuses where place_id = 1;")
 	if err != nil {
 		log.Printf(errFormat, err, f.Name(), file, line)
 		return nil, err
@@ -272,7 +272,7 @@ func BookDetail(apiID string) (Book, error) {
 	bookInfoRow.Next()
 	err = bookInfoRow.Scan(&bookInfoID, &book.APIID, &book.BookName, &book.Author, &book.Publisher, &book.PublishedDate, &book.Description)
 
-	bookStatusRow, err := db.Query("select rfid_id,place_id from book_statuses where book_info_id=?", bookInfoID)
+	bookStatusRow, err := db.Query("select rfid_tag,place_id from book_statuses where book_info_id=?", bookInfoID)
 	if err != nil {
 		log.Printf(errFormat, err, f.Name(), file, line)
 		return book, err

@@ -309,6 +309,11 @@ func UserPage(w http.ResponseWriter, r *http.Request) {
 
 }
 
+// FavHandle は/favicon.icoに対する処理を記述した関数です
+func FavHandle(w http.ResponseWriter, r *http.Request) {
+	// http.ServeFile(w,r,"relative/path/to/favicon.ico")
+}
+
 //Test は新しく作った関数をテストするところ 関数の使い方も兼ねている
 func Test(w http.ResponseWriter, r *http.Request) {
 	// log.Println(dbctl.BookDetail("apiのidを入れてね"))
