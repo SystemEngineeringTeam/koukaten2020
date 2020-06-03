@@ -45,20 +45,3 @@ func DeleteBook(apiID string) error {
 	return nil
 
 }
-
-// // DeleteBook は本の削除を行う関数です
-// func DeleteBook(apiID string) error {
-// 	pc, file, line, _ := runtime.Caller(0)
-// 	f := runtime.FuncForPC(pc)
-// 	fmt.Println(apiID)
-// 	b := ""
-// 	rows, err := db.Query("select book_info_id from book_info where apiID = ?", apiID)
-// 	if err != nil {
-// 		log.Println(errFormat, err, f.Name(), file, line)
-// 		return err
-// 	}
-// 	rows.Next()
-// 	err = rows.Scan(&b)
-// 	log.Println(b)
-// 	return err
-// }
