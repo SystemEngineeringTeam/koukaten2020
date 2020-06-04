@@ -193,7 +193,7 @@ func BookAdd(b Book) error {
 		return err
 	}
 
-	bookStatusesRows, err := db.Query("insert into book_statuses (rfid_id,book_info_id,place_id,book_datetime) values (?,?,?,?);", b.RFID, bookInfoID, b.PlaceID, time.Now().Format("2006-01-02 15:04:05"))
+	bookStatusesRows, err := db.Query("insert into book_statuses (rfid_tag,book_info_id,place_id,book_datetime) values (?,?,?,?);", b.RFID, bookInfoID, b.PlaceID, time.Now().Format("2006-01-02 15:04:05"))
 	if err != nil {
 		log.Printf(errFormat, err, f.Name(), file, line)
 		return err
@@ -215,7 +215,7 @@ func BookStatus() ([]Book, error) {
 	var infoIDBuf int
 
 	// 本棚に存在する本のレコードをbook_statusesからselectする
-	booksStatusRows, err := db.Query("select rfid_id,book_info_id,place_id from book_statuses where place_id = 1;")
+	booksStatusRows, err := db.Query("select rfid_tag,book_info_id,place_id from book_statuses where place_id = 1;")
 	if err != nil {
 		log.Printf(errFormat, err, f.Name(), file, line)
 		return nil, err
@@ -272,7 +272,7 @@ func BookDetail(apiID string) (Book, error) {
 	bookInfoRow.Next()
 	err = bookInfoRow.Scan(&bookInfoID, &book.APIID, &book.BookName, &book.Author, &book.Publisher, &book.PublishedDate, &book.Description)
 
-	bookStatusRow, err := db.Query("select rfid_id,place_id from book_statuses where book_info_id=?", bookInfoID)
+	bookStatusRow, err := db.Query("select rfid_tag,place_id from book_statuses where book_info_id=?", bookInfoID)
 	if err != nil {
 		log.Printf(errFormat, err, f.Name(), file, line)
 		return book, err
@@ -299,7 +299,7 @@ func Login(mail, pass string) (bool, error) {
 
 	rows, err := db.Query("select email_id from emails where email = ? and password = ?;", mail, pass)
 	if err != nil {
-		log.Println(errFormat, err, f.Name(), file, line)
+		log.Printf(errFormat, err, f.Name(), file, line)
 		return false, errors.New(errStr)
 	}
 	defer rows.Close()
@@ -310,9 +310,30 @@ func Login(mail, pass string) (bool, error) {
 	return false, errors.New(errStr)
 }
 
-// func BorrowBook() error {
-// 	pc, file, line, _ := runtime.Caller(0)
-// 	f := runtime.FuncForPC(pc)
+// BorrowBook は本の所在を貸出にする関数
+func BorrowBook(rfid string, cardData string) error {
+	pc, file, line, _ := runtime.Caller(0)
+	f := runtime.FuncForPC(pc)
 
-// 	return nil
-// }
+	_, err := db.Exec("update book_statuses set place_id = 1 where rfid_tag = ?;", rfid)
+	if err != nil {
+		log.Printf(errFormat, err, f.Name(), file, line)
+		return err
+	}
+	rows, err := db.Query("select person_id from persons where card_data = ?;", cardData)
+	if err != nil {
+		log.Printf(errFormat, err, f.Name(), file, line)
+		return err
+	}
+	personID := ""
+	rows.Next()
+	rows.Scan(&personID)
+
+	_, err = db.Exec("insert into borrowed_logs (rfid_tag,person_id) values(?,?)", rfid, personID)
+	if err != nil {
+		log.Printf(errFormat, err, f.Name(), file, line)
+		return err
+	}
+
+	return err
+}
