@@ -311,5 +311,6 @@ func UserPage(w http.ResponseWriter, r *http.Request) {
 
 //Test は新しく作った関数をテストするところ 関数の使い方も兼ねている
 func Test(w http.ResponseWriter, r *http.Request) {
-	// log.Println(dbctl.BookDetail("apiのidを入れてね"))
+	// 引数はRFID、借りた人の学生証の値
+	log.Println(dbctl.BorrowBook("hoge", "hoge"))
 }

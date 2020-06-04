@@ -1,6 +1,7 @@
 use book_management_db;
 
 create table places (
+    -- -1:持出中 1:貸出中 2:本棚
     place_id int auto_increment not null primary key,
     place_name varchar(128) not null
 );
@@ -12,11 +13,13 @@ create table book_info(
     author varchar(128),
     publisher varchar(128),
     published_date varchar(20),
-    description varchar(4096)
+    description varchar(4096),
+    -- 初期値ではnullが入っている
+    book_url varchar(1024)
 );
 
 create table book_statuses(
-    rfid_id varchar(128) not null primary key,
+    rfid_tag varchar(128) not null primary key,
     book_info_id int not null unique,
     place_id int not null,
     book_datetime datetime not null,
@@ -35,7 +38,7 @@ create table emails (
 
 create table persons (
     person_id int auto_increment not null primary key,
-    card_data varchar(10),
+    card_data varchar(10) unique,
     person_name varchar(50) not null,
     email_id int not null unique,
     person_datetime datetime not null,
@@ -47,10 +50,10 @@ create table persons (
 
 create table borrowed_logs(
     borrowed_log_id int auto_increment not null primary key,
-    rfid_id varchar(20) not null,
+    rfid_tag varchar(20) not null,
     person_id int,
-    -- 依存しているrfid_idが削除されたとき付随して削除される
-    constraint fk_rfid_id foreign key (rfid_id) references book_statuses(rfid_id) on
+    -- 依存しているrfid_tagが削除されたとき付随してレコードは削除される
+    constraint fk_rfid_tag foreign key (rfid_tag) references book_statuses(rfid_tag) on
     delete
         cascade,
         -- 依存しているperson_idが削除されたときこのテーブルのレコードにnullを入れる
@@ -76,7 +79,7 @@ values
 insert into
     places (place_id, place_name)
 values
-    (0, "貸出中");
+    (1, "貸出中");
 
 insert into
     places (place_name)
@@ -142,7 +145,7 @@ values
 
 insert into
     book_statuses (
-        rfid_id,
+        rfid_tag,
         book_info_id,
         place_id,
         book_datetime
@@ -157,7 +160,7 @@ values
 
 insert into
     book_statuses (
-        rfid_id,
+        rfid_tag,
         book_info_id,
         place_id,
         book_datetime
@@ -172,7 +175,7 @@ values
 
 insert into
     book_statuses (
-        rfid_id,
+        rfid_tag,
         book_info_id,
         place_id,
         book_datetime
@@ -209,7 +212,7 @@ values
     );
 
 insert into
-    borrowed_logs(rfid_id, person_id)
+    borrowed_logs(rfid_tag, person_id)
 values
     ("hoge", 1);
 

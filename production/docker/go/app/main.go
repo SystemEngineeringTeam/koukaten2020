@@ -25,7 +25,7 @@ func main() {
 	http.HandleFunc("/search", webpages.SearchPage)
 	http.HandleFunc("/user", webpages.UserPage)
 
-	// http.HandleFunc("/test", webpages.Test)
+	http.HandleFunc("/test", webpages.Test)
 	log.Println("Listening on :8080...")
 	http.ListenAndServe(":80", nil)
 }
