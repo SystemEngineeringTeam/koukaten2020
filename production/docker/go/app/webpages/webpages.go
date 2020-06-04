@@ -309,6 +309,24 @@ func UserPage(w http.ResponseWriter, r *http.Request) {
 
 }
 
+// BookDelete は本の削除ボタンに使う関数です
+func BookDelete(w http.ResponseWriter, r *http.Request) {
+	log.Println("Method:", r.Method)
+	log.Println("URL:", r.URL)
+
+	r.ParseForm()
+	if err := dbctl.DeleteBook(r.FormValue("DeleteID")); err != nil {
+		log.Println(err)
+	}
+	http.Redirect(w, r, "/", http.StatusMovedPermanently)
+
+}
+
+// FavHandle は/favicon.icoに対する処理を記述した関数です
+func FavHandle(w http.ResponseWriter, r *http.Request) {
+	// http.ServeFile(w,r,"relative/path/to/favicon.ico")
+}
+
 //Test は新しく作った関数をテストするところ 関数の使い方も兼ねている
 func Test(w http.ResponseWriter, r *http.Request) {
 	// 引数はRFID、借りた人の学生証の値
