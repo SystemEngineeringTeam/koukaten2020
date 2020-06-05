@@ -97,7 +97,7 @@ func CreateNewSession(w http.ResponseWriter, r *http.Request) {
 	http.SetCookie(w, cookie)
 
 	session.Values["login"] = true
-	session.Options.MaxAge = 1
+	session.Options.MaxAge = 86400
 	session.Save(r, w)
 
 }
@@ -108,6 +108,7 @@ func IsLogin(w http.ResponseWriter, r *http.Request) bool {
 	mail := r.FormValue("Mail")
 	hashedMail := mailToHashedMail(mail)
 	session, _ := store.Get(r, hashedMail)
+	fmt.Println("islogin ", session.Values)
 
 	if session.Values["login"] == true {
 		return true
