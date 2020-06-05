@@ -241,6 +241,12 @@ func BookRegister(id string) dbctl.Book {
 	// 	Description   string
 	// 	ISBN          string
 	// }
+
+	if len(b.Items) <= 0 {
+		errBook := dbctl.Book{}
+		errBook.RFID = "error"
+		return errBook
+	}
 	t := time.Now().Unix()
 	book := dbctl.Book{
 		RFID:          strconv.Itoa(int(t)),
