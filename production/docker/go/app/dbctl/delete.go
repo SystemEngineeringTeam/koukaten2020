@@ -33,12 +33,19 @@ func DeleteBook(apiID string) error {
 
 	fmt.Println(f.Name(), b)
 
-	del, err := db.Query("delete from book_statuses where book_info_id = ?", b)
+	// del, err := db.Query("delete from book_statuses where book_info_id = ?", b)
+	// if err != nil {
+	// 	log.Printf(errFormat, err, f.Name(), file, line)
+	// 	return err
+	// }
+	// defer del.Close()
+
+	delinfo, err := db.Query("delete from book_info where book_info_id = ?", b)
 	if err != nil {
 		log.Printf(errFormat, err, f.Name(), file, line)
 		return err
 	}
-	defer del.Close()
+	defer delinfo.Close()
 
 	fmt.Println(rows)
 

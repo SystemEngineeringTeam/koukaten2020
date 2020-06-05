@@ -299,7 +299,7 @@ func Login(mail, pass string) (bool, error) {
 
 	rows, err := db.Query("select email_id from emails where email = ? and password = ?;", mail, pass)
 	if err != nil {
-		log.Println(errFormat, err, f.Name(), file, line)
+		log.Printf(errFormat, err, f.Name(), file, line)
 		return false, errors.New(errStr)
 	}
 	defer rows.Close()
@@ -310,9 +310,30 @@ func Login(mail, pass string) (bool, error) {
 	return false, errors.New(errStr)
 }
 
-// func BorrowBook() error {
-// 	pc, file, line, _ := runtime.Caller(0)
-// 	f := runtime.FuncForPC(pc)
+// BorrowBook は本の所在を貸出にする関数
+func BorrowBook(rfid string, cardData string) error {
+	pc, file, line, _ := runtime.Caller(0)
+	f := runtime.FuncForPC(pc)
 
-// 	return nil
-// }
+	_, err := db.Exec("update book_statuses set place_id = 1 where rfid_tag = ?;", rfid)
+	if err != nil {
+		log.Printf(errFormat, err, f.Name(), file, line)
+		return err
+	}
+	rows, err := db.Query("select person_id from persons where card_data = ?;", cardData)
+	if err != nil {
+		log.Printf(errFormat, err, f.Name(), file, line)
+		return err
+	}
+	personID := ""
+	rows.Next()
+	rows.Scan(&personID)
+
+	_, err = db.Exec("insert into borrowed_logs (rfid_tag,person_id) values(?,?)", rfid, personID)
+	if err != nil {
+		log.Printf(errFormat, err, f.Name(), file, line)
+		return err
+	}
+
+	return err
+}

@@ -278,9 +278,16 @@ func BookAdd(w http.ResponseWriter, r *http.Request) {
 
 	if len(u["id"]) > 0 {
 		fmt.Println("hogehoge")
-		err := dbctl.BookAdd(apictl.BookRegister(u["id"][0]))
-		if err != nil {
-			log.Println(err)
+		b := apictl.BookRegister(u["id"][0])
+
+		fmt.Println(b)
+
+		if b.RFID != "error" {
+			err := dbctl.BookAdd(b)
+			if err != nil {
+				log.Println("hoge")
+				log.Println(err)
+			}
 		}
 
 	} else {
@@ -288,7 +295,7 @@ func BookAdd(w http.ResponseWriter, r *http.Request) {
 
 	}
 
-	http.Redirect(w, r, "/", http.StatusMovedPermanently)
+	http.Redirect(w, r, "/", http.StatusSeeOther)
 
 }
 
@@ -329,5 +336,6 @@ func FavHandle(w http.ResponseWriter, r *http.Request) {
 
 //Test は新しく作った関数をテストするところ 関数の使い方も兼ねている
 func Test(w http.ResponseWriter, r *http.Request) {
-	// log.Println(dbctl.BookDetail("apiのidを入れてね"))
+	// 引数はRFID、借りた人の学生証の値
+	log.Println(dbctl.BorrowBook("hoge", "hoge"))
 }
