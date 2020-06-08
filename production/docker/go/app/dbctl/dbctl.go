@@ -31,6 +31,7 @@ type Book struct {
 	Publisher     string
 	PublishedDate string
 	Description   string
+	BookImgURL    string
 }
 
 // Persons はUserRegisterの引数として用いる構造体
@@ -172,7 +173,7 @@ func BookAdd(b Book) error {
 	pc, file, line, _ := runtime.Caller(0)
 	f := runtime.FuncForPC(pc)
 
-	bookInfoRows, err := db.Query("insert into book_info (book_name,api_id,author,publisher,published_date,description) values (?,?,?,?,?,?);", b.BookName, b.APIID, b.Author, b.Publisher, b.PublishedDate, b.Description)
+	bookInfoRows, err := db.Query("insert into book_info (book_name,api_id,author,publisher,published_date,description,book_img_url) values (?,?,?,?,?,?,?);", b.BookName, b.APIID, b.Author, b.Publisher, b.PublishedDate, b.Description, b.BookImgURL)
 	if err != nil {
 		log.Printf(errFormat, err, f.Name(), file, line)
 		return err
@@ -215,7 +216,7 @@ func BookStatus() ([]Book, error) {
 	var infoIDBuf int
 
 	// 本棚に存在する本のレコードをbook_statusesからselectする
-	booksStatusRows, err := db.Query("select rfid_tag,book_info_id,place_id from book_statuses where place_id = 1;")
+	booksStatusRows, err := db.Query("select rfid_tag,book_info_id,place_id from book_statuses;")
 	if err != nil {
 		log.Printf(errFormat, err, f.Name(), file, line)
 		return nil, err
@@ -270,7 +271,7 @@ func BookDetail(apiID string) (Book, error) {
 	defer bookInfoRow.Close()
 
 	bookInfoRow.Next()
-	err = bookInfoRow.Scan(&bookInfoID, &book.APIID, &book.BookName, &book.Author, &book.Publisher, &book.PublishedDate, &book.Description)
+	err = bookInfoRow.Scan(&bookInfoID, &book.APIID, &book.BookName, &book.Author, &book.Publisher, &book.PublishedDate, &book.Description, &book.BookImgURL)
 
 	bookStatusRow, err := db.Query("select rfid_tag,place_id from book_statuses where book_info_id=?", bookInfoID)
 	if err != nil {
@@ -285,6 +286,14 @@ func BookDetail(apiID string) (Book, error) {
 		log.Println("hello")
 		log.Printf(errFormat, err, f.Name(), file, line)
 		return book, err
+	}
+
+	if book.PlaceID == -1 {
+		book.Status = "TakeOut"
+	} else if book.PlaceID == 1 {
+		book.Status = "Borrow"
+	} else {
+		book.Status = "Exist"
 	}
 
 	return book, err

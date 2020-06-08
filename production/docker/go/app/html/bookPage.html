@@ -23,6 +23,17 @@
 				<div class="media row">
 								
 					<div class="media-left bookImg col-md">
+						<!-- type Book struct {
+							RFID          string
+							PlaceID       int
+							Status        string
+							BookName      string
+							APIID         string
+							Author        string
+							Publisher     string
+							PublishedDate string
+							Description   string
+						} -->
 						<img src={{.BookImgURL}} class="media-object">
 					</div>
 										
@@ -39,13 +50,13 @@
 												<tr>
 													<th><p>作者</p></th>
 													<td><p>
-														{{.BookAuthor}}
+														{{.Author}}
 													</p></td>
 												</tr>
 												<tr class="table-success">
 													<th><p>制作年</p></th>
 													<td><p>
-														{{.BookPublication}}
+														{{.PublishedDate}}
 													</p></td>
 												</tr>
 												<tr>
@@ -57,13 +68,13 @@
 												<tr class="table-success">
 														<th><p>データ</p></th>
 													<td><p>
-														{{.BookData}}
+
 													</p></td>
 												</tr>
 												<tr>
 													<th><p>情報</p></th>
 													<td><p>
-														{{.BookDescription}}
+														{{.Description}}
 													</p></td>
 												</tr>
 										</tbody>
@@ -75,21 +86,27 @@
                                         <!-- ここに状態送って -->
                                         <div class={{.Status}}>
                                             <span  class="kariru">
-                                                <button type="button" class="btn btn-primary">借りる</button>
+												<form action="/book/borrow" method="post">
+													<input type="hidden" name="RFID" value="{{.RFID}}">
+													<button type="submit" class="btn btn-primary">借りる</button>
+												</form>
                                             </span>
                                             <span class="kaesu">
-                                                <button type="button" class="btn btn-success">返す</button>
+												<form action="/book/return" method="post">
+													<input type="hidden" name="DeleteID" value="{{.APIID}}">
+													<button type="submit" class="btn btn-success">返す</button>
+												</form>
                                             </span>
 											<span>
-												<form action="/deletebook" method="post">
-													<input type="hidden" name="DeleteID" value="{{.Identify}}">
+												<form action="/book/delete" method="post">
+													<input type="hidden" name="DeleteID" value="{{.APIID}}">
 													<button type="submit" class="btn btn-danger" >削除</button>
 												</form>
-												<!-- <a href="/deletebook?id=%22{{.Identify}}%22"><button type="submit" class="btn btn-danger" >削除</button></a>	 -->
+												<!-- <a href="/deletebook?id=%22{{.APIID}}%22"><button type="submit" class="btn btn-danger" >削除</button></a>	 -->
 											</span>
                                         </div>
                                     </div>
-				        </div>
+								</div>
 
                 <!-- 内容ここまで -->
             </div>
