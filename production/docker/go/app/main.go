@@ -20,17 +20,18 @@ func main() {
 
 	http.HandleFunc("/login", webpages.LoginPage)
 	http.HandleFunc("/signup", webpages.SignUp)
-	http.HandleFunc("/signupComplete", webpages.SignUpComplete)
+	http.HandleFunc("/signup/complete", webpages.SignUpComplete)
 
 	http.HandleFunc("/auth", webpages.AuthPage)
 	http.HandleFunc("/presignup", webpages.PreSignUp)
 
-	http.HandleFunc("/book", webpages.BookDetails)
-	http.HandleFunc("/add", webpages.BookAdd)
-	http.HandleFunc("/search", webpages.SearchPage)
+	http.HandleFunc("/book/detail", webpages.BookDetails)
+	http.HandleFunc("/book/add", webpages.BookAdd)
+	http.HandleFunc("/book/search", webpages.SearchPage)
+	http.HandleFunc("/book/borrow", webpages.Borrow)
+	http.HandleFunc("/book/delete", webpages.BookDelete)
 
 	http.HandleFunc("/user", webpages.UserPage)
-	http.HandleFunc("/deletebook", webpages.BookDelete)
 
 	http.HandleFunc("/logout", auth.Logout)
 
