@@ -337,3 +337,17 @@ func BorrowBook(rfid string, cardData string) error {
 
 	return err
 }
+
+// ReturnBook は本の所在を本棚に戻す関数
+func ReturnBook(rfid string) error {
+	pc, file, line, _ := runtime.Caller(0)
+	f := runtime.FuncForPC(pc)
+
+	_, err := db.Exec("update book_statuses set place_id = 2 where rfid_tag = ?;", rfid)
+	if err != nil {
+		log.Printf(errFormat, err, f.Name(), file, line)
+		return err
+	}
+
+	return err
+}
