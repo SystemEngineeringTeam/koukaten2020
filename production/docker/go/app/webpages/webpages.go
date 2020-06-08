@@ -20,7 +20,7 @@ func TopPage(w http.ResponseWriter, r *http.Request) {
 	log.Println("URL:", r.URL)
 
 	if auth.IsLogin(w, r) == false {
-		http.Redirect(w, r, "/login", http.StatusMovedPermanently)
+		http.Redirect(w, r, "/login", http.StatusSeeOther)
 	}
 
 	books, err := dbctl.BookStatus()
@@ -64,7 +64,7 @@ func LoginPage(w http.ResponseWriter, r *http.Request) {
 	hashedPassWord := sha256.Sum256(pwd)
 	if ok, err := dbctl.Login(r.FormValue("User"), hex.EncodeToString(hashedPassWord[:])); ok {
 		auth.CreateNewSession(w, r)
-		http.Redirect(w, r, "/", http.StatusMovedPermanently)
+		http.Redirect(w, r, "/", http.StatusSeeOther)
 	} else {
 		if r.FormValue("Password") != "" {
 			dat.Err = `
@@ -111,9 +111,9 @@ func SignUp(w http.ResponseWriter, r *http.Request) {
 	b := []byte(r.FormValue("Pass"))
 
 	hashedPassWord := sha256.Sum256(b)
-
+	c := sha256.Sum256([]byte(r.FormValue("User")))
 	User := dbctl.Persons{
-		CardData: "hoge",
+		CardData: hex.EncodeToString(c[:]),
 		Name:     r.FormValue("User"),
 		Email:    dat.Mail,
 		Password: hex.EncodeToString(hashedPassWord[:]),
@@ -130,7 +130,7 @@ func SignUp(w http.ResponseWriter, r *http.Request) {
 			</div>
 		`
 		}
-		http.Redirect(w, r, "/signupComplete", http.StatusMovedPermanently)
+		http.Redirect(w, r, "/signup/complete", http.StatusSeeOther)
 	}
 
 	if r.Method == "POST" {
@@ -205,7 +205,7 @@ func AuthPage(w http.ResponseWriter, r *http.Request) {
 		log.Println(err)
 	}
 
-	http.Redirect(w, r, "/signup", http.StatusMovedPermanently)
+	http.Redirect(w, r, "/signup", http.StatusSeeOther)
 }
 
 // BookDetails は本の詳細ページを表示するための関数です
@@ -220,7 +220,10 @@ func BookDetails(w http.ResponseWriter, r *http.Request) {
 	u := r.URL.Query()
 	log.Println(u["id"][0])
 
-	detail := apictl.BookDetail(u["id"][0])
+	detail, err := dbctl.BookDetail(u["id"][0])
+	if err != nil {
+		log.Println(err)
+	}
 
 	// テンプレートを描画
 	if err := t.Execute(w, detail); err != nil {
@@ -325,13 +328,26 @@ func BookDelete(w http.ResponseWriter, r *http.Request) {
 	if err := dbctl.DeleteBook(r.FormValue("DeleteID")); err != nil {
 		log.Println(err)
 	}
-	http.Redirect(w, r, "/", http.StatusMovedPermanently)
+	http.Redirect(w, r, "/", http.StatusSeeOther)
 
 }
 
 // FavHandle は/favicon.icoに対する処理を記述した関数です
 func FavHandle(w http.ResponseWriter, r *http.Request) {
 	// http.ServeFile(w,r,"relative/path/to/favicon.ico")
+}
+
+// Borrow は本を借りる処理を行う関数です
+func Borrow(w http.ResponseWriter, r *http.Request) {
+	// 引数はRFID、借りた人の学生証の値
+	r.ParseForm()
+	err := dbctl.BorrowBook(r.FormValue("RFID"), "hoge")
+	if err != nil {
+		log.Println(err)
+	}
+
+	http.Redirect(w, r, "/", http.StatusSeeOther)
+
 }
 
 //Test は新しく作った関数をテストするところ 関数の使い方も兼ねている

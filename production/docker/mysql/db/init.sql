@@ -15,7 +15,7 @@ create table book_info(
     published_date varchar(20),
     description varchar(4096),
     -- 初期値ではnullが入っている
-    book_url varchar(1024)
+    book_img_url varchar(1024)
 );
 
 create table book_statuses(
@@ -26,8 +26,7 @@ create table book_statuses(
     constraint fk_place_id foreign key (place_id) references places(place_id),
     -- 依存しているbook_info_idが削除されたとき付随して削除される
     constraint fk_book_info_id foreign key (book_info_id) references book_info (book_info_id) on
-    delete
-        cascade
+    delete cascade
 );
 
 create table emails (
@@ -44,8 +43,7 @@ create table persons (
     person_datetime datetime not null,
     -- 依存しているemail_idが削除されたとき付随して削除される
     constraint fk_email_id foreign key (email_id) references emails(email_id) on
-    delete
-        cascade
+    delete cascade
 );
 
 create table borrowed_logs(
@@ -54,10 +52,9 @@ create table borrowed_logs(
     person_id int,
     -- 依存しているrfid_tagが削除されたとき付随してレコードは削除される
     constraint fk_rfid_tag foreign key (rfid_tag) references book_statuses(rfid_tag) on
-    delete
-        cascade,
-        -- 依存しているperson_idが削除されたときこのテーブルのレコードにnullを入れる
-        constraint fk_person_id foreign key (person_id) references persons(person_id) on
+    delete cascade,
+    -- 依存しているperson_idが削除されたときこのテーブルのレコードにnullを入れる
+    constraint fk_person_id foreign key (person_id) references persons(person_id) on
     delete
     set
         null

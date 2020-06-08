@@ -250,14 +250,15 @@ func BookRegister(id string) dbctl.Book {
 	t := time.Now().Unix()
 	book := dbctl.Book{
 		RFID:          strconv.Itoa(int(t)),
-		Status:        "exist",
-		PlaceID:       1,
+		Status:        "Exist",
+		PlaceID:       2,
 		BookName:      b.Items[0].VolumeInfo.Title,
 		Author:        b.Items[0].VolumeInfo.Authors[0],
 		Publisher:     b.Items[0].VolumeInfo.Publisher,
 		PublishedDate: b.Items[0].VolumeInfo.PublishedDate,
 		Description:   b.Items[0].VolumeInfo.Description,
 		APIID:         b.Items[0].ID,
+		BookImgURL:    b.Items[0].VolumeInfo.ImageLinks.Thumbnail,
 	}
 
 	book.Description = toDescription(book.Description)
