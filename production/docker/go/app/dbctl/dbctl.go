@@ -6,8 +6,6 @@ import (
 	"log"
 	"runtime"
 	"time"
-
-	_ "github.com/go-sql-driver/mysql"
 )
 
 //エラーの内容:err 関数の名前:f.Name() ファイルのパス:file runtimeが呼ばれた行数:line
