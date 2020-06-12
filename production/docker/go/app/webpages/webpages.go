@@ -310,11 +310,19 @@ func UserPage(w http.ResponseWriter, r *http.Request) {
 	// 表示するファイルを指定
 	t := template.Must(template.ParseFiles("html/userPage.html"))
 
-	r.ParseForm()
+	// ユーザーの情報を取ってくる関数
+	mail := auth.GetMail(w, r)
 
-	// テンプレートを描画
-	if err := t.Execute(w, nil); err != nil {
+	// ユーザーの情報を表示するための構造体
+	u, err := dbctl.CallUserFromMail(mail)
+	if err != nil {
 		log.Println(err)
+		return
+	}
+	// テンプレートを描画
+	if err := t.Execute(w, u); err != nil {
+		log.Println(err)
+		return
 	}
 
 }
@@ -347,6 +355,21 @@ func Borrow(w http.ResponseWriter, r *http.Request) {
 	}
 
 	http.Redirect(w, r, "/", http.StatusSeeOther)
+
+}
+
+// UserSetting はユーザ情報の編集をするページ
+func UserSetting(w http.ResponseWriter, r *http.Request) {
+	t := template.Must(template.ParseFiles("html/userEdit.html"))
+	// フォームの解析
+	r.ParseForm()
+
+	// User := r.FormValue("User")
+	// Pass := r.FormValue("FormPass")
+
+	if err := t.Execute(w, nil); err != nil {
+		log.Println(err)
+	}
 
 }
 
