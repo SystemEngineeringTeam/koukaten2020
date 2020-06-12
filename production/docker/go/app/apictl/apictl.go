@@ -6,7 +6,9 @@ import (
 	"io/ioutil"
 	"log"
 	"net/http"
+	"strconv"
 	"strings"
+	"time"
 
 	"../dbctl"
 )
@@ -125,6 +127,7 @@ type BookPage struct {
 	Status          string
 	BookData        string
 	BookDescription string
+	Identify        string
 }
 
 // SearchedBook は検索した本を表示するための
@@ -171,9 +174,9 @@ func SearchBooks(keyword string) []SearchedBook {
 		if len(dat.VolumeInfo.Authors) > 0 {
 			tmp.BookAuthor = dat.VolumeInfo.Authors[0]
 		}
-		// if len(dat.VolumeInfo.IndustryIdentifiers) > 0 {
-		// 	tmp.Identify = dat.VolumeInfo.IndustryIdentifiers[0].Identifier
-		// }
+		if len(dat.VolumeInfo.IndustryIdentifiers) > 0 {
+			tmp.Identify = dat.ID
+		}
 		result = append(result, tmp)
 	}
 
@@ -203,6 +206,7 @@ func BookDetail(id string) BookPage {
 		Status:          "hoge",
 		BookData:        "hogehoge",
 		BookDescription: b.Items[0].VolumeInfo.Description,
+		Identify:        id,
 	}
 
 	return detail
@@ -238,17 +242,43 @@ func BookRegister(id string) dbctl.Book {
 	// 	ISBN          string
 	// }
 
+	if len(b.Items) <= 0 {
+		errBook := dbctl.Book{}
+		errBook.RFID = "error"
+		return errBook
+	}
+	t := time.Now().Unix()
 	book := dbctl.Book{
-		RFID:          "hoge",
-		Status:        "hogehoge",
-		PlaceID:       0,
+		RFID:          strconv.Itoa(int(t)),
+		Status:        "Exist",
+		PlaceID:       2,
 		BookName:      b.Items[0].VolumeInfo.Title,
 		Author:        b.Items[0].VolumeInfo.Authors[0],
 		Publisher:     b.Items[0].VolumeInfo.Publisher,
 		PublishedDate: b.Items[0].VolumeInfo.PublishedDate,
 		Description:   b.Items[0].VolumeInfo.Description,
 		APIID:         b.Items[0].ID,
+		BookImgURL:    b.Items[0].VolumeInfo.ImageLinks.Thumbnail,
 	}
 
+	book.Description = toDescription(book.Description)
+
+	fmt.Println(book)
+
 	return book
+}
+
+func toDescription(s string) string {
+	str := ""
+	count := 0
+	for _, c := range s {
+		if count > 500 {
+			break
+		}
+
+		str += string(c)
+		count++
+	}
+
+	return str
 }

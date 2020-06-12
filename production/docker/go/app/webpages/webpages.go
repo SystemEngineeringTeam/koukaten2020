@@ -3,13 +3,14 @@ package webpages
 import (
 	"crypto/sha256"
 	"encoding/hex"
+	"fmt"
 	"html/template"
 	"log"
 	"net/http"
 
 	"../apictl"
+	"../auth"
 	"../dbctl"
-	mailauth "../mailauth"
 )
 
 // TopPage はトップページを表示する関数です
@@ -18,10 +19,11 @@ func TopPage(w http.ResponseWriter, r *http.Request) {
 	log.Println("Method:", r.Method)
 	log.Println("URL:", r.URL)
 
-	//フォームをパース
-	r.ParseForm()
+	if auth.IsLogin(w, r) == false {
+		http.Redirect(w, r, "/login", http.StatusSeeOther)
+	}
 
-	books, err := dbctl.BookStatus(1)
+	books, err := dbctl.BookStatus()
 	if err != nil {
 		log.Println(err)
 		return
@@ -61,7 +63,8 @@ func LoginPage(w http.ResponseWriter, r *http.Request) {
 	pwd := []byte(r.FormValue("Password"))
 	hashedPassWord := sha256.Sum256(pwd)
 	if ok, err := dbctl.Login(r.FormValue("User"), hex.EncodeToString(hashedPassWord[:])); ok {
-		http.Redirect(w, r, "/", http.StatusMovedPermanently)
+		auth.CreateNewSession(w, r)
+		http.Redirect(w, r, "/", http.StatusSeeOther)
 	} else {
 		if r.FormValue("Password") != "" {
 			dat.Err = `
@@ -99,25 +102,35 @@ func SignUp(w http.ResponseWriter, r *http.Request) {
 	// templateに渡す構造体を定義
 	dat := struct {
 		Mail string
+		Err  template.HTML
 	}{
 		Mail: mail,
+		Err:  ``,
 	}
 
 	b := []byte(r.FormValue("Pass"))
 
 	hashedPassWord := sha256.Sum256(b)
-
+	c := sha256.Sum256([]byte(r.FormValue("User")))
 	User := dbctl.Persons{
-		CardData: "hoge",
+		CardData: hex.EncodeToString(c[:]),
 		Name:     r.FormValue("User"),
 		Email:    dat.Mail,
 		Password: hex.EncodeToString(hashedPassWord[:]),
 	}
-
 	// データベースにユーザーを追加する関数を呼び出す
 	// 下の使用例を参照してUserRegister関数に適当な引数を入力してください
-	if err := dbctl.UserRegister(User); err != nil {
-		log.Println(err)
+	if User.Name != "" && User.CardData != "" && User.Email != "" && User.Password != "" {
+		if err := dbctl.UserRegister(User); err != nil {
+			log.Println(err)
+			dat.Err = `
+			<br>
+			<div class="alert alert-danger" role="alert">
+				<p>エラーが発生しました</p>
+			</div>
+		`
+		}
+		http.Redirect(w, r, "/signup/complete", http.StatusSeeOther)
 	}
 
 	if r.Method == "POST" {
@@ -160,7 +173,7 @@ func PreSignUp(w http.ResponseWriter, r *http.Request) {
 	// メアドが入力されていればメールを送信する
 	if mail != "" {
 		// 認証メールを送信する関数にメールアドレスを渡す
-		mailauth.MailAuth(mail)
+		auth.MailAuth(mail)
 		dat.Msg = `
 			<br>
 			<div class="alert alert-success" role="alert">
@@ -192,7 +205,7 @@ func AuthPage(w http.ResponseWriter, r *http.Request) {
 		log.Println(err)
 	}
 
-	http.Redirect(w, r, "/signup", http.StatusMovedPermanently)
+	http.Redirect(w, r, "/signup", http.StatusSeeOther)
 }
 
 // BookDetails は本の詳細ページを表示するための関数です
@@ -207,7 +220,10 @@ func BookDetails(w http.ResponseWriter, r *http.Request) {
 	u := r.URL.Query()
 	log.Println(u["id"][0])
 
-	detail := apictl.BookDetail(u["id"][0])
+	detail, err := dbctl.BookDetail(u["id"][0])
+	if err != nil {
+		log.Println(err)
+	}
 
 	// テンプレートを描画
 	if err := t.Execute(w, detail); err != nil {
@@ -258,18 +274,107 @@ func SearchPage(w http.ResponseWriter, r *http.Request) {
 func BookAdd(w http.ResponseWriter, r *http.Request) {
 
 	log.Println("URL:", r.URL)
+
 	u := r.URL.Query()
+	log.Println("u:", u)
+	log.Println("len(u[\"id\"]):", len(u["id"]))
+
 	if len(u["id"]) > 0 {
-		dbctl.BookAdd(apictl.BookRegister(u["id"][0]))
+		fmt.Println("hogehoge")
+		b := apictl.BookRegister(u["id"][0])
+
+		fmt.Println(b)
+
+		if b.RFID != "error" {
+			err := dbctl.BookAdd(b)
+			if err != nil {
+				log.Println("hoge")
+				log.Println(err)
+			}
+		}
+
 	} else {
 		log.Println("id is undefined.")
+
 	}
 
-	http.Redirect(w, r, "/search", http.StatusMovedPermanently)
+	http.Redirect(w, r, "/", http.StatusSeeOther)
+
+}
+
+// UserPage はユーザー情報を閲覧するページの関数
+func UserPage(w http.ResponseWriter, r *http.Request) {
+	log.Println("Method:", r.Method)
+	log.Println("URL:", r.URL)
+
+	// 表示するファイルを指定
+	t := template.Must(template.ParseFiles("html/userPage.html"))
+
+	// ユーザーの情報を取ってくる関数
+	mail := auth.GetMail(w, r)
+
+	// ユーザーの情報を表示するための構造体
+	u, err := dbctl.CallUserFromMail(mail)
+	if err != nil {
+		log.Println(err)
+		return
+	}
+	// テンプレートを描画
+	if err := t.Execute(w, u); err != nil {
+		log.Println(err)
+		return
+	}
+
+}
+
+// BookDelete は本の削除ボタンに使う関数です
+func BookDelete(w http.ResponseWriter, r *http.Request) {
+	log.Println("Method:", r.Method)
+	log.Println("URL:", r.URL)
+
+	r.ParseForm()
+	if err := dbctl.DeleteBook(r.FormValue("DeleteID")); err != nil {
+		log.Println(err)
+	}
+	http.Redirect(w, r, "/", http.StatusSeeOther)
+
+}
+
+// FavHandle は/favicon.icoに対する処理を記述した関数です
+func FavHandle(w http.ResponseWriter, r *http.Request) {
+	// http.ServeFile(w,r,"relative/path/to/favicon.ico")
+}
+
+// Borrow は本を借りる処理を行う関数です
+func Borrow(w http.ResponseWriter, r *http.Request) {
+	// 引数はRFID、借りた人の学生証の値
+	r.ParseForm()
+	err := dbctl.BorrowBook(r.FormValue("RFID"), "hoge")
+	if err != nil {
+		log.Println(err)
+	}
+
+	http.Redirect(w, r, "/", http.StatusSeeOther)
+
+}
+
+// UserSetting はユーザ情報の編集をするページ
+func UserSetting(w http.ResponseWriter, r *http.Request) {
+	t := template.Must(template.ParseFiles("html/userEdit.html"))
+	// フォームの解析
+	r.ParseForm()
+
+	// User := r.FormValue("User")
+	// Pass := r.FormValue("FormPass")
+
+	if err := t.Execute(w, nil); err != nil {
+		log.Println(err)
+	}
+
 }
 
 //Test は新しく作った関数をテストするところ 関数の使い方も兼ねている
 func Test(w http.ResponseWriter, r *http.Request) {
-
-	// log.Println(dbctl.Login("e19070ee@aitech.ac.jp", "4c716d4cf211c7b7d2f3233c941771ad0507ea5bacf93b492766aa41ae9f720d"))
+	// 引数はRFID、借りた人の学生証の値
+	log.Println(dbctl.BorrowBook("hoge", "hoge"))
 }
