@@ -32,6 +32,8 @@ func main() {
 	http.HandleFunc("/book/delete", webpages.BookDelete)
 
 	http.HandleFunc("/user", webpages.UserPage)
+	http.HandleFunc("/user/setting", webpages.UserSetting)
+	http.HandleFunc("/user/edit", webpages.UserEdit)
 
 	http.HandleFunc("/logout", auth.Logout)
 
