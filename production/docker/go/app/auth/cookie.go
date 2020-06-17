@@ -17,3 +17,13 @@ func GetMail(w http.ResponseWriter, r *http.Request) string {
 	return cookie.Value
 
 }
+
+// ChangeMailOfCookie はCookieに保存されているメールアドレスを書き換える関数
+func ChangeMailOfCookie(w http.ResponseWriter, r *http.Request, mail string) {
+	cookie, err := r.Cookie("Mail")
+	if err != nil {
+		log.Println(err)
+	}
+	cookie.Value = mail
+	http.SetCookie(w, cookie)
+}

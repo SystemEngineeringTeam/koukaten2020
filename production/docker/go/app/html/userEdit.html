@@ -22,19 +22,23 @@
                 <div class="col-md-8 offset-md-2 py-3">
                     <h1>ユーザー情報</h1>
                 <div>
-                    <form>
+                    <form action="/user/edit">
                         <table class="table table-bordered">
                             <tr>
                                 <label for="formUser" class="control-label">ユーザー名</label>
-                                <input type="text" name="User" class="form-control" id="formUser" placeholder="ユーザー名"required />
+                                <input type="text" name="User" class="form-control" id="formUser"  placeholder="{{.Name}}" />
+                            </tr>
+                            <tr>
+                                <label for="formMail" class="control-label">メールアドレス</label>
+                                <input type="email" name="Mail" class="form-control" id="formMail" placeholder="{{.Email}}" />
                             </tr>
                             <tr>
                                 <label for="formPass" class="control-label">パスワード</label>
-                                <input type="password" name="Pass" class="form-control" id="formPass" placeholder="パスワード"required />
+                                <input type="password" name="Pass" class="form-control" id="formPass" placeholder="パスワード" />
                             </tr>
                             <tr>
                                 <label for="formPass2" class="control-label">パスワード(確認)</label>
-                                <input type="password" name="Pass2" class="form-control" id="formPass2" placeholder="パスワード"required />
+                                <input type="password" name="Pass2" class="form-control" id="formPass2" placeholder="パスワード" />
                                 <small id="pass2helpBlock" class="form-text text-muted"></small>
                             </tr>
                         </table>
