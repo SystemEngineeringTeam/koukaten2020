@@ -310,11 +310,19 @@ func UserPage(w http.ResponseWriter, r *http.Request) {
 	// 表示するファイルを指定
 	t := template.Must(template.ParseFiles("html/userPage.html"))
 
-	r.ParseForm()
+	// ユーザーの情報を取ってくる関数
+	mail := auth.GetMail(w, r)
 
-	// テンプレートを描画
-	if err := t.Execute(w, nil); err != nil {
+	// ユーザーの情報を表示するための構造体
+	u, err := dbctl.CallUserFromMail(mail)
+	if err != nil {
 		log.Println(err)
+		return
+	}
+	// テンプレートを描画
+	if err := t.Execute(w, u); err != nil {
+		log.Println(err)
+		return
 	}
 
 }
@@ -347,6 +355,72 @@ func Borrow(w http.ResponseWriter, r *http.Request) {
 	}
 
 	http.Redirect(w, r, "/", http.StatusSeeOther)
+
+}
+
+// UserSetting はユーザーの情報を変更するためにフォーム入力させるページ
+func UserSetting(w http.ResponseWriter, r *http.Request) {
+	t := template.Must(template.ParseFiles("html/userEdit.html"))
+
+	// ユーザーの情報を取ってくる関数
+	mail := auth.GetMail(w, r)
+
+	// ユーザーの情報を表示するための構造体
+	u, err := dbctl.CallUserFromMail(mail)
+	if err != nil {
+		log.Println(err)
+		return
+	}
+
+	if err := t.Execute(w, u); err != nil {
+		log.Println(err)
+	}
+
+}
+
+// UserEdit はユーザ情報の編集をするページ
+func UserEdit(w http.ResponseWriter, r *http.Request) {
+	// フォームの解析
+	r.ParseForm()
+
+	// ユーザーの情報を取ってくる関数
+	mail := auth.GetMail(w, r)
+
+	// ユーザーの情報を表示するための構造体
+	u, err := dbctl.CallUserFromMail(mail)
+	if err != nil {
+		log.Println(err)
+		return
+	}
+
+	fmt.Println("user", u)
+	fmt.Println(r.FormValue("formUser"), r.FormValue("formMail"), r.FormValue("formPass"))
+
+	// 各情報を変更する関数
+	if ok := r.FormValue("User"); ok != "" {
+		err := u.ChangeUserName(ok)
+		if err != nil {
+			log.Println(err)
+			return
+		}
+	}
+	if ok := r.FormValue("Mail"); ok != "" {
+		err := u.ChangeEmail(ok)
+		if err != nil {
+			log.Println(err)
+			return
+		}
+		auth.ChangeMailOfCookie(w, r, ok)
+	}
+	if ok := r.FormValue("Pass"); ok != "" {
+		err := u.ChangePassword(ok)
+		if err != nil {
+			log.Println(err)
+			return
+		}
+	}
+
+	http.Redirect(w, r, "/user", http.StatusSeeOther)
 
 }
 

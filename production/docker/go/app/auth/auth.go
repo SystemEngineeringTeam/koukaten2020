@@ -85,14 +85,14 @@ var store = sessions.NewCookieStore([]byte("setsetset"))
 
 // CreateNewSession は新しいセッションを作成する関数です
 func CreateNewSession(w http.ResponseWriter, r *http.Request) {
-	r.ParseForm()
-	mail := r.FormValue("Mail")
+	// r.ParseForm()
+	mail := r.FormValue("User")
 	hashedMail := mailToHashedMail(mail)
 	session, _ := store.Get(r, hashedMail)
 
 	cookie := &http.Cookie{
 		Name:  "Mail",
-		Value: hashedMail,
+		Value: mail,
 	}
 	http.SetCookie(w, cookie)
 
@@ -104,11 +104,18 @@ func CreateNewSession(w http.ResponseWriter, r *http.Request) {
 
 // IsLogin はログイン状態を判別する関数です
 func IsLogin(w http.ResponseWriter, r *http.Request) bool {
-	r.ParseForm()
-	mail := r.FormValue("Mail")
+	// r.ParseForm()
+	cookie, err := r.Cookie("Mail")
+	if err != nil {
+		log.Println(err)
+		return false
+	}
+
+	mail := cookie.Value
 	hashedMail := mailToHashedMail(mail)
 	session, _ := store.Get(r, hashedMail)
 	fmt.Println("islogin ", session.Values)
+	fmt.Println(mail)
 
 	if session.Values["login"] == true {
 		return true
@@ -119,15 +126,14 @@ func IsLogin(w http.ResponseWriter, r *http.Request) bool {
 // Logout はログアウトする関数です
 func Logout(w http.ResponseWriter, r *http.Request) {
 	cookie, err := r.Cookie("Mail")
-
 	if err != nil {
 		log.Println(err)
 	}
-
-	session, _ := store.Get(r, cookie.Value)
+	hashedMail := mailToHashedMail(cookie.Value)
+	session, _ := store.Get(r, hashedMail)
 
 	session.Values["login"] = false
 	session.Save(r, w)
 
-	http.Redirect(w, r, "/", http.StatusPermanentRedirect)
+	http.Redirect(w, r, "/", http.StatusSeeOther)
 }
