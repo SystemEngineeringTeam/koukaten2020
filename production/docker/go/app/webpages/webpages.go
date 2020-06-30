@@ -426,6 +426,6 @@ func UserEdit(w http.ResponseWriter, r *http.Request) {
 
 //Test は新しく作った関数をテストするところ 関数の使い方も兼ねている
 func Test(w http.ResponseWriter, r *http.Request) {
-	// 引数はRFID、借りた人の学生証の値
-	log.Println(dbctl.BorrowBook("hoge", "hoge"))
+	// TempBorrowBook関数、ReturnBook関数の引数はRFID
+	log.Println("\nNew function:", dbctl.TempBorrowBook("1593478217"), "\n")
 }

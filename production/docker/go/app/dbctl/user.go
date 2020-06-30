@@ -27,7 +27,7 @@ func CallUserFromMail(mail string) (User, error) {
 
 	rows, err := db.Query("select email_id from emails where email = ?", mail)
 	if err != nil {
-		log.Printf(errFormat, err, f.Name(), file, line)
+		log.Printf(dbErrFormat, err, f.Name(), file, line)
 		return u, err
 	}
 	defer rows.Close()
@@ -38,7 +38,7 @@ func CallUserFromMail(mail string) (User, error) {
 	// person_id | card_data | person_name | email_id | person_datetime
 	users, err := db.Query("select card_data,person_name,person_datetime from persons where email_id = ?", emailID)
 	if err != nil {
-		log.Printf(errFormat, err, f.Name(), file, line)
+		log.Printf(dbErrFormat, err, f.Name(), file, line)
 		return u, err
 	}
 	defer users.Close()
@@ -57,7 +57,7 @@ func callEmailID(mail string) int {
 	f := runtime.FuncForPC(pc)
 	rows, err := db.Query("select email_id from emails where email = ?", mail)
 	if err != nil {
-		log.Printf(errFormat, err, f.Name(), file, line)
+		log.Printf(dbErrFormat, err, f.Name(), file, line)
 		return -1
 	}
 	defer rows.Close()
@@ -73,7 +73,7 @@ func (u User) ChangeUserName(name string) error {
 	f := runtime.FuncForPC(pc)
 	rows, err := db.Query("update persons set person_name = ? where email_id = ?", name, callEmailID(u.Email))
 	if err != nil {
-		log.Printf(errFormat, err, f.Name(), file, line)
+		log.Printf(dbErrFormat, err, f.Name(), file, line)
 		return err
 	}
 	defer rows.Close()
@@ -82,13 +82,13 @@ func (u User) ChangeUserName(name string) error {
 	return nil
 }
 
-// ChangeEmail はユーザー名を編集するメソッド
+// ChangeEmail はEmailを編集するメソッド
 func (u User) ChangeEmail(mail string) error {
 	pc, file, line, _ := runtime.Caller(0)
 	f := runtime.FuncForPC(pc)
 	rows, err := db.Query("update emails set email = ? where email_id = ?", mail, callEmailID(u.Email))
 	if err != nil {
-		log.Printf(errFormat, err, f.Name(), file, line)
+		log.Printf(dbErrFormat, err, f.Name(), file, line)
 		return err
 	}
 	defer rows.Close()
@@ -97,7 +97,7 @@ func (u User) ChangeEmail(mail string) error {
 	return nil
 }
 
-// ChangePassword はユーザー名を編集するメソッド
+// ChangePassword はパスワードを編集するメソッド
 func (u User) ChangePassword(pass string) error {
 	pc, file, line, _ := runtime.Caller(0)
 	f := runtime.FuncForPC(pc)
@@ -105,7 +105,7 @@ func (u User) ChangePassword(pass string) error {
 	hashedPassword := hex.EncodeToString(p[:])
 	rows, err := db.Query("update emails set password=? where email_id = ?", hashedPassword, callEmailID(u.Email))
 	if err != nil {
-		log.Printf(errFormat, err, f.Name(), file, line)
+		log.Printf(dbErrFormat, err, f.Name(), file, line)
 		return err
 	}
 	defer rows.Close()

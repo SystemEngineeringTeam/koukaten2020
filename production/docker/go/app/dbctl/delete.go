@@ -4,8 +4,6 @@ import (
 	"fmt"
 	"log"
 	"runtime"
-
-	_ "github.com/go-sql-driver/mysql"
 )
 
 // DeleteBook は本の削除を行う関数です
@@ -16,7 +14,7 @@ func DeleteBook(apiID string) error {
 	b := ""
 	rows, err := db.Query("select book_info_id from book_info where api_id = ?", apiID)
 	if err != nil {
-		log.Println(errFormat, err, f.Name(), file, line)
+		log.Println(dbErrFormat, err, f.Name(), file, line)
 		return err
 	}
 	defer rows.Close()
@@ -24,7 +22,7 @@ func DeleteBook(apiID string) error {
 	for rows.Next() {
 		err := rows.Scan(&b)
 		if err != nil {
-			log.Printf(errFormat, err, f.Name(), file, line)
+			log.Printf(dbErrFormat, err, f.Name(), file, line)
 			return err
 		}
 
@@ -35,14 +33,14 @@ func DeleteBook(apiID string) error {
 
 	// del, err := db.Query("delete from book_statuses where book_info_id = ?", b)
 	// if err != nil {
-	// 	log.Printf(errFormat, err, f.Name(), file, line)
+	// 	log.Printf(dbErrFormat, err, f.Name(), file, line)
 	// 	return err
 	// }
 	// defer del.Close()
 
 	delinfo, err := db.Query("delete from book_info where book_info_id = ?", b)
 	if err != nil {
-		log.Printf(errFormat, err, f.Name(), file, line)
+		log.Printf(dbErrFormat, err, f.Name(), file, line)
 		return err
 	}
 	defer delinfo.Close()

@@ -6,10 +6,10 @@ import (
 	"log"
 	"runtime"
 	"time"
-)
 
-//エラーの内容:err 関数の名前:f.Name() ファイルのパス:file runtimeが呼ばれた行数:line
-const errFormat = "%v\nfunction:%v file:%v line:%v\n"
+	// ドライバは同じ名前空間に1つ存在していれば良いため、dbctl package 内ではここでimportする
+	_ "github.com/go-sql-driver/mysql"
+)
 
 // // Place はデータベースのテーブルから値を取得するための構造体
 // type Place struct {
@@ -66,7 +66,7 @@ func init() {
 
 	db, err = sql.Open("mysql", "gopher:setsetset@tcp(mysql:3306)/book_management_db")
 	if err != nil {
-		log.Printf(errFormat, err, f.Name(), file, line)
+		log.Printf(dbErrFormat, err, f.Name(), file, line)
 
 		//データベースを開けないと動作が継続できないためpanicを発生させる
 		panic("Can't Open database.")
@@ -81,7 +81,7 @@ func PreRegister(mail, token string) error {
 
 	rows, err := db.Query("insert into pre_persons(pre_person_email,pre_person_token,pre_person_datetime) values(?,?,?)", mail, token, time.Now().Format("2006-01-02 15:04:05"))
 	if err != nil {
-		log.Printf(errFormat, err, f.Name(), file, line)
+		log.Printf(dbErrFormat, err, f.Name(), file, line)
 		return err
 	}
 	defer rows.Close()
@@ -100,7 +100,7 @@ func CallAddress(token string) (address string, err error) {
 	//pre_person_tokenとtokenが一致するpre_person_emailをrowsに格納する
 	rows, err := db.Query("select pre_person_email from pre_persons where pre_person_token = ?;", token)
 	if err != nil {
-		log.Printf(errFormat, err, f.Name(), file, line)
+		log.Printf(dbErrFormat, err, f.Name(), file, line)
 		return errStr, err
 	}
 	defer rows.Close()
@@ -120,7 +120,7 @@ func PreUnRegister(email string) error {
 	//email が一致するレコードをdeleteする
 	row, err := db.Query("delete from pre_persons where pre_person_email = ?;", email)
 	if err != nil {
-		log.Printf(errFormat, err, f.Name(), file, line)
+		log.Printf(dbErrFormat, err, f.Name(), file, line)
 		return err
 	}
 	defer row.Close()
@@ -135,14 +135,14 @@ func UserRegister(p Persons) error {
 
 	emailsRows, err := db.Query("insert into emails (email,password) values (?,?);", p.Email, p.Password)
 	if err != nil {
-		log.Printf(errFormat, err, f.Name(), file, line)
+		log.Printf(dbErrFormat, err, f.Name(), file, line)
 		return err
 	}
 
 	// emailsテーブルからp.Emailとemailが一致するemail_idを取得する
 	emailsRows, err = db.Query("select email_id from emails where email = ?", p.Email)
 	if err != nil {
-		log.Printf(errFormat, err, f.Name(), file, line)
+		log.Printf(dbErrFormat, err, f.Name(), file, line)
 		return err
 	}
 	defer emailsRows.Close()
@@ -151,14 +151,14 @@ func UserRegister(p Persons) error {
 	var emailID int
 	err = emailsRows.Scan(&emailID)
 	if err != nil {
-		log.Printf(errFormat, err, f.Name(), file, line)
+		log.Printf(dbErrFormat, err, f.Name(), file, line)
 		return err
 	}
 
 	// 取得したemailIDを用いてpersonsにinsertする
 	personsRows, err := db.Query("insert into persons (card_data,person_name,email_id,person_datetime) values (?,?,?,?);", p.CardData, p.Name, emailID, time.Now().Format("2006-01-02 15:04:05"))
 	if err != nil {
-		log.Printf(errFormat, err, f.Name(), file, line)
+		log.Printf(dbErrFormat, err, f.Name(), file, line)
 		return err
 	}
 	defer personsRows.Close()
@@ -173,13 +173,13 @@ func BookAdd(b Book) error {
 
 	bookInfoRows, err := db.Query("insert into book_info (book_name,api_id,author,publisher,published_date,description,book_img_url) values (?,?,?,?,?,?,?);", b.BookName, b.APIID, b.Author, b.Publisher, b.PublishedDate, b.Description, b.BookImgURL)
 	if err != nil {
-		log.Printf(errFormat, err, f.Name(), file, line)
+		log.Printf(dbErrFormat, err, f.Name(), file, line)
 		return err
 	}
 
 	bookInfoRows, err = db.Query("select book_info_id from book_info where book_name = ?;", b.BookName)
 	if err != nil {
-		log.Printf(errFormat, err, f.Name(), file, line)
+		log.Printf(dbErrFormat, err, f.Name(), file, line)
 		return err
 	}
 	defer bookInfoRows.Close()
@@ -188,13 +188,13 @@ func BookAdd(b Book) error {
 	var bookInfoID int
 	err = bookInfoRows.Scan(&bookInfoID)
 	if err != nil {
-		log.Printf(errFormat, err, f.Name(), file, line)
+		log.Printf(dbErrFormat, err, f.Name(), file, line)
 		return err
 	}
 
 	bookStatusesRows, err := db.Query("insert into book_statuses (rfid_tag,book_info_id,place_id,book_datetime) values (?,?,?,?);", b.RFID, bookInfoID, b.PlaceID, time.Now().Format("2006-01-02 15:04:05"))
 	if err != nil {
-		log.Printf(errFormat, err, f.Name(), file, line)
+		log.Printf(dbErrFormat, err, f.Name(), file, line)
 		return err
 	}
 	defer bookStatusesRows.Close()
@@ -216,7 +216,7 @@ func BookStatus() ([]Book, error) {
 	// 本棚に存在する本のレコードをbook_statusesからselectする
 	booksStatusRows, err := db.Query("select rfid_tag,book_info_id,place_id from book_statuses;")
 	if err != nil {
-		log.Printf(errFormat, err, f.Name(), file, line)
+		log.Printf(dbErrFormat, err, f.Name(), file, line)
 		return nil, err
 	}
 	defer booksStatusRows.Close()
@@ -224,7 +224,7 @@ func BookStatus() ([]Book, error) {
 	for booksStatusRows.Next() {
 		err := booksStatusRows.Scan(&bookBuf.RFID, &infoIDBuf, &bookBuf.PlaceID)
 		if err != nil {
-			log.Printf(errFormat, err, f.Name(), file, line)
+			log.Printf(dbErrFormat, err, f.Name(), file, line)
 			return nil, err
 		}
 
@@ -237,7 +237,7 @@ func BookStatus() ([]Book, error) {
 	for i, ID := range bookInfoIDs {
 		booksInfoRows, err := db.Query("select book_name,api_id,author,publisher,published_date,description from book_info where book_info_id = ?;", ID)
 		if err != nil {
-			log.Printf(errFormat, err, f.Name(), file, line)
+			log.Printf(dbErrFormat, err, f.Name(), file, line)
 			return nil, err
 		}
 		defer booksInfoRows.Close()
@@ -245,7 +245,7 @@ func BookStatus() ([]Book, error) {
 		booksInfoRows.Next()
 		err = booksInfoRows.Scan(&books[i].BookName, &books[i].APIID, &books[i].Author, &books[i].Publisher, &books[i].PublishedDate, &books[i].Description)
 		if err != nil {
-			log.Printf(errFormat, err, f.Name(), file, line)
+			log.Printf(dbErrFormat, err, f.Name(), file, line)
 			return nil, err
 		}
 	}
@@ -263,7 +263,7 @@ func BookDetail(apiID string) (Book, error) {
 
 	bookInfoRow, err := db.Query("select * from book_info where api_id=?;", apiID)
 	if err != nil {
-		log.Printf(errFormat, err, f.Name(), file, line)
+		log.Printf(dbErrFormat, err, f.Name(), file, line)
 		return book, err
 	}
 	defer bookInfoRow.Close()
@@ -273,7 +273,7 @@ func BookDetail(apiID string) (Book, error) {
 
 	bookStatusRow, err := db.Query("select rfid_tag,place_id from book_statuses where book_info_id=?", bookInfoID)
 	if err != nil {
-		log.Printf(errFormat, err, f.Name(), file, line)
+		log.Printf(dbErrFormat, err, f.Name(), file, line)
 		return book, err
 	}
 	defer bookStatusRow.Close()
@@ -282,7 +282,7 @@ func BookDetail(apiID string) (Book, error) {
 	err = bookStatusRow.Scan(&book.RFID, &book.PlaceID)
 	if err != nil {
 		log.Println("hello")
-		log.Printf(errFormat, err, f.Name(), file, line)
+		log.Printf(dbErrFormat, err, f.Name(), file, line)
 		return book, err
 	}
 
@@ -306,7 +306,7 @@ func Login(mail, pass string) (bool, error) {
 
 	rows, err := db.Query("select email_id from emails where email = ? and password = ?;", mail, pass)
 	if err != nil {
-		log.Printf(errFormat, err, f.Name(), file, line)
+		log.Printf(dbErrFormat, err, f.Name(), file, line)
 		return false, errors.New(errStr)
 	}
 	defer rows.Close()
@@ -322,14 +322,16 @@ func BorrowBook(rfid string, cardData string) error {
 	pc, file, line, _ := runtime.Caller(0)
 	f := runtime.FuncForPC(pc)
 
+	log.Println(rfid)
+
 	_, err := db.Exec("update book_statuses set place_id = 1 where rfid_tag = ?;", rfid)
 	if err != nil {
-		log.Printf(errFormat, err, f.Name(), file, line)
+		log.Printf(dbErrFormat, err, f.Name(), file, line)
 		return err
 	}
 	rows, err := db.Query("select person_id from persons where card_data = ?;", cardData)
 	if err != nil {
-		log.Printf(errFormat, err, f.Name(), file, line)
+		log.Printf(dbErrFormat, err, f.Name(), file, line)
 		return err
 	}
 	personID := ""
@@ -338,7 +340,7 @@ func BorrowBook(rfid string, cardData string) error {
 
 	_, err = db.Exec("insert into borrowed_logs (rfid_tag,person_id) values(?,?)", rfid, personID)
 	if err != nil {
-		log.Printf(errFormat, err, f.Name(), file, line)
+		log.Printf(dbErrFormat, err, f.Name(), file, line)
 		return err
 	}
 
@@ -352,7 +354,21 @@ func ReturnBook(rfid string) error {
 
 	_, err := db.Exec("update book_statuses set place_id = 2 where rfid_tag = ?;", rfid)
 	if err != nil {
-		log.Printf(errFormat, err, f.Name(), file, line)
+		log.Printf(dbErrFormat, err, f.Name(), file, line)
+		return err
+	}
+
+	return err
+}
+
+//TempBorrowBook は本の所在を持ち出しにする関数
+func TempBorrowBook(rfid string) error {
+	pc, file, line, _ := runtime.Caller(0)
+	f := runtime.FuncForPC(pc)
+
+	_, err := db.Exec("update book_statuses set place_id = -1 where rfid_tag = ?;", rfid)
+	if err != nil {
+		log.Printf(dbErrFormat, err, f.Name(), file, line)
 		return err
 	}
 
